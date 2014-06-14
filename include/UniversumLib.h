@@ -40,6 +40,10 @@
 
 #include "../../thirdparty/include/Core2/Core2Main.h"
 #include "model\Unit.h"
+#include "model\Sektor.h"
+#include "model\SektorGenerator.h
+#include "view\RenderSektor.h"
+
 
 
 #ifndef __inline__

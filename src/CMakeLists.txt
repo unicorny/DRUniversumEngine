@@ -8,7 +8,7 @@ FILE(GLOB MODEL_HEADER "../include/model/*.h")
 FILE(GLOB VIEW_SRC "view/*.cpp")
 FILE(GLOB VIEW_HEADER "../include/view/*.h")
 
-SET(DRUniversumLibSrc ${SRC} ${HEADER} ${MODEL_SRC} ${MODEL_HEADER})
+SET(DRUniversumLibSrc ${SRC} ${HEADER} ${MODEL_SRC} ${MODEL_HEADER} ${VIEW_SRC} ${VIEW_HEADER})
 
 if(MSVC)
 
