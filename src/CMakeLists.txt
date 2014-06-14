@@ -5,6 +5,8 @@ FILE(GLOB SRC "*.cpp")
 FILE(GLOB HEADER "../include/*.h")
 FILE(GLOB MODEL_SRC "model/*.cpp")
 FILE(GLOB MODEL_HEADER "../include/model/*.h")
+FILE(GLOB VIEW_SRC "view/*.cpp")
+FILE(GLOB VIEW_HEADER "../include/view/*.h")
 
 SET(DRUniversumLibSrc ${SRC} ${HEADER} ${MODEL_SRC} ${MODEL_HEADER})
 
@@ -12,9 +14,11 @@ if(MSVC)
 
 # src
 source_group("src\\model" FILES ${MODEL_SRC} )
+source_group("src\\view" FILES ${VIEW_SRC} )
 source_group("src" FILES ${SRC})
 # include
 source_group("include\\model" FILES ${MODEL_HEADER} )
+source_group("include\\view" FILES ${VIEW_HEADER} )
 source_group("include" FILES ${HEADER})
 #source_group("include" REGULAR_EXPRESSION "${CMAKE_CURRENT_SOURCE_DIR}/${REC2}" )
 endif(MSVC)

@@ -39,6 +39,7 @@
 
 
 #include "../../thirdparty/include/Core2/Core2Main.h"
+#include "model\Unit.h"
 
 
 #ifndef __inline__

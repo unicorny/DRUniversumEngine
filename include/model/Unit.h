@@ -81,7 +81,7 @@ public:
     //__inline__ operator double() const {return this->mValue;}
     
     static const char* getUnitTypeName(UnitTypes unitType);
-    __inline__ UnitTypes getType() const {return mType;}
+    inline UnitTypes getType() const {return mType;}
     
     operator double() const;
 private:
@@ -94,7 +94,7 @@ private:
 
 		// return kilo, mega, giga and other endings
 		const char* getModifierName();
-		__inline__ operator double() const {return pow(mValue, mModifier);};
+		inline operator double() const {return pow(mValue, mModifier);};
 	private:
 		float mValue; // value
 		char mModifier; // 10^modifier
