@@ -40,11 +40,16 @@
 
 #include "../../thirdparty/include/Core2/Core2Main.h"
 #include "model/Unit.h"
+#include "view/Camera.h"
+
 #include "model/Sektor.h"
 #include "generator/Sektor.h"
-#include "view/Camera.h"
 #include "view/Sektor.h"
 #include "controller/Sektor.h"
+#include "model/Planet.h"
+#include "generator/Planet.h"
+#include "view/Planet.h"
+#include "controller/Planet.h"
 
 
 
