@@ -41,14 +41,16 @@ namespace UniLib {
 			// prototypes
 			// get name of sektor type
 			virtual const char* getSektorType() = 0;
-			// calculate current visibility mode for given camera
+			// calculate current visibility mode for given camera, multiple calls per frame possible
 			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
 			// move/update objects in sektor
 			virtual DRReturn move(float timeSinceLastFrame) = 0;
-			// render sektor content on screen
+			// render sektor content on screen (using sektor view)
+			// render sektor per camera (multiple calls pro frame possibility)
 			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
 
 		private:
+			view::Sektor* mSektorView;
 			
 		};
 	};

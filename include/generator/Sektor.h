@@ -20,28 +20,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_VIEW_SEKTOR_GENERATOR_H__ 
-#define __DR_UNIVERSUM_LIB_VIEW_SEKTOR_GENERATOR_H__
+#ifndef __DR_UNIVERSUM_LIB_GENERATOR_SEKTOR_H__ 
+#define __DR_UNIVERSUM_LIB_GENERATOR_SEKTOR_H__
 
 #include "UniversumLib.h"
 
-// Prototyp class for view classes,
-// renderSektor in old implemantation
-
 namespace UniLib {
-	namespace view {
+	namespace generator {
 		class UNIVERSUM_LIB_API Sektor
 		{
 		public:
 			Sektor();
 			~Sektor();
-
-			// prototypes
-			// render sektor per camera (multiple calls pro frame possible)
-			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
 		private:
 		};
 	};
 };
 
-#endif //__DR_UNIVERSUM_LIB_VIEW_SEKTOR_GENERATOR_H__
+#endif //__DR_UNIVERSUM_LIB_GENERATOR_SEKTOR_H__

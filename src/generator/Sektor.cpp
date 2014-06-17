@@ -1,16 +1,16 @@
 #include "UniversumLib.h"
 
 namespace UniLib {
-	namespace model {
+	namespace generator {
 		// constructor
-		SektorGenerator::SektorGenerator() 
+		Sektor::Sektor() 
 		{
 
 		}
 
 		// -----------------------------------------
 		// deconstructor
-		SektorGenerator::~SektorGenerator()
+		Sektor::~Sektor()
 		{
 		}
 	};

@@ -20,21 +20,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_MODEL_SEKTOR_GENERATOR_H__ 
-#define __DR_UNIVERSUM_LIB_MODEL_SEKTOR_GENERATOR_H__
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_SEKTOR_H__ 
+#define __DR_UNIVERSUM_LIB_CONTROLLER_SEKTOR_H__
 
 #include "UniversumLib.h"
 
 namespace UniLib {
-	namespace model {
-		class UNIVERSUM_LIB_API SektorGenerator
+	namespace controller {
+		class UNIVERSUM_LIB_API Sektor
 		{
 		public:
-			SektorGenerator();
-			~SektorGenerator();
+			Sektor();
+			~Sektor();
 		private:
 		};
 	};
 };
 
-#endif //__DR_UNIVERSUM_LIB_MODEL_SEKTOR_GENERATOR_H__
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_SEKTOR_H__
