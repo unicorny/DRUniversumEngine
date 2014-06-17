@@ -20,37 +20,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_MAIN_H__
-#define __DR_UNIVERSUM_LIB_MAIN_H__
+#ifndef __DR_UNIVERSUM_LIB_VIEW_CAMERA_GENERATOR_H__ 
+#define __DR_UNIVERSUM_LIB_VIEW_CAMERA_GENERATOR_H__
 
-#ifdef _WIN32
-    #ifndef BUILD_UNIVERSUM_LIB_DLL
-        #define UNIVERSUM_LIB_API __declspec(dllimport)
-    #else
-        #define UNIVERSUM_LIB_API __declspec(dllexport)
-    #endif
-#else //_WIN32
-    #ifdef BUILD_UNIVERSUM_LIB_DLL
-        #define UNIVERSUM_LIB_API
-    #else
-        #define UNIVERSUM_LIB_API
-    #endif
-#endif //_WIN32
+#include "UniversumLib.h"
 
+namespace UniLib {
+	namespace view {
+		class UNIVERSUM_LIB_API Camera {
+		public:
+			Camera();
+			~Camera();
+		private:
+		};
+	};
+};
 
-#include "../../thirdparty/include/Core2/Core2Main.h"
-#include "model/Unit.h"
-#include "model/Sektor.h"
-#include "model/SektorGenerator.h"
-#include "view/Camera.h"
-#include "view/Sektor.h"
-
-
-
-#ifndef __inline__
-#define  __inline__ inline
-#endif
-
-
-
-#endif //__DR_UNIVERSUM_LIB_MAIN_H__
+#endif //__DR_UNIVERSUM_LIB_VIEW_CAMERA_GENERATOR_H__

@@ -27,9 +27,29 @@
 
 namespace UniLib {
 	namespace model {
+		/*!
+		 * Sektor model prototyp, contains active and inactive objects in sector,
+		 * used for visible calculation
+		 * management other classes which work with sektor (like view or generator)
+		 */
 		class UNIVERSUM_LIB_API Sektor
 		{
+		public:
+			Sektor();
+			~Sektor();
 
+			// prototypes
+			// get name of sektor type
+			virtual const char* getSektorType() = 0;
+			// calculate current visibility mode for given camera
+			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
+			// move/update objects in sektor
+			virtual DRReturn move(float timeSinceLastFrame) = 0;
+			// render sektor content on screen
+			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
+
+		private:
+			
 		};
 	};
 };
