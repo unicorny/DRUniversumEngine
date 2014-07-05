@@ -13,9 +13,11 @@ FILE(GLOB GENERATOR_SRC "generator/*.cpp")
 FILE(GLOB GENERATOR_HEADER "../include/generator/*.h")
 FILE(GLOB SERVER_SRC "server/*.cpp")
 FILE(GLOB SERVER_HEADER "../include/server/*.h")
+FILE(GLOB LIB_HEADRER "../include/lib/*.h")
+FILE(GLOB LIB_SRC "lib/*.cpp")
 
 SET(DRUniversumLibSrc ${SRC} ${HEADER} ${MODEL_SRC} ${MODEL_HEADER} ${VIEW_SRC} ${VIEW_HEADER} ${CONTROLLER_SRC} ${CONTROLLER_HEADER}
-				      ${GENERATOR_SRC} ${GENERATOR_HEADER} ${SERVER_SRC} ${SERVER_HEADER})
+				      ${GENERATOR_SRC} ${GENERATOR_HEADER} ${SERVER_SRC} ${SERVER_HEADER} ${LIB_HEADER} ${LIB_SRC})
 
 if(MSVC)
 
@@ -25,6 +27,7 @@ source_group("src\\view" FILES ${VIEW_SRC} )
 source_group("src\\controller" FILES ${CONTROLLER_SRC} )
 source_group("src\\generator" FILES ${GENERATOR_SRC} )
 source_group("src\\server" FILES ${SERVER_SRC} )
+source_group("src\\lib" FILES ${LIB_SRC} )
 source_group("src" FILES ${SRC})
 # include
 source_group("include\\model" FILES ${MODEL_HEADER} )
@@ -32,6 +35,7 @@ source_group("include\\view" FILES ${VIEW_HEADER} )
 source_group("include\\controller" FILES ${CONTROLLER_HEADER} )
 source_group("include\\generator" FILES ${GENERATOR_HEADER} )
 source_group("include\\server" FILES ${SERVER_HEADER} )
+source_group("include\\lib" FILES ${LIB_HEADER} )
 source_group("include" FILES ${HEADER})
 #source_group("include" REGULAR_EXPRESSION "${CMAKE_CURRENT_SOURCE_DIR}/${REC2}" )
 endif(MSVC)
