@@ -1,4 +1,5 @@
-#include "Engine2Main.h"
+//#include "Engine2Main.h"
+#include "UniversumLib.h"
 
 DRINetwork* DRINetwork::mTheOneAndOnly = NULL;
 
@@ -45,7 +46,7 @@ DRINetwork* DRINetwork::Instance()
     {
         return mTheOneAndOnly;
     }
-    return NULL;
+   // return NULL;
 }
 
 int DRINetwork::connect(const char* host_ip, int port)

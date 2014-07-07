@@ -13,7 +13,7 @@ FILE(GLOB GENERATOR_SRC "generator/*.cpp")
 FILE(GLOB GENERATOR_HEADER "../include/generator/*.h")
 FILE(GLOB SERVER_SRC "server/*.cpp")
 FILE(GLOB SERVER_HEADER "../include/server/*.h")
-FILE(GLOB LIB_HEADRER "../include/lib/*.h")
+FILE(GLOB LIB_HEADER "../include/lib/*.h")
 FILE(GLOB LIB_SRC "lib/*.cpp")
 
 SET(DRUniversumLibSrc ${SRC} ${HEADER} ${MODEL_SRC} ${MODEL_HEADER} ${VIEW_SRC} ${VIEW_HEADER} ${CONTROLLER_SRC} ${CONTROLLER_HEADER}
@@ -44,10 +44,11 @@ endif(MSVC)
 #DEFINE_SYMBOL(BUILD_DLL)
 
 find_library(DR_CORE2_LIB DRCore2 PATHS ../import/lib REQUIRED)
+find_library(SDL2_LIB SDL2 PATHS ../import/lib REQUIRED)
 if(WIN32)
-SET(DRUniversumLibLibs ${DR_CORE2_LIB})
+SET(DRUniversumLibLibs ${DR_CORE2_LIB} ${SDL2_LIB})
 else(UNIX)
-SET(DRUniversumLibLibs DRCore2)
+SET(DRUniversumLibLibs DRCore2 SDL2)
 endif(WIN32)
 
 

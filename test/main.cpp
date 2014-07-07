@@ -10,7 +10,7 @@ void fillTests()
 }
 
 DRReturn load() {
-	Core2_init();
+	UniLib::init();
 	fillTests();
 	for(std::list<Test*>::iterator it = gTests.begin(); it != gTests.end(); it++)
 	{
@@ -40,7 +40,7 @@ void ende()
 		DR_SAVE_DELETE(*it);
 	}
 	gTests.clear();
-	Core2_exit();
+	UniLib::exit();
 }
 
 

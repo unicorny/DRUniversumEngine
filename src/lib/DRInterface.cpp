@@ -1,4 +1,4 @@
-#include "Engine2Main.h"
+#include "UniversumLib.h"
 
 #ifdef _WIN32
 HMODULE   DRInterface::mDLL = 0;
@@ -58,7 +58,7 @@ DRInterface* DRInterface::Instance(const char* dllName)
         //return new DRInterface();
     }
 
-    return NULL;
+//    return NULL;
 }
 
 DRReturn DRInterface::loadDll(const char* dllname)

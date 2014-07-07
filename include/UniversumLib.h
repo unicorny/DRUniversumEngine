@@ -38,7 +38,45 @@
 #endif //_WIN32
 
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif //_WIN32
+
 #include "../../thirdparty/include/Core2/Core2Main.h"
+#include "../../thirdparty/include/sdl/SDL.h"
+#include "lib/Logging.h"
+
+namespace UniLib {
+    UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
+}
+
+#undef WRITETOLOG
+#undef LOG_ERROR
+#undef LOG_ERROR_VOID
+#undef LOG_INFO
+#undef LOG_WARNING
+
+//makros für Log Benutzung
+#define WRITETOLOG(str, pl) UniLib::EngineLog.writeToLog(str, pl);
+//#define DR_ERROR(str, ret) {DRLog.LOG_ERROR_INTERN(str); return ret;}
+#define LOG_ERROR(str, ret) {UniLib::EngineLog.LOG_ERROR_INTERN(str); return ret;}
+#define LOG_ERROR_VOID(str) {UniLib::EngineLog.LOG_ERROR_INTERN(str); return;}
+#define LOG_INFO(str) UniLib::EngineLog.LOG_INFO_INTERN(str);
+#define LOG_WARNING(str) UniLib::EngineLog.LOG_WARNING_INTERN(str);
+//*/
+
+#define LOG_SDL_INTERN(text, f, l, fu) DRLog.writeToLog("<tr><td><font size=\"2\"><b><font color=\"#BF8000\">SDL Fehler:</font></b> %s</font></td><td><font size=\"2\"> (<i>%s</i>, Zeile <i>%d</i>, Funktion <i>%s</i>)</font></td></tr>", text, f, l, fu)
+#define LOG_ERROR_SDL(r) {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2){ LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__); return r;}}
+#define LOG_ERROR_SDL_VOID() {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2){ LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__); return;}}
+#define LOG_WARNING_SDL() {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2) LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__);}
+
+// interfaces to dynamic linked libs
+#include "lib/DRInterface.h"
+#include "lib/DRINetwork.h"
+#include "lib/Thread.h"
+
 #include "server/Server.h"
 
 #include "model/Unit.h"
@@ -49,10 +87,10 @@
 #include "generator/Sektor.h"
 
 #include "controller/Sektor.h"
-#include "model/Planet.h"
-#include "generator/Planet.h"
-#include "view/Planet.h"
-#include "controller/Planet.h"
+//#include "model/Planet.h"
+//#include "generator/Planet.h"
+//#include "view/Planet.h"
+//#include "controller/Planet.h"
 
 
 
@@ -60,6 +98,13 @@
 #define  __inline__ inline
 #endif
 
+
+// engine functions
+namespace UniLib {
+    UNIVERSUM_LIB_API DRReturn init();
+    UNIVERSUM_LIB_API void exit();
+    UNIVERSUM_LIB_API DRString getTimeSinceStart();
+}
 
 
 #endif //__DR_UNIVERSUM_LIB_MAIN_H__

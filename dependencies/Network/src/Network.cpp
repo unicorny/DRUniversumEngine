@@ -30,12 +30,21 @@ DRReturn Network::init()
     if(mConnectionThread) LOG_ERROR("mConnectionThread is already active", DR_ERROR);
     if(mServerThread)     LOG_ERROR("mServerThread is already actvie", DR_ERROR);
 
-    mNewConnectionCondition = SDL_CreateCond();  LOG_WARNING_SDL();
-    mNewServerCondition     = SDL_CreateCond();  LOG_WARNING_SDL();
+    mNewConnectionCondition = SDL_CreateCond();  
+    if(!mNewConnectionCondition) LOG_WARNING_SDL();
 
-    mConnectionWorkingMutex = SDL_CreateMutex(); LOG_WARNING_SDL();
-    mNetCallbackMutex       = SDL_CreateMutex(); LOG_WARNING_SDL();
-    mServerWorkingMutex     = SDL_CreateMutex(); LOG_WARNING_SDL();
+    mNewServerCondition     = SDL_CreateCond();  
+    if(!mNewServerCondition) LOG_WARNING_SDL();
+
+    mConnectionWorkingMutex = SDL_CreateMutex(); 
+    if(!mConnectionWorkingMutex) LOG_WARNING_SDL();
+
+    mNetCallbackMutex       = SDL_CreateMutex(); 
+    if(!mNetCallbackMutex) LOG_WARNING_SDL();
+
+    mServerWorkingMutex     = SDL_CreateMutex(); 
+    if(!mServerWorkingMutex) LOG_WARNING_SDL();
+
 #if SDL_VERSION_ATLEAST(1,3,0)
 	mConnectionThread = SDL_CreateThread(ConnectThread, "DRNetcon", this);
 	mServerThread     = SDL_CreateThread(ServerThread, "DRNetServ", this);
@@ -60,12 +69,12 @@ void Network::exit()
     SDL_WaitThread(mConnectionThread, NULL);
     SDL_WaitThread(mServerThread, NULL);
 
-    SDL_DestroyMutex(mConnectionWorkingMutex);  LOG_WARNING_SDL();
-    SDL_DestroyMutex(mNetCallbackMutex);        LOG_WARNING_SDL();
-    SDL_DestroyMutex(mServerWorkingMutex);      LOG_WARNING_SDL();
+    SDL_DestroyMutex(mConnectionWorkingMutex);  
+    SDL_DestroyMutex(mNetCallbackMutex);        
+    SDL_DestroyMutex(mServerWorkingMutex);      
 
-    SDL_DestroyCond(mNewConnectionCondition);   LOG_WARNING_SDL();
-    SDL_DestroyCond(mNewServerCondition);       LOG_WARNING_SDL();
+    SDL_DestroyCond(mNewConnectionCondition);   
+    SDL_DestroyCond(mNewServerCondition);       
 
 
     for(int i = 0; i < mNetCallbackList.getNItems(); i++)
@@ -98,7 +107,7 @@ int Network::ServerThread(void* data)
     while(N->mThreadRunning)
     {
         // Lock work mutex
-        SDL_LockMutex(N->mServerWorkingMutex); LOG_ERROR_SDL(-1);
+        if(SDL_LockMutex(N->mServerWorkingMutex)) LOG_ERROR_SDL(-1);
         //wait if we can make a new stream, 0.25 seconds or,
         //if fading is working, 0.10 seconds (10 fps)
         Uint32 milliSecondsToWait = 250;
@@ -107,21 +116,21 @@ int Network::ServerThread(void* data)
         {
 
 
-            SDL_UnlockMutex(N->mServerWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mServerWorkingMutex)) LOG_ERROR_SDL(-1);
         }
         else if(status == SDL_MUTEX_TIMEDOUT)
         {
             // update
-            SDL_UnlockMutex(N->mServerWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mServerWorkingMutex)) LOG_ERROR_SDL(-1);
         }
         else
         {
             //unlock mutex and exit
-            SDL_UnlockMutex(N->mServerWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mServerWorkingMutex)) LOG_ERROR_SDL(-1);
             LOG_ERROR("Fehler im Server Thread, exit", -1);
         }
     }
-    LOG_ERROR_SDL(-1);
+    //LOG_ERROR_SDL(-1);
     LOG_INFO("Server Thread beendet");
 
     return 0;
@@ -188,21 +197,21 @@ int Network::ConnectThread(void* data)
                 }
             }
 
-            SDL_UnlockMutex(N->mConnectionWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mConnectionWorkingMutex)) LOG_ERROR_SDL(-1);
         }
         else if(status == SDL_MUTEX_TIMEDOUT)
         {
             // update
-            SDL_UnlockMutex(N->mConnectionWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mConnectionWorkingMutex)) LOG_ERROR_SDL(-1);
         }
         else
         {
             //unlock mutex and exit
-            SDL_UnlockMutex(N->mConnectionWorkingMutex); LOG_ERROR_SDL(-1);
+            if(SDL_UnlockMutex(N->mConnectionWorkingMutex)) LOG_ERROR_SDL(-1);
             LOG_ERROR("Fehler im Connect Thread, exit", -1);
         }
     }
-    LOG_ERROR_SDL(-1);
+    //LOG_ERROR_SDL(-1);
     LOG_INFO("Connect Thread beendet");
 
     return 0;
@@ -228,11 +237,11 @@ int Network::connect(const char* host_ip, int port)
     con->setCallbackIndex(hash);
     SDL_UnlockMutex(mNetCallbackMutex);
 
-    SDL_LockMutex(mConnectionWorkingMutex); LOG_WARNING_SDL();
+    if(SDL_LockMutex(mConnectionWorkingMutex)) LOG_WARNING_SDL();
 
     mConnectionList.push_back(con);
 
-    SDL_UnlockMutex(mConnectionWorkingMutex); LOG_WARNING_SDL();
+    if(SDL_UnlockMutex(mConnectionWorkingMutex)) LOG_WARNING_SDL();
 
     if(SDL_CondSignal(mNewConnectionCondition)== -1) //LOG_ERROR_SDL(DR_ERROR);
     {

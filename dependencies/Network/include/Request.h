@@ -1,7 +1,7 @@
 #ifndef __REQUEST_H
 #define __REQUEST_H
 
-#include <Engine2Main.h>
+#include <UniversumLib.h>
 #ifdef _WIN32
 #include <SDLNet/SDL_net.h>
 #else

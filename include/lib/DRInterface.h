@@ -25,10 +25,10 @@
     welche eine externe dll dynamisch einbinden
 */
 
-#ifndef __DR_ENGINE2_INTERFACE__
-#define __DR_ENGINE2_INTERFACE__
+#ifndef __DR_UNIVERSUM_LIB_INTERFACE__
+#define __DR_UNIVERSUM_LIB_INTERFACE__
 
-class ENGINE2_API DRInterface
+class UNIVERSUM_LIB_API DRInterface
 {
 public:
     virtual ~DRInterface();
@@ -53,4 +53,4 @@ protected:
 
 private:
 };
-#endif //__DR_ENGINE2_INTERFACE__
+#endif //__DR_UNIVERSUM_LIB_INTERFACE__

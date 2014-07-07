@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_ENGINE2_INETWORK__
-#define __DR_ENGINE2_INETWORK__
+#ifndef __DR_UNIVERSUM_LIB_INETWORK__
+#define __DR_UNIVERSUM_LIB_INETWORK__
 #ifdef _WIN32
 #define __NETWORK_DLL_NAME_ "libNetwork.dll"
 #else
@@ -45,7 +45,7 @@ enum DRNet_Status
 };
 
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
-enum ENGINE_API DRNet_Status;
+enum UNIVERSUM_LIB_API DRNet_Status;
 #endif
 
 enum DRNet_RequestTyp
@@ -55,11 +55,11 @@ enum DRNet_RequestTyp
 };
 
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
-enum ENGINE_API DRNet_RequestTyp;
+enum UNIVERSUM_LIB_API DRNet_RequestTyp;
 #endif
 
 // Interface klasse f�r Netzwerk, implementierung erfolgt in Network.dll
-class ENGINE2_API DRINetwork : public DRInterface
+class UNIVERSUM_LIB_API DRINetwork : public DRInterface
 {
 public:
     virtual ~DRINetwork();
@@ -103,4 +103,4 @@ protected:
 private:
 };
 
-#endif //__DR_ENGINE2_INETWORK__
+#endif //__DR_UNIVERSUM_LIB_INETWORK__
