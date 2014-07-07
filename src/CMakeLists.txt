@@ -45,10 +45,12 @@ endif(MSVC)
 
 find_library(DR_CORE2_LIB DRCore2 PATHS ../import/lib REQUIRED)
 find_library(SDL2_LIB SDL2 PATHS ../import/lib REQUIRED)
+find_library(GMP10_LIB "libgmp-10" PATHS ../import/lib REQUIRED)
+find_library(MPFR4_LIB "libmpfr-4" PATHS ../import/lib REQUIRED)
 if(WIN32)
-SET(DRUniversumLibLibs ${DR_CORE2_LIB} ${SDL2_LIB})
+SET(DRUniversumLibLibs ${DR_CORE2_LIB} ${SDL2_LIB} ${GMP10_LIB} ${MPFR4_LIB})
 else(UNIX)
-SET(DRUniversumLibLibs DRCore2 SDL2)
+SET(DRUniversumLibLibs DRCore2 SDL2 gmp-10 mpfr-4)
 endif(WIN32)
 
 
