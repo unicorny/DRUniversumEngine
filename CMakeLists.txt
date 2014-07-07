@@ -7,7 +7,7 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../lib)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 
 
-SUBDIRS(src test dependencies/jsoncpp)
+SUBDIRS(src test dependencies/jsoncpp dependencies/Network)
 #ADD_SUBDIRECTORY(dependencies/Core2 dependencies/Network)
 INCLUDE_DIRECTORIES(import/include import/bin import/lib)
 INCLUDE_DIRECTORIES(include)
