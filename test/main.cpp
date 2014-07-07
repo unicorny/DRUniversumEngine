@@ -43,6 +43,9 @@ void ende()
 	UniLib::exit();
 }
 
+#ifdef main
+#undef main
+#endif 
 
 int main(int argc, char argv[])
 {
