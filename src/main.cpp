@@ -46,8 +46,8 @@ namespace UniLib {
 
     DRReturn init()
     {
-        EngineLog.init("EngineLogger.html", true);
         Core2_init("Logger.html");
+        EngineLog.init("EngineLogger.html", true);        
 
         return DR_OK;
     }

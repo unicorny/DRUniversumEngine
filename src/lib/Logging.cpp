@@ -18,6 +18,7 @@ namespace UniLib {
         DRReturn EngineLogger::init(const char* pcFilename, bool printToConsole)
         {
             mMutex = SDL_CreateMutex(); 
+            if(!mMutex) LOG_ERROR_SDL(DR_ERROR);
             DRReturn ret = DRLogger::init(pcFilename, printToConsole);    
             return ret;
         }
@@ -33,9 +34,11 @@ namespace UniLib {
         DRReturn EngineLogger::writeToLogDirect(DRString text)
         {
             DRReturn ret = DR_OK;
-            SDL_LockMutex(mMutex); 
+            if(mMutex) 
+                if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL(DR_ERROR);
             DRLogger::writeToLogDirect(text);
-            SDL_UnlockMutex(mMutex);
+            if(mMutex)
+                if(SDL_UnlockMutex(mMutex)) LOG_ERROR_SDL(DR_ERROR);
             return ret;
         }
 
