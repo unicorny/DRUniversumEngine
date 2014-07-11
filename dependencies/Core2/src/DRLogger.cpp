@@ -44,11 +44,11 @@ DRReturn DRLogger::init(const char* pcFilename, bool printToConsole)
 	m_File.write(acTemp, sizeof(char), strlen(acTemp));
 	writeToLog("Init des Loggers erfolgreich!");
 //	char acTemp2[] = "<tr><a href= http://www.mathe-programme.de.tt> Homepage </a><br>Ein Programm von Dario Rekowski.</tr>";
-	writeToLog("Ein Programm von Dario Rekowski.\nVerwendet die Core.dll von Dario Rekowski\n<a href= http://www.einhornimmond.de> Homepage </a>");
+	writeToLog("Ein Programm von Dario Rekowski.\nVerwendet die Core2.dll von Dario Rekowski\n<a href= http://www.spacecrafting.de> Homepage </a>");
 //	m_File.write(acTemp2, sizeof(char), strlen(acTemp2));
 
 
-	//schlie�en
+	//schließen
 //	fclose(m_pFile);
 //	m_pFile = NULL;
 	m_File.close();
@@ -81,7 +81,7 @@ DRReturn DRLogger::writeVector2ToLog(const DRVector2& v, const char* name)
 	// 2D-Vektor in die Logbuchdatei schreiben
     if(name)
         writeToLogDirect("<tr><td><b>%s</b></td></tr>", name);
-    return writeToLogDirect("<tr><td><font size=\"2\"><b><font color=\"#000080\">2D-Vektor:</font></b> x = <i>%.5f</i>, y = <i>%.5f</i>, L�nge = <i>%.5f</i></td></tr>",
+    return writeToLogDirect("<tr><td><font size=\"2\"><b><font color=\"#000080\">2D-Vektor:</font></b> x = <i>%.5f</i>, y = <i>%.5f</i>, Laenge = <i>%.5f</i></td></tr>",
                             v.x, v.y, v.length());
 }
 
@@ -95,7 +95,7 @@ DRReturn DRLogger::writeVector3ToLog(const DRVector3& v, const char* pcName /* =
 		sprintf(acName, "3D-Vektor %s:", pcName);
 	else
 		sprintf(acName, "3D-Vektor:");
-	return writeToLogDirect("<tr><td><font size=\"2\"><b><font color=\"#000080\">%s</font></b> x = <i>%.3f</i>, y = <i>%.3f</i>, z = <i>%.3f</i>, L�nge = <i>%.3f</i></td></tr>",
+	return writeToLogDirect("<tr><td><font size=\"2\"><b><font color=\"#000080\">%s</font></b> x = <i>%.3f</i>, y = <i>%.3f</i>, z = <i>%.3f</i>, Laenge = <i>%.3f</i></td></tr>",
 		                     acName, v.x, v.y, v.z, v.length());
 }
 

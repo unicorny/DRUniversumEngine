@@ -1,7 +1,3 @@
-PROJECT(scripts/DRCore2 CXX)
-
-# Core src
-cmake_minimum_required(VERSION 2.6)
 
 SET(CoreSrc 
 	Core2Main.cpp DRCubicSpline.cpp DRFile.cpp DRFileManager.cpp DRHashList.cpp
@@ -22,12 +18,6 @@ SET(CoreSrc ${CoreSrc} ../include/Core2Main.h ../include/DRFile.h ../include/DRF
 					   ../include/DRCubicSpline)
 #ENDIF(WIN32)
 ADD_LIBRARY(DRCore2 SHARED ${CoreSrc})
-
-INSTALL(TARGETS DRCore2
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
-)
 
 set_target_properties(DRCore2 PROPERTIES DEFINE_SYMBOL BUILD_CORE2_DLL)
 SET_TARGET_PROPERTIES(DRCore2 PROPERTIES CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../bin)
