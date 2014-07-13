@@ -46,10 +46,11 @@ endif(MSVC)
 find_library(SDL2_LIB SDL2 PATHS ../import/lib REQUIRED)
 find_library(GMP10_LIB "libgmp-10" PATHS ../import/lib REQUIRED)
 find_library(MPFR4_LIB "libmpfr-4" PATHS ../import/lib REQUIRED)
+find_library(CRYPTO_LIB "cryptlib" PATHS ../import/lib REQUIRED)
 if(WIN32)
-SET(DRUniversumLibLibs json DRCore2 ${SDL2_LIB} ${GMP10_LIB} ${MPFR4_LIB})
+SET(DRUniversumLibLibs json DRCore2 ${SDL2_LIB} ${GMP10_LIB} ${MPFR4_LIB} ${CRYPTO_LIB})
 else(UNIX)
-SET(DRUniversumLibLibs json DRCore2 SDL2 gmp-10 mpfr-4)
+SET(DRUniversumLibLibs json DRCore2 SDL2 gmp-10 mpfr-4 cryptopp)
 endif(WIN32)
 
 
