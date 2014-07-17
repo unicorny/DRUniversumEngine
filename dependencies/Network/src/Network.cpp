@@ -158,7 +158,7 @@ int Network::ConnectThread(void* data)
             for(list<Connection*>::iterator it = N->mConnectionList.begin(); it != N->mConnectionList.end(); it++)
             {
                 Connection* cn = *it;
-                if(cn->send(NULL, 0) == NET_COMPLETE)
+                if(cn->send(NULL, 0) != NULL)
                 {
                     LOG_INFO("complete");
 

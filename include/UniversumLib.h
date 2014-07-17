@@ -37,6 +37,7 @@
     #endif
 #endif //_WIN32
 
+#define _UNI_LIB_DEBUG
 
 #ifdef _WIN32
 #include <windows.h>
@@ -47,6 +48,7 @@
 #include "../../thirdparty/include/Core2/Core2Main.h"
 #include "../../thirdparty/include/sdl/SDL.h"
 #include "lib/Logging.h"
+#include "../../thirdparty/include/json/json.h"
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
@@ -78,6 +80,7 @@ namespace UniLib {
 #include "lib/Thread.h"
 
 #include "server/Server.h"
+#include "lib/BufferedNetworkPacket.h"
 
 #include "model/Unit.h"
 #include "view/Camera.h"

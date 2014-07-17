@@ -27,7 +27,7 @@ std::string Request::makeToString(map<string, string>* parameter)
 	return text;
 }
 
-DRNet_Status Request::send(const void* data, int length)
+UniLib::lib::BufferedNetworkPacket* Request::send(const void* data, int length)
 {
     const char* text = (const char*)data;
     string request;
@@ -35,7 +35,7 @@ DRNet_Status Request::send(const void* data, int length)
     // typ, POST or GET
     if(mTyp == NET_GET)         request = "GET ";
     else if(mTyp == NET_POST)   request = "POST ";
-    else LOG_ERROR("ungueltiger Typ", NET_ERROR);
+    else LOG_ERROR("ungueltiger Typ", NULL);
 
     // url, adresse der genauen seite
     request += mURL;

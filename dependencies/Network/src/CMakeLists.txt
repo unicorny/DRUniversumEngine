@@ -1,5 +1,5 @@
 # Network src
-SET(NetworkSrc NetworkMain Network Connection Request NetCallback)
+SET(NetworkSrc NetworkMain Network Connection Request NetCallback BufferedConnection)
 SET(PA ../../../import/lib)
 SET(PATH_SDL_NET ../dependencies/SDL_net/VisualC/Release)
 find_library(SDL2_LIB SDL2 PATHS ${PA})
@@ -14,7 +14,7 @@ endif(WIN32)
 #DEFINE_SYMBOL(BUILD_DLL)
 #IF(WIN32)
 SET(NetworkSrc ${NetworkSrc} ../include/Network ../include/NetworkMain
-			     ../include/Connection ../include/Request ../include/NetCallback)
+			     ../include/Connection ../include/Request ../include/NetCallback ../include/BufferedConnection)
 #ENDIF(WIN32)
 
 ADD_LIBRARY(Network SHARED ${NetworkSrc})

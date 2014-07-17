@@ -81,6 +81,7 @@ public:
     //! \return verbindungs ID oder null bei Fehler
     virtual int connect(const char* host_ip, int port);
 
+
     //! \brief to make a HTTP Request at the target host
     //! \param url complete url
     //! \param request typ, POST oder GET

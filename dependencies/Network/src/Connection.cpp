@@ -24,7 +24,7 @@ TCPsocket Connection::getSocket()
     {
         if(getIP()) LOG_ERROR("ungültige IP", NULL);
         mSocket = SDLNet_TCP_Open(&mIP);
-        LOG_ERROR_SDL(NULL);
+        if(!mSocket) LOG_ERROR_SDL(NULL);
     }
 
     return mSocket;
@@ -85,12 +85,13 @@ void Connection::splitURL_HOST(const char* url_host)
     DRLog.writeToLog("Host: %s, URL: %s", mHOST.data(), mURL.data());
 }
 
-DRNet_Status Connection::send(const void* data, int length)
+UniLib::lib::BufferedNetworkPacket* Connection::send(const void* data, int length)
 {
     LOG_INFO("send");
-    if(!getSocket()) return NET_SOCKET_ERROR;
+	TCPsocket socket = getSocket();
+    if(!socket) return NULL;
 
-    int sended = SDLNet_TCP_Send(mSocket, data, length);
+    int sended = SDLNet_TCP_Send(socket, data, length);
     DRLog.writeToLog("%d bytes gesendet", sended);
 
     /* temp */
@@ -98,29 +99,29 @@ DRNet_Status Connection::send(const void* data, int length)
     memset(buffer, 0, 2084);
     int ret = 0;
     int readedBytes = 0;
-
-    FILE* out = fopen("out.html", "wt");
-    while(ret = SDLNet_TCP_Recv(mSocket, &buffer[readedBytes], 2048-readedBytes))
+	UniLib::lib::BufferedNetworkPacket* packetBuffer = new UniLib::lib::BufferedNetworkPacket;
+    while(ret = SDLNet_TCP_Recv(socket, &buffer[readedBytes], 2048-readedBytes))
     {
         readedBytes += ret;
         if(readedBytes >= 2048)
         {
-            LOG_WARNING("buffer ist zu klein für empfangene Daten");
+            //LOG_WARNING("buffer ist zu klein für empfangene Daten");
             //memset(buffer, 0, 2084);
-            DRLog.writeToLog("ret: %d, readedBytes: %d", ret, readedBytes);
-            fwrite(buffer, 1, 2048, out);
+            //DRLog.writeToLog("ret: %d, readedBytes: %d", ret, readedBytes);
+			packetBuffer->pushData(buffer, readedBytes);
+    //        fwrite(buffer, 1, 2048, out);
             readedBytes = ret = 0;
             //DRLog.writeToLogDirect("\n\nbuffer: %s", buffer);
 
             //break;
         }
     }
-    fclose(out);
-    LOG_WARNING_SDL();
-    DRLog.writeToLog("buffer: <pre>%s</pre>", buffer);
+    
+    //LOG_WARNING_SDL();
+    //DRLog.writeToLog("buffer: <pre>%s</pre>", buffer);
     /* */
 
-    if(sended == length) return NET_COMPLETE;
+	if(sended == length) return packetBuffer;
 
-    LOG_ERROR("nicht alles gesendet", NET_NOT_COMPLETE);
+    LOG_ERROR("nicht alles gesendet", NULL);
 }

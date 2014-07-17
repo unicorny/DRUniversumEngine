@@ -16,7 +16,7 @@ public:
 
     virtual ~Request();
 
-    virtual DRNet_Status send(const void* data, int length);
+    virtual UniLib::lib::BufferedNetworkPacket* send(const void* data, int length);
 protected:
 
     std::string makeToString(std::map<std::string, std::string>* parameter);

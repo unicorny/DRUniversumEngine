@@ -20,7 +20,7 @@ public:
 
     __inline__ void setCallbackIndex(int index) {mCallbackIndex = index;};
     __inline__ int  getCallbackIndex() {return mCallbackIndex;}
-    virtual DRNet_Status send(const void* data, int length);
+    virtual UniLib::lib::BufferedNetworkPacket* send(const void* data, int length);
 
 protected:
 
