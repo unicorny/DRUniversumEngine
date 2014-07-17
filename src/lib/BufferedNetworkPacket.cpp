@@ -4,7 +4,7 @@ namespace UniLib {
 	namespace lib {
 
 		BufferedNetworkPacket::BufferedNetworkPacket()
-		: mMutex(NULL)
+		: mMutex(NULL), exit(false)
 		{
 			mMutex = SDL_CreateMutex();
 			if(!mMutex) LOG_WARNING_SDL();
@@ -12,6 +12,7 @@ namespace UniLib {
 
 		BufferedNetworkPacket::~BufferedNetworkPacket()
 		{
+			exit = true;
 			if(mMutex) {
 				SDL_LockMutex(mMutex);
 				SDL_UnlockMutex(mMutex);
@@ -22,6 +23,7 @@ namespace UniLib {
 
 		void BufferedNetworkPacket::pushData(void* data, size_t size)
 		{
+			if(exit) return;
 			if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL_VOID();
 			mBufferQueue.push(new DataPacket(data, size));
 			SDL_UnlockMutex(mMutex);
@@ -47,6 +49,7 @@ namespace UniLib {
 		Json::Value BufferedNetworkPacket::popData()
 		{
 			Json::Value returnValue;
+			if(exit) return returnValue;
 			if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL(returnValue);
 			if(mBufferQueue.size() == 0) return returnValue;
 			DataPacket* data = mBufferQueue.front();

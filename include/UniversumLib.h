@@ -75,6 +75,7 @@ namespace UniLib {
 #define LOG_WARNING_SDL() {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2) LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__);}
 
 // interfaces to dynamic linked libs
+#include "lib/Timer.h"
 #include "lib/DRInterface.h"
 #include "lib/DRINetwork.h"
 #include "lib/Thread.h"

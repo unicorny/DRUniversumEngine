@@ -60,6 +60,7 @@ namespace UniLib {
 			};
 			std::queue<DataPacket*> mBufferQueue;
 			SDL_mutex*				mMutex;
+			bool					exit;
 		};
 
 	};
