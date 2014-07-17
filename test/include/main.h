@@ -3,5 +3,6 @@
 #define __UNIVERSUM_LIB_TEST_MAIN__
 #include "UniversumLib.h"
 #include "UnitTest.h"
+#include "TimerTest.h"
 
 #endif //__UNIVERSUM_LIB_TEST_MAIN__

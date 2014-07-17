@@ -43,11 +43,16 @@ namespace UniLib {
 			std::map<Uint32, TimerEntry>::iterator it = mRegisteredAtTimer.begin();
 
 			if(it->first <= SDL_GetTicks() ) {
-				it->second.callback->callFromTimer();
-				if(it->second.nextLoop()) {
-					mRegisteredAtTimer.insert(TIMER_TIMER_ENTRY(SDL_GetTicks() + it->second.timeIntervall,  it->second));
+				TimerReturn ret = it->second.callback->callFromTimer();
+				if(it->second.nextLoop() && ret == GO_ON) {
+					 mRegisteredAtTimer.insert(TIMER_TIMER_ENTRY(SDL_GetTicks() + it->second.timeIntervall,  it->second));
 				}
 				mRegisteredAtTimer.erase(it);
+				if(ret == REPORT_ERROR) {
+					SDL_UnlockMutex(mMutex);
+					LOG_ERROR("report error from timer callback", DR_ERROR);
+				}
+				
 			}
 
 			SDL_UnlockMutex(mMutex);

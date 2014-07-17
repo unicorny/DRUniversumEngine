@@ -1,5 +1,6 @@
 #include "include/main.h"
 
+
 using namespace UniversumLibTest;
 
 std::list<Test*> gTests;
@@ -7,6 +8,7 @@ std::list<Test*> gTests;
 void fillTests()
 {
 	gTests.push_back(new UnitTest());
+	gTests.push_back(new TimerTest());
 }
 
 DRReturn load() {
