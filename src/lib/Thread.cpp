@@ -88,17 +88,24 @@ namespace UniLib {
 
 		// ---------------------------------------------------------------------------------
 		// Timing thread
-		TimingThread::TimingThread(Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName/* = NULL*/)
-			: Thread(threadName)
+		TimingThread::TimingThread(std::string name, Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName/* = NULL*/)
+			: Thread(threadName), mTimer(timerOnWhichToAttach), mName(name)
 		{
-
+			if(timerOnWhichToAttach) {
+				timerOnWhichToAttach->addTimer(name, DRResourcePtr<TimerCallback>(this), rerunDelay);
+			}
 		}
 		TimingThread::~TimingThread()
 		{
+			if(mTimer)
+			{
+				mTimer->removeTimer(mName);
+			}
 		}
 
 		TimerReturn TimingThread::callFromTimer()
 		{
+			if(condSignal()) LOG_ERROR("error by calling condSignal", REPORT_ERROR);
 			return GO_ON;
 		}
     }

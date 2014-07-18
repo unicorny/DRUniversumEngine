@@ -66,11 +66,13 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API TimingThread: public Thread, TimerCallback 
 		{
 			public:
-				TimingThread(Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName = NULL);
+				TimingThread(std::string name, Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName = NULL);
 				~TimingThread();
 				virtual TimerReturn callFromTimer();
 				virtual int ThreadFunction() = 0;
 			private:
+				Timer* mTimer;
+				std::string mName;
 
 		};
 
