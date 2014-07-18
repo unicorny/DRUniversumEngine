@@ -28,9 +28,9 @@ DRReturn run()
 	for(std::list<Test*>::iterator it = gTests.begin(); it != gTests.end(); it++)
 	{
 		//printf("running: %s\n", it->getName());
-		DRLog.writeToLog("running test: %s", (*it)->getName());
-		if(!(*it)->test()) DRLog.writeToLog("<font color='green'>success</font>");
-		else DRLog.writeToLog("<font color='red'>failed</font>");
+		DRLog.writeToLog("<hr><h3>running test: %s</h3>", (*it)->getName());
+		if(!(*it)->test()) DRLog.writeToLog("<h4><font color='green'>success</font></h4>");
+		else DRLog.writeToLog("<h4><font color='red'>failed</font></h4>");
 	}
 	return DR_OK;
 }

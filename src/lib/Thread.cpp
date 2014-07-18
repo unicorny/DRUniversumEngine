@@ -85,5 +85,21 @@ namespace UniLib {
             }
             return 0;
         }
+
+		// ---------------------------------------------------------------------------------
+		// Timing thread
+		TimingThread::TimingThread(Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName/* = NULL*/)
+			: Thread(threadName)
+		{
+
+		}
+		TimingThread::~TimingThread()
+		{
+		}
+
+		TimerReturn TimingThread::callFromTimer()
+		{
+			return GO_ON;
+		}
     }
 }

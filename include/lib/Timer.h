@@ -40,7 +40,7 @@ namespace UniLib {
 		public:
 			virtual TimerReturn callFromTimer() = 0;
 			virtual const char* getResourceType() const {return "TimerCallback";};
-			virtual bool less_than(DRIResource& b) const {return false;};
+			virtual bool less_than(DRIResource& b) const {return false;};		
 		};
 
 		class UNIVERSUM_LIB_API Timer  
@@ -54,7 +54,16 @@ namespace UniLib {
 				\param timeIntervall intervall in milliseconds 
 				\param loopCount 0 for one call, -1 for loop
 			*/
-			DRReturn addTimer(DRResourcePtr<TimerCallback> callbackObject, Uint32 timeIntervall, int loopCount = -1);
+			DRReturn addTimer(std::string name, DRResourcePtr<TimerCallback> callbackObject, Uint32 timeIntervall, int loopCount = -1);
+
+			/*!
+				\brief remove all timer with name
+				function is not really fast, because all appended timerCallback will be checked 
+
+				\return removed timer, or -1 by error
+			*/
+			int removeTimer(std::string name);
+
 			/*
 				\brief update timer map, maybe call timer... (only one per frame)
 			*/
@@ -62,13 +71,13 @@ namespace UniLib {
 		private:
 			struct TimerEntry {
 				// functions
-				TimerEntry(DRResourcePtr<TimerCallback> _callback, Uint32 _timeIntervall, int _loopCount)
-					: callback(_callback), timeIntervall(_timeIntervall), initLoopCount(_loopCount), currentLoopCount(0) {}
+				TimerEntry(DRResourcePtr<TimerCallback> _callback, Uint32 _timeIntervall, int _loopCount, std::string _name)
+					: callback(_callback), timeIntervall(_timeIntervall), initLoopCount(_loopCount), currentLoopCount(0), name(_name) {}
 				~TimerEntry()  {}
 				// \return true if we can run once again
 				bool nextLoop() {
 					currentLoopCount++;
-					if(initLoopCount < 0 || initLoopCount >= currentLoopCount) return true;
+					if(initLoopCount < 0 || initLoopCount-1 > currentLoopCount) return true;
 					return false;
 				}
 
@@ -77,6 +86,7 @@ namespace UniLib {
 				Uint32 timeIntervall;
 				int initLoopCount;
 				int currentLoopCount;
+				std::string name;
 			};
 			// int key = time since programm start to run
 			std::multimap<Uint32, TimerEntry> mRegisteredAtTimer;
