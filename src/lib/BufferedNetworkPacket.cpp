@@ -46,22 +46,27 @@ namespace UniLib {
 			DR_SAVE_DELETE(writer);
 		}
 
+		std::string BufferedNetworkPacket::popDataString()
+		{
+			if(exit) return "";
+			if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL("");
+			if(mBufferQueue.size() == 0) return "";
+			DataPacket* data = mBufferQueue.front();
+			std::string dataString(static_cast<char*>(data->data), data->size);
+			DR_SAVE_DELETE(data);			
+			mBufferQueue.pop();
+			SDL_UnlockMutex(mMutex);
+
+			return dataString;
+		}
+
 		Json::Value BufferedNetworkPacket::popData()
 		{
 			Json::Value returnValue;
-			if(exit) return returnValue;
-			if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL(returnValue);
-			if(mBufferQueue.size() == 0) return returnValue;
-			DataPacket* data = mBufferQueue.front();
-			std::string dataString(static_cast<char*>(data->data), data->size);
-			Json::Reader jsonReader;
-			jsonReader.parse(dataString, returnValue, false);			
-
-			DR_SAVE_DELETE(data);
 			
-			mBufferQueue.pop();
-
-			SDL_UnlockMutex(mMutex);
+			Json::Reader jsonReader;
+			jsonReader.parse(popDataString(), returnValue, false);			
+			
 			return returnValue;
 		}
 

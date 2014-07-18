@@ -60,6 +60,7 @@ class NETWORK_API Network : public DRINetwork
 
         std::list<Connection*> mConnectionList;
         DRHashList mNetCallbackList;
+		UniLib::lib::Timer* mConnectionResumeTimer;
 
         int mNetCallbackID;
 };

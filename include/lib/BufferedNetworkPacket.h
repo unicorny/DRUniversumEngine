@@ -38,6 +38,8 @@ namespace UniLib {
 			void pushData(Json::Value value);
 
 			Json::Value popData();
+			std::string popDataString();
+
 			
 		private:
 			struct DataPacket

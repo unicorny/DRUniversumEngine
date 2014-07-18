@@ -9,6 +9,7 @@ Network::Network()
   mNewConnectionCondition(NULL), mNewServerCondition(NULL),
   mThreadRunning(true),
   mConnectionWorkingMutex(NULL), mNetCallbackMutex(NULL), mServerWorkingMutex(NULL),
+  mConnectionResumeTimer(NULL),
   mNetCallbackID(0)
 {
     //ctor
@@ -26,6 +27,8 @@ DRReturn Network::init()
     SDLNet_Init();
 
     mNetCallbackID = 0;
+
+	mConnectionResumeTimer = new UniLib::lib::Timer();
 
     if(mConnectionThread) LOG_ERROR("mConnectionThread is already active", DR_ERROR);
     if(mServerThread)     LOG_ERROR("mServerThread is already actvie", DR_ERROR);
@@ -52,6 +55,8 @@ DRReturn Network::init()
     mConnectionThread = SDL_CreateThread(ConnectThread, this);
     mServerThread     = SDL_CreateThread(ServerThread, this);
 #endif
+
+
 
     LOG_INFO("Network Init");
     mInitalized = true;
@@ -88,6 +93,8 @@ void Network::exit()
     {
         DR_SAVE_DELETE(*it);
     }
+
+	if(mConnectionResumeTimer) DR_SAVE_DELETE(mConnectionResumeTimer);
 
     SDLNet_Quit();
     LOG_INFO("Network Exit");

@@ -4,16 +4,44 @@
 //#include <UniversumLib.h>
 #include "Connection.h"
 
-class BufferedConnection: private Connection, UniLib::lib::Thread 
+using namespace UniLib;
+using namespace lib;
+
+#define BUFFERED_CONNECTION_RERUN_DELAY_MILLISECONDS 1000
+#define BUFFERED_CONNECTION_RECIVE_BUFFER_SIZE_BYTES 1024
+#define BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_MBYTES 10
+#define BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_KBYTES BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_MBYTES * 1024
+#define BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_BYTES BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_KBYTES * 1024
+
+class BufferedConnection: private Connection, UniLib::lib::TimingThread 
 {
 public:
-	BufferedConnection(const char* url_host, int port, UniLib::lib::BufferedNetworkPacket* inputBuffer, UniLib::lib::BufferedNetworkPacket* outputBuffer);
+	BufferedConnection(std::string name, Timer* timer, const char* url_host, int port,
+					   BufferedNetworkPacket* inputBuffer, BufferedNetworkPacket* outputBuffer);
 	~BufferedConnection();
 
 	virtual int ThreadFunction();
+
 private:
-	UniLib::lib::BufferedNetworkPacket* mInputBuffer;
-	UniLib::lib::BufferedNetworkPacket* mOutputBuffer;
+	DRReturn recv();
+	DRReturn send();
+
+	BufferedNetworkPacket* mInputBuffer;
+	BufferedNetworkPacket* mOutputBuffer;
+
+	struct RecivingBuffer {
+		RecivingBuffer() :emptyBytes(BUFFERED_CONNECTION_RECIVE_BUFFER_SIZE_BYTES-1), readedBytes(0) {
+			memset(buffer, 0, BUFFERED_CONNECTION_RECIVE_BUFFER_SIZE_BYTES);
+		}
+		int recived(int recivedBytes) {
+			readedBytes += recivedBytes;
+			emptyBytes -= recivedBytes;
+			return emptyBytes;
+		}
+		char buffer[BUFFERED_CONNECTION_RECIVE_BUFFER_SIZE_BYTES];
+		int emptyBytes;
+		int readedBytes;
+	};
 };
 
 

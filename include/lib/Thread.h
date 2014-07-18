@@ -70,9 +70,12 @@ namespace UniLib {
 				~TimingThread();
 				virtual TimerReturn callFromTimer();
 				virtual int ThreadFunction() = 0;
+
+			protected:
+				std::string mName;
+
 			private:
 				Timer* mTimer;
-				std::string mName;
 
 		};
 
