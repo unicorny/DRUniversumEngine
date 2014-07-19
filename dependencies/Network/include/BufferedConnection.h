@@ -13,7 +13,7 @@ using namespace lib;
 #define BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_KBYTES BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_MBYTES * 1024
 #define BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_BYTES BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_KBYTES * 1024
 
-class BufferedConnection: private Connection, UniLib::lib::TimingThread 
+class BufferedConnection: private Connection, public UniLib::lib::TimingThread 
 {
 public:
 	BufferedConnection(std::string name, Timer* timer, const char* url_host, int port,

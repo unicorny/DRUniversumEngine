@@ -68,3 +68,15 @@ DRNet_Status DRINetwork::getData(int dataIndex, void* buffer, int bufferSize)
     return NET_ERROR;
 }
 
+DRReturn DRINetwork::createBufferedConnection(const char* name, const char* host_ip, int port,
+										UniLib::lib::BufferedNetworkPacket* inputBuffer, UniLib::lib::BufferedNetworkPacket* outputBuffer)
+{
+	LOG_WARNING("not implemented");
+	return DR_ERROR;
+}
+
+int DRINetwork::removeBufferedConnection(const char* name)
+{
+	LOG_WARNING("not implemented");
+	return -1;
+}

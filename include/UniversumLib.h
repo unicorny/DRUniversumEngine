@@ -77,11 +77,13 @@ namespace UniLib {
 // interfaces to dynamic linked libs
 #include "lib/Timer.h"
 #include "lib/DRInterface.h"
-#include "lib/DRINetwork.h"
+
 #include "lib/Thread.h"
 
 #include "server/Server.h"
 #include "lib/BufferedNetworkPacket.h"
+
+#include "lib/DRINetwork.h"
 
 #include "model/Unit.h"
 #include "view/Camera.h"

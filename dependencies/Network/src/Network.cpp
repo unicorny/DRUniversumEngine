@@ -229,6 +229,27 @@ int Network::connect(const char* host_ip, int port)
     return intoConnectList(new Connection(host_ip, port));
 }
 
+DRReturn Network::createBufferedConnection(const char* name, const char* host_ip, int port,
+										BufferedNetworkPacket* inputBuffer, BufferedNetworkPacket* outputBuffer)
+{
+	mBufferedConnectionList.push_back(new BufferedConnection(name, mConnectionResumeTimer, host_ip, port, inputBuffer, outputBuffer));
+	return DR_OK;
+}
+
+int Network::removeBufferedConnection(const char* name)
+{
+	int eraseCount = 0;
+	for(std::list<BufferedConnection*>::iterator it = mBufferedConnectionList.begin(); it != mBufferedConnectionList.end(); it++)
+	{
+		if((*it)->getName() == std::string(name)) 
+		{
+			it = mBufferedConnectionList.erase(it);
+			eraseCount++;
+		}
+	}
+	return eraseCount;
+}
+
  int Network::HTTPRequest(const char* url, DRNet_RequestTyp typ, const std::string& parameter, const char* userAgent/* = "Freies Leben"*/)
  {
      return intoConnectList((Connection*)new Request(url, typ, parameter, userAgent));

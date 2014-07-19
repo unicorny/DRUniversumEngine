@@ -71,6 +71,8 @@ namespace UniLib {
 				virtual TimerReturn callFromTimer();
 				virtual int ThreadFunction() = 0;
 
+				__inline__ std::string getName() {return mName;}
+
 			protected:
 				std::string mName;
 

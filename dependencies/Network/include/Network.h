@@ -7,6 +7,7 @@
 #include <vector>
 #include "Request.h"
 #include "Connection.h"
+#include "BufferedConnection.h"
 #include "NetCallback.h"
 
 class NETWORK_API Network : public DRINetwork
@@ -24,6 +25,11 @@ class NETWORK_API Network : public DRINetwork
         //! \param port port number, 80 für http
         //! \return verbindungs ID oder null bei Fehler
         int connect(const char* host_ip, int port);
+
+		DRReturn createBufferedConnection(const char* name, const char* host_ip, int port,
+										BufferedNetworkPacket* inputBuffer, BufferedNetworkPacket* outputBuffer);
+
+		int removeBufferedConnection(const char* name);
 
         //! \brief to make a HTTP Request at the target host
         //! \param url complete url
@@ -59,6 +65,7 @@ class NETWORK_API Network : public DRINetwork
         SDL_mutex*  mServerWorkingMutex;
 
         std::list<Connection*> mConnectionList;
+		std::list<BufferedConnection*> mBufferedConnectionList;
         DRHashList mNetCallbackList;
 		UniLib::lib::Timer* mConnectionResumeTimer;
 

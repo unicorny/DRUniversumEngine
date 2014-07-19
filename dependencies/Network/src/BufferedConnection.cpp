@@ -35,8 +35,10 @@ DRReturn BufferedConnection::send()
 {
 	std::string in =  mInputBuffer->popDataString();
 	if(in.length() > 0) {
+		if(in.length() > BUFFERED_CONNECTION_MAX_RECIVE_DATA_BLOCK_BYTES) 
+			LOG_ERROR("to many data so send", DR_ERROR);
 		int sendedBytes = SDLNet_TCP_Send(getSocket(), in.data(), in.length());
-		if(sendedBytes < in.length()) LOG_ERROR("data couldn't be successfully sended", DR_ERROR);
+		if(static_cast<unsigned int>(sendedBytes) < in.length()) LOG_ERROR("data couldn't be successfully sended", DR_ERROR);
 	}
 	return DR_OK;
 }
