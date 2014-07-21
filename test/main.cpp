@@ -9,6 +9,7 @@ void fillTests()
 {
 	gTests.push_back(new UnitTest());
 	gTests.push_back(new TimerTest());
+	gTests.push_back(new BufferedConnectionTest());
 }
 
 DRReturn load() {
@@ -28,9 +29,9 @@ DRReturn run()
 	for(std::list<Test*>::iterator it = gTests.begin(); it != gTests.end(); it++)
 	{
 		//printf("running: %s\n", it->getName());
-		DRLog.writeToLog("<hr><h3>running test: %s</h3>", (*it)->getName());
+		UniLib::EngineLog.writeToLog("<hr><h3>running test: %s</h3>", (*it)->getName());
 		if(!(*it)->test()) DRLog.writeToLog("<h4><font color='green'>success</font></h4>");
-		else DRLog.writeToLog("<h4><font color='red'>failed</font></h4>");
+		else UniLib::EngineLog.writeToLog("<h4><font color='red'>failed</font></h4>");
 	}
 	return DR_OK;
 }

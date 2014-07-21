@@ -23,7 +23,7 @@
 #ifndef __DR_UNIVERSUM_LIB_INETWORK__
 #define __DR_UNIVERSUM_LIB_INETWORK__
 #ifdef _WIN32
-#define __NETWORK_DLL_NAME_ "libNetwork.dll"
+#define __NETWORK_DLL_NAME_ "Networkd.dll"
 #else
 #define __NETWORK_DLL_NAME_ "libNetwork.so"
 #endif
@@ -57,6 +57,12 @@ enum DRNet_RequestTyp
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
 enum UNIVERSUM_LIB_API DRNet_RequestTyp;
 #endif
+
+namespace UniLib {
+	namespace lib {
+		class BufferedNetworkPacket;
+	}
+}
 
 // Interface klasse f�r Netzwerk, implementierung erfolgt in Network.dll
 class UNIVERSUM_LIB_API DRINetwork : public DRInterface
@@ -97,6 +103,9 @@ public:
     //! \param buffer buffer des aufrufers zum erhalten der daten
     //! \param bufferSize die Gr��e des Buffers des Aufrufers
     virtual DRNet_Status getData(int dataIndex, void* buffer, int bufferSize);
+
+
+	virtual DRReturn update(float timeSinceLastFrame);
 
 protected:
     bool mInitalized;

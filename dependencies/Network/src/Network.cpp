@@ -236,6 +236,12 @@ DRReturn Network::createBufferedConnection(const char* name, const char* host_ip
 	return DR_OK;
 }
 
+DRReturn Network::update(float timeSinceLastFrame)
+{
+	mConnectionResumeTimer->move(timeSinceLastFrame);
+	return DR_OK;
+}
+
 int Network::removeBufferedConnection(const char* name)
 {
 	int eraseCount = 0;

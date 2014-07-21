@@ -43,6 +43,7 @@ public:
 protected:
     DRInterface();
     static DRReturn loadDll(const char* dllname);
+	static const char* someErrorCodes(int errorCode);
 
 #ifdef _WIN32
     static HMODULE mDLL;

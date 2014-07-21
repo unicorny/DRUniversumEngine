@@ -89,13 +89,21 @@ DRReturn DRInterface::loadDll(const char* dllname)
     else
     {
 #ifndef _WIN32
-        DRLog.writeToLog("Fehler bei dll (%s) Load: %s", dllname, dlerror());
+        UniLib::EngineLog.writeToLog("Fehler bei dll (%s) Load: %s", dllname, dlerror());
 #else
-        DRLog.writeToLog("Fehler bei dll (%s) Load, error nr: %d", dllname, GetLastError());
+		UniLib::EngineLog.writeToLog("Fehler bei dll (%s) Load, error nr: %d (%s)", dllname, GetLastError(), someErrorCodes(GetLastError()));
 #endif
         LOG_ERROR("Fehler bei dll load", DR_ERROR);
     }
     return DR_OK;
+}
+
+const char* DRInterface::someErrorCodes(int errorCode)
+{
+	switch(errorCode) {
+	case 14001: return "The application has failed to start because its side-by-side configuration is incorrect. Please see the application event log or use the command-line sxstrace.exe tool for more detail.";
+	default: return "";
+	};
 }
 
 void DRInterface::releaseMem(DRInterface* data, const char* dllname)

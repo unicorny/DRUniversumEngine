@@ -81,9 +81,10 @@ namespace UniLib {
 #include "lib/Thread.h"
 
 #include "server/Server.h"
+#include "lib/DRINetwork.h"
 #include "lib/BufferedNetworkPacket.h"
 
-#include "lib/DRINetwork.h"
+
 
 #include "model/Unit.h"
 #include "view/Camera.h"

@@ -1,7 +1,7 @@
 # Network src
 SET(NetworkSrc NetworkMain Network Connection Request NetCallback BufferedConnection)
 SET(PA ../../../import/lib)
-SET(PATH_SDL_NET ../dependencies/SDL_net/VisualC/Release)
+SET(PATH_SDL_NET ../dependencies/SDL_net/lib/x86)
 find_library(SDL2_LIB SDL2 PATHS ${PA})
 find_library(CORE_LIB DRCore2 PATHS ${PA})
 if(WIN32)

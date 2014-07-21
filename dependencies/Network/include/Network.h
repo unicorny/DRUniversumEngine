@@ -44,6 +44,9 @@ class NETWORK_API Network : public DRINetwork
         //! \param bufferSize die Größe des Buffers des Aufrufers
         DRNet_Status getData(int dataIndex, void* buffer, int bufferSize);
 
+		//! \brief update connection threads
+		DRReturn update(float timeSinceLastFrame);
+
         virtual DRReturn init();
         virtual void exit();
 

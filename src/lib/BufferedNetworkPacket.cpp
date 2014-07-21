@@ -20,6 +20,11 @@ namespace UniLib {
 				mMutex = NULL;
 			}
 		}
+		void BufferedNetworkPacket::setURLAndHost(std::string url, std::string host)
+		{
+			mUrl = url;
+			mHost = host;
+		}
 
 		void BufferedNetworkPacket::pushData(void* data, size_t size)
 		{
@@ -45,6 +50,56 @@ namespace UniLib {
 			pushData(writer->write(value));
 			DR_SAVE_DELETE(writer);
 		}
+		DRReturn BufferedNetworkPacket::pushDataWrapHTTPRequest(Json::Value json, std::string userAgent, std::string parameter, DRNet_RequestTyp requestType/* = NET_GET*/)
+		{
+			std::string string;
+			Json::Writer* writer;
+#ifdef _UNI_LIB_DEBUG
+			writer = new Json::StyledWriter();		
+#else
+			writer = new Json::FastWriter();
+#endif
+			std::string payload = writer->write(json);
+			std::string request;
+
+			// typ, POST or GET
+			if(requestType == NET_GET)         request = "GET ";
+			else if(requestType == NET_POST)   request = "POST ";
+			else LOG_ERROR("ungueltiger Typ", DR_ERROR);
+
+			// url, adresse der genauen seite
+			request += mUrl;
+
+			{
+			   parameter += "&" + payload;
+			}
+
+			// parameter anhängen bei GET
+			if(requestType == NET_GET)
+				request += "?" + parameter;
+			//  protocol and version
+			request += " HTTP/1.1\r\n";
+			// user-agent (also der browser)
+			request += "User-Agent: " + userAgent + "\r\n";
+			// Host
+			request += "Host: " + mHost + "\r\n";
+
+			request += "Accept: */*\r\n";
+			request += "Accept-Encoding: text/html\r\n";
+			if(requestType == NET_POST)
+			{
+				char temp[256];
+				sprintf(temp, "Content-Length: %d\r\n", parameter.length());
+				request += std::string(temp);
+				request += "Content-Type: application/x-www-form-urlencoded\r\n\r\n";
+				request += parameter + std::string("\r\n");
+			}
+			request += "\r\n";
+			pushData(request);
+
+			return DR_OK;
+		}
+
 
 		std::string BufferedNetworkPacket::popDataString()
 		{

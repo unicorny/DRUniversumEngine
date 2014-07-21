@@ -25,6 +25,8 @@
 
 #include <queue>
 
+enum DRNet_RequestTyp;
+
 namespace UniLib {
 	namespace lib {
 		class UNIVERSUM_LIB_API BufferedNetworkPacket
@@ -33,12 +35,15 @@ namespace UniLib {
 			BufferedNetworkPacket();
 			~BufferedNetworkPacket();
 
+			DRReturn pushDataWrapHTTPRequest(Json::Value json, std::string userAgent, std::string parameter, DRNet_RequestTyp requestType = NET_GET); 
 			void pushData(void* data, size_t size);
 			void pushData(std::string string);
 			void pushData(Json::Value value);
 
 			Json::Value popData();
 			std::string popDataString();
+
+			void setURLAndHost(std::string url, std::string host);
 
 			
 		private:
@@ -63,6 +68,9 @@ namespace UniLib {
 			std::queue<DataPacket*> mBufferQueue;
 			SDL_mutex*				mMutex;
 			bool					exit;
+
+			std::string				mUrl;
+			std::string				mHost;
 		};
 
 	};

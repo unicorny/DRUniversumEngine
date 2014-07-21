@@ -80,3 +80,9 @@ int DRINetwork::removeBufferedConnection(const char* name)
 	LOG_WARNING("not implemented");
 	return -1;
 }
+
+DRReturn DRINetwork::update(float timeSinceLastFrame)
+{
+	LOG_WARNING("not implemented");
+	return DR_ERROR;
+}

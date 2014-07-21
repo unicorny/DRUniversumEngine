@@ -5,6 +5,7 @@ BufferedConnection::BufferedConnection(std::string name, Timer* timer, const cha
 	: Connection(url_host, port), TimingThread(name, BUFFERED_CONNECTION_RERUN_DELAY_MILLISECONDS, timer, "bufConect"),
 	  mInputBuffer(inputBuffer), mOutputBuffer(outputBuffer)
 {
+	inputBuffer->setURLAndHost(mURL, mHOST);
 }
 
 BufferedConnection::~BufferedConnection() 
