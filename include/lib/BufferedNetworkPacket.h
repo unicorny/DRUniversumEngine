@@ -27,6 +27,8 @@
 
 enum DRNet_RequestTyp;
 
+
+
 namespace UniLib {
 	namespace lib {
 		class UNIVERSUM_LIB_API BufferedNetworkPacket
@@ -36,16 +38,35 @@ namespace UniLib {
 			~BufferedNetworkPacket();
 
 			DRReturn pushDataWrapHTTPRequest(Json::Value json, std::string userAgent, std::string parameter, DRNet_RequestTyp requestType = NET_GET); 
-			void pushData(void* data, size_t size);
-			void pushData(std::string string);
-			void pushData(Json::Value value);
+			void pushData(void* data, size_t size, bool fromExternDLL = false);
+			void pushData(std::string string, bool fromExternDLL = false);
+			void pushData(Json::Value value, bool fromExternDLL = false);
 
-			Json::Value popData();
-			std::string popDataString();
+			Json::Value popData(bool fromExternDLL = false);
+			std::string popDataString(bool fromExternDLL = false);
 
 			void setURLAndHost(std::string url, std::string host);
 
+			DRReturn initExternDLLMutex();
+			void     removeExternDLLMutex();
+
 			
+		protected:
+			enum LockingState {
+				SUCCESSFULL = 0,
+				ALREADY_LOCKED = 1,
+				LOCKING_ERROR = -1
+			};
+			/*!
+			 * \brief 
+			 * \return 0 if successfull locked, 1 if not lockable, -1 if error occured
+			 */
+			LockingState lock(bool fromExternDLL = false);
+			/*!
+			 * \brief 
+			 * \return 0 if successfull unlocked, 1 if not unlockable, -1 if error occured
+			 */
+			LockingState unlock(bool fromExternDLL = false);
 		private:
 			struct DataPacket
 			{
@@ -65,8 +86,17 @@ namespace UniLib {
 				void* data;
 				size_t size;
 			};
+			enum ExternDLLState {
+				NOT_EXIST,
+				EXIST,
+				LOCKED,
+				DELETING
+			};
 			std::queue<DataPacket*> mBufferQueue;
 			SDL_mutex*				mMutex;
+			SDL_mutex*				mExternDLLMutex;
+			ExternDLLState			mExternDLLState;
+			bool					mMutexLockState;
 			bool					exit;
 
 			std::string				mUrl;

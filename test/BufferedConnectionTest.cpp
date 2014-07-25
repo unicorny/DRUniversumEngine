@@ -20,7 +20,8 @@ namespace UniversumLibTest {
 		mInput = new UniLib::lib::BufferedNetworkPacket();
 		mOutput = new UniLib::lib::BufferedNetworkPacket();
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
-		mConnectionNumber = DRINetwork::Instance()->createBufferedConnection("buffConnection", "http://localhost/spacecraft", 80, mInput, mOutput);
+		mConnectionNumber = DRINetwork::Instance()->createBufferedConnection("buffConnection", "127.0.0.1/spacecraft/players/login_raw", 80, mInput, mOutput);
+		//DRINetwork::Instance()->HTTPRequest("127.0.0.1/spacecraft", NET_GET, "", "spaceCraft");
 		return DR_OK;
 	}
 
@@ -28,7 +29,8 @@ namespace UniversumLibTest {
 	DRReturn BufferedConnectionTest::test()
 	{
 		Uint32 startTicks = SDL_GetTicks();
-		while(SDL_GetTicks() - startTicks < 2000) 
+
+		while(SDL_GetTicks() - startTicks < 4000) 
 		{
 			if(DRINetwork::Instance()->update(1)) LOG_ERROR("error by update Network", DR_ERROR);
 			if(mInput->pushDataWrapHTTPRequest(Json::Value(), "UniLibTest", "", NET_GET)) LOG_ERROR("error by parsing HTTP Request", DR_ERROR);

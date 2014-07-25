@@ -46,6 +46,7 @@ namespace UniLib {
 
     DRReturn init()
     {
+		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
 
@@ -54,6 +55,7 @@ namespace UniLib {
 
     void exit() 
     {
+		SDL_Quit();
         EngineLog.exit();
         Core2_exit();
     }

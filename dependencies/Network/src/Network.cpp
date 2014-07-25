@@ -24,7 +24,9 @@ Network::~Network()
 DRReturn Network::init()
 {
     if(mInitalized) return DR_OK;
-    SDLNet_Init();
+	Core2_init("NetworkLog.html");
+	//SDL_Init(0);
+    SDLNet_Init();	
 
     mNetCallbackID = 0;
 
@@ -251,6 +253,8 @@ int Network::removeBufferedConnection(const char* name)
 		{
 			it = mBufferedConnectionList.erase(it);
 			eraseCount++;
+			//it = mBufferedConnectionList.begin();
+			if(it == mBufferedConnectionList.end()) break;
 		}
 	}
 	return eraseCount;

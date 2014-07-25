@@ -38,6 +38,15 @@ private:
 			emptyBytes -= recivedBytes;
 			return emptyBytes;
 		}
+		void print(FILE* f = NULL)
+		{
+			printf("[RecivingBuffer::print] readed: %d, content: %s\n", readedBytes, buffer);
+			//DRLog.writeToLogDirect("<pre>%s</pre>", buffer);
+			if(f) {
+				fprintf(f, buffer);
+			}
+
+		}
 		char buffer[BUFFERED_CONNECTION_RECIVE_BUFFER_SIZE_BYTES];
 		int emptyBytes;
 		int readedBytes;

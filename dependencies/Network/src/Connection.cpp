@@ -105,20 +105,20 @@ UniLib::lib::BufferedNetworkPacket* Connection::send(const void* data, int lengt
         readedBytes += ret;
         if(readedBytes >= 2048)
         {
-            //LOG_WARNING("buffer ist zu klein für empfangene Daten");
+            LOG_WARNING("buffer ist zu klein für empfangene Daten");
             //memset(buffer, 0, 2084);
-            //DRLog.writeToLog("ret: %d, readedBytes: %d", ret, readedBytes);
+            DRLog.writeToLog("ret: %d, readedBytes: %d", ret, readedBytes);
 			packetBuffer->pushData(buffer, readedBytes);
     //        fwrite(buffer, 1, 2048, out);
             readedBytes = ret = 0;
-            //DRLog.writeToLogDirect("\n\nbuffer: %s", buffer);
+            DRLog.writeToLogDirect("\n\nbuffer: %s", buffer);
 
             //break;
         }
     }
     
     //LOG_WARNING_SDL();
-    //DRLog.writeToLog("buffer: <pre>%s</pre>", buffer);
+   DRLog.writeToLog("buffer: <pre>%s</pre>", buffer);
     /* */
 
 	if(sended == length) return packetBuffer;

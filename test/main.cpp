@@ -30,7 +30,7 @@ DRReturn run()
 	{
 		//printf("running: %s\n", it->getName());
 		UniLib::EngineLog.writeToLog("<hr><h3>running test: %s</h3>", (*it)->getName());
-		if(!(*it)->test()) DRLog.writeToLog("<h4><font color='green'>success</font></h4>");
+		if(!(*it)->test()) UniLib::EngineLog.writeToLog("<h4><font color='green'>success</font></h4>");
 		else UniLib::EngineLog.writeToLog("<h4><font color='red'>failed</font></h4>");
 	}
 	return DR_OK;
