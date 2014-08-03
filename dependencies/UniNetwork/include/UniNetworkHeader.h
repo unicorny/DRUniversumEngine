@@ -1,4 +1,4 @@
-﻿/*/*************************************************************************
+/*/*************************************************************************
  *                                                                         *
  * UniNetwork, Library for Netwerk Communication for my					   *
  * Gameproject Spacecraft												   *			 
@@ -20,45 +20,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __NETWORK_MAIN_H__
-#define __NETWORK_MAIN_H__
 
-#include "Poco\Mutex.h"
+#ifdef _WIN32
+#include <windows.h>
+#else
+#endif
+
+#include <UniversumLib.h> 
+
+#ifdef _WIN32
+    #ifdef BUILD_DLL_UNI_NETWORK
+        #define UNI_NETWORK_API __declspec(dllexport)
+    #else
+        #define UNI_NETWORK_API __declspec(dllimport)
+    #endif
+#else
+    #define UNI_NETWORK_API
+#endif
 
 
+#include "Connection.h"
+#include "ConnectionFactory.h"
+#include "UniNetwork.h"
 
-
-// Interface klasse für Netzwerk, implementierung erfolgt in Network.dll
-class UNI_NETWORK_API UniNetwork : public DRINetwork
+#ifdef __cplusplus
+extern "C"
 {
-public:
-    virtual ~UniNetwork();
+#endif
 
-    //init and exit
-    virtual DRReturn init();
-    virtual void exit();
+UNI_NETWORK_API DRINetwork* getInstance();
 
-	// \brief connect to server
-	// \param config contains server config in json format
-	// \return connection number
-	virtual u16 connect(std::string configJson);
+#ifdef __cplusplus
+}
+#endif
 
-	// \brief disconnect from server
-	// \param connectionNumber return value from connect
-	virtual void disconnect(u16 connectionNumber);
-
-	// \brief send data 
-	virtual DRNet_Status send(std::string dataJson, u16 connectionNumber);
-
-	// \breif recv data
-	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
-
-protected:
-	std::map<int, Connection*> mConnections;
-	typedef std::pair<int, Connection*> CONNECTION_PAIR;
-
-	Poco::Mutex mConnectionMutex;
-private:
-};
-
-#endif // __NETWORK_MAIN_H__

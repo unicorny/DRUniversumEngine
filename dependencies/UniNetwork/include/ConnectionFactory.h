@@ -1,4 +1,4 @@
-﻿/*/*************************************************************************
+/*/*************************************************************************
  *                                                                         *
  * UniNetwork, Library for Netwerk Communication for my					   *
  * Gameproject Spacecraft												   *			 
@@ -20,45 +20,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __NETWORK_MAIN_H__
-#define __NETWORK_MAIN_H__
-
-#include "Poco\Mutex.h"
+#ifndef __UNI_NETWORK_CONNECTION_FACTORY__H
+#define __UNI_NETWORK_CONNECTION_FACTORY__H
 
 
-
-
-// Interface klasse für Netzwerk, implementierung erfolgt in Network.dll
-class UNI_NETWORK_API UniNetwork : public DRINetwork
+class UNI_NETWORK_API ConnectionFactory 
 {
 public:
-    virtual ~UniNetwork();
+	ConnectionFactory();
+	~ConnectionFactory();
 
-    //init and exit
-    virtual DRReturn init();
-    virtual void exit();
-
-	// \brief connect to server
-	// \param config contains server config in json format
-	// \return connection number
-	virtual u16 connect(std::string configJson);
-
-	// \brief disconnect from server
-	// \param connectionNumber return value from connect
-	virtual void disconnect(u16 connectionNumber);
-
-	// \brief send data 
-	virtual DRNet_Status send(std::string dataJson, u16 connectionNumber);
-
-	// \breif recv data
-	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
-
+	Connection* createConnection(std::string connectionConfig);
 protected:
-	std::map<int, Connection*> mConnections;
-	typedef std::pair<int, Connection*> CONNECTION_PAIR;
-
-	Poco::Mutex mConnectionMutex;
 private:
 };
 
-#endif // __NETWORK_MAIN_H__
+#endif // !__UNI_NETWORK_CONNECTION_FACTORY__H
