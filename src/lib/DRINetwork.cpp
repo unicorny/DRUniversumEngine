@@ -1,8 +1,9 @@
 //#include "Engine2Main.h"
 #include "UniversumLib.h"
 
-DRINetwork* DRINetwork::mTheOneAndOnly = NULL;
 
+
+DRINetwork* DRINetwork::mTheOneAndOnly = NULL;
 
 DRINetwork::DRINetwork()
 : DRInterface(), mInitalized(false)
@@ -49,40 +50,25 @@ DRINetwork* DRINetwork::Instance()
    // return NULL;
 }
 
-int DRINetwork::connect(const char* host_ip, int port)
+u16 DRINetwork::connect(std::string configJson)
 {
     LOG_WARNING("not implemented");
     return 0;
 }
 
-int DRINetwork::HTTPRequest(const char* url, DRNet_RequestTyp typ, const std::string& parameter, const char* userAgent /* = "Freies Leben"*/)
+void DRINetwork::disconnect(u16 connectionNumber)
 {
-    LOG_WARNING("not implemented");
-    return 0;
+	LOG_WARNING("not implemented");
 }
 
-
-DRNet_Status DRINetwork::getData(int dataIndex, void* buffer, int bufferSize)
+DRNet_Status DRINetwork::send(std::string dataJson, u16 connectionNumber)
 {
     LOG_WARNING("not implemented");
     return NET_ERROR;
 }
 
-DRReturn DRINetwork::createBufferedConnection(const char* name, const char* host_ip, int port,
-										UniLib::lib::BufferedNetworkPacket* inputBuffer, UniLib::lib::BufferedNetworkPacket* outputBuffer)
+DRNet_Status DRINetwork::recv(std::string& dataJson, u16 connectionNumber)
 {
 	LOG_WARNING("not implemented");
-	return DR_ERROR;
-}
-
-int DRINetwork::removeBufferedConnection(const char* name)
-{
-	LOG_WARNING("not implemented");
-	return -1;
-}
-
-DRReturn DRINetwork::update(float timeSinceLastFrame)
-{
-	LOG_WARNING("not implemented");
-	return DR_ERROR;
+	return NET_ERROR;
 }

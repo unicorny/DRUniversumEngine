@@ -23,9 +23,11 @@
 #ifndef __DR_UNIVERSUM_LIB_INETWORK__
 #define __DR_UNIVERSUM_LIB_INETWORK__
 #ifdef _WIN32
-#define __NETWORK_DLL_NAME_ "Networkd.dll"
+//#define __NETWORK_DLL_NAME_ "Networkd.dll"
+#define __NETWORK_DLL_NAME_ "UniNetworkd.dll"
 #else
-#define __NETWORK_DLL_NAME_ "libNetwork.so"
+//#define __NETWORK_DLL_NAME_ "libNetwork.so"
+#define __NETWORK_DLL_NAME_ "libUniNetwork.so"
 #endif
 /*
 Netzwerk klasse f�r das einfache arbeiten mit sockets
@@ -44,25 +46,10 @@ enum DRNet_Status
     NET_ERROR    = -1 // Fehler
 };
 
+
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
 enum UNIVERSUM_LIB_API DRNet_Status;
 #endif
-
-enum DRNet_RequestTyp
-{
-    NET_POST = 1,
-    NET_GET = 2
-};
-
-#if (_MSC_VER >= 1200 && _MSC_VER < 1310)
-enum UNIVERSUM_LIB_API DRNet_RequestTyp;
-#endif
-
-namespace UniLib {
-	namespace lib {
-		class BufferedNetworkPacket;
-	}
-}
 
 // Interface klasse f�r Netzwerk, implementierung erfolgt in Network.dll
 class UNIVERSUM_LIB_API DRINetwork : public DRInterface
@@ -76,36 +63,24 @@ public:
     static inline DRINetwork& getSingleton() {return *Instance();}
     static inline DRINetwork* getSingletonPtr() {return Instance();}
 
-    //init und exit
+    //init and exit
     virtual DRReturn init();
     virtual void exit();
 
-    // zugriff/arbeits funktionen
-    //! \brief baut eine verbindung auf
-    //! \param host_ip histname oder ip adresse (durch . getrennnte ziffern)
-    //! \param port port number, 80 f�r http
-    //! \return verbindungs ID oder null bei Fehler
-    virtual int connect(const char* host_ip, int port);
+	// \brief connect to server
+	// \param config contains server config in json format
+	// \return connection number
+	virtual u16 connect(std::string configJson);
 
-	virtual DRReturn createBufferedConnection(const char* name, const char* host_ip, int port,
-										UniLib::lib::BufferedNetworkPacket* inputBuffer, UniLib::lib::BufferedNetworkPacket* outputBuffer);
+	// \brief disconnect from server
+	// \param connectionNumber return value from connect
+	virtual void disconnect(u16 connectionNumber);
 
-	virtual int removeBufferedConnection(const char* name);
-    //! \brief to make a HTTP Request at the target host
-    //! \param url complete url
-    //! \param request typ, POST oder GET
-    //! \param parameter, string containing parameter, will be added at request
-    //! \return dataIndex zum empfangen der antwort oder 0 bei Fehler
-    virtual int HTTPRequest(const char* url, DRNet_RequestTyp typ, const std::string& parameter, const char* userAgent = "Freies Leben");
+	// \brief send data 
+	virtual DRNet_Status send(std::string dataJson, u16 connectionNUmber);
 
-    //! \brief zum erhalen der antworten/ read answears
-    //! \param dataIndex die nummer des datenaustausches
-    //! \param buffer buffer des aufrufers zum erhalten der daten
-    //! \param bufferSize die Gr��e des Buffers des Aufrufers
-    virtual DRNet_Status getData(int dataIndex, void* buffer, int bufferSize);
-
-
-	virtual DRReturn update(float timeSinceLastFrame);
+	// \breif recv data
+	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
 
 protected:
     bool mInitalized;

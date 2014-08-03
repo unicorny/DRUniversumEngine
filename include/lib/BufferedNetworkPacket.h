@@ -37,7 +37,7 @@ namespace UniLib {
 			BufferedNetworkPacket();
 			~BufferedNetworkPacket();
 
-			DRReturn pushDataWrapHTTPRequest(Json::Value json, std::string userAgent, std::string parameter, DRNet_RequestTyp requestType = NET_GET); 
+			//DRReturn pushDataWrapHTTPRequest(Json::Value json, std::string userAgent, std::string parameter, DRNet_RequestTyp requestType = NET_GET); 
 			void pushData(void* data, size_t size, bool fromExternDLL = false);
 			void pushData(std::string string, bool fromExternDLL = false);
 			void pushData(Json::Value value, bool fromExternDLL = false);
@@ -49,6 +49,8 @@ namespace UniLib {
 
 			DRReturn initExternDLLMutex();
 			void     removeExternDLLMutex();
+
+			size_t returnQueueSize() {return mBufferQueue.size();}
 
 			
 		protected:

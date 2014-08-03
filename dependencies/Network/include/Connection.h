@@ -33,6 +33,7 @@ protected:
 
     IPaddress                          mIP;
     TCPsocket                          mSocket;
+	SDLNet_SocketSet				   mSocketSet;
 
     int                                mCallbackIndex;
 

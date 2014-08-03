@@ -9,13 +9,18 @@ Connection::Connection(const char* url_host, int port)
     //ctor
     mIP.port = port;
     splitURL_HOST(url_host);
+	mSocketSet = SDLNet_AllocSocketSet(1);
 }
 
 Connection::~Connection()
 {
     //dtor
     if(mSocket)
+	{
+		SDLNet_TCP_DelSocket(mSocketSet, mSocket);
         SDLNet_TCP_Close(mSocket);
+	}
+	SDLNet_FreeSocketSet(mSocketSet);
 }
 
 TCPsocket Connection::getSocket()
@@ -24,6 +29,7 @@ TCPsocket Connection::getSocket()
     {
         if(getIP()) LOG_ERROR("ungültige IP", NULL);
         mSocket = SDLNet_TCP_Open(&mIP);
+		SDLNet_TCP_AddSocket(mSocketSet, mSocket);
         if(!mSocket) LOG_ERROR_SDL(NULL);
     }
 

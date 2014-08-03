@@ -29,12 +29,16 @@ namespace UniversumLibTest {
 	DRReturn BufferedConnectionTest::test()
 	{
 		Uint32 startTicks = SDL_GetTicks();
+		if(mInput->pushDataWrapHTTPRequest(Json::Value(), "UniLibTest", "", NET_GET)) LOG_ERROR("error by parsing HTTP Request", DR_ERROR);
 
-		while(SDL_GetTicks() - startTicks < 4000) 
+		while(SDL_GetTicks() - startTicks < 8000) 
 		{
+			UniLib::EngineLog.writeToLog("input size: %d", mInput->returnQueueSize());
+			UniLib::EngineLog.writeToLog("output size: %d", mOutput->returnQueueSize());
+
 			if(DRINetwork::Instance()->update(1)) LOG_ERROR("error by update Network", DR_ERROR);
-			if(mInput->pushDataWrapHTTPRequest(Json::Value(), "UniLibTest", "", NET_GET)) LOG_ERROR("error by parsing HTTP Request", DR_ERROR);
-			SDL_Delay(1);
+			
+			SDL_Delay(1000);
 			std::string out = mOutput->popDataString();
 			if(out.length() > 0) {
 				UniLib::EngineLog.writeToLogDirect(out);

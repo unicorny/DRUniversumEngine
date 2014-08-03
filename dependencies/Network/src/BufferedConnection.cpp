@@ -26,7 +26,7 @@ int BufferedConnection::ThreadFunction()
     if(!socket) LOG_ERROR("socket error", -1);
 
 	// is there somthing for us to recive?
-	//if(recv()) LOG_ERROR("error by reciving datas", -2);
+	if(recv()) LOG_ERROR("error by reciving datas", -2);
 	// see if we have something to send
 
 	if(send()) LOG_ERROR("error by sending datas", -3);
@@ -52,8 +52,8 @@ DRReturn BufferedConnection::send()
 DRReturn BufferedConnection::recv()
 {
 	TCPsocket socket = getSocket();
-	if(!SDLNet_SocketReady(socket)) {
-	//	return DR_OK;
+	if(SDLNet_CheckSockets(mSocketSet, 100) != 1) { 
+		return DR_OK; 
 	}
 
 	RecivingBuffer* buffer = new RecivingBuffer;
@@ -63,6 +63,7 @@ DRReturn BufferedConnection::recv()
 	std::list<RecivingBuffer*> bufferList;
 	
 	//return DR_OK;
+	
 	
 	while(recivedBytes = SDLNet_TCP_Recv(socket, &buffer->buffer[buffer->readedBytes], buffer->emptyBytes))
 	{
