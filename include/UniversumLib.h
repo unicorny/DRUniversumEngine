@@ -3,7 +3,7 @@
  * UniversumLib, collection of classes for generating and go through a     *
  * whole universe. It is for my Gameproject Spacecraft					   * 
  * Copyright (C) 2014, 2015, 2016, 2017 Dario Rekowski.					   *
- * Email: dario.rekowski@gmx.de   Web: www.einhornimmond.de                *
+ * Email: dario.rekowski@gmx.de   Web: www.spacecrafting.de                *
  *                                                                         *
  * This program is free software: you can redistribute it and/or modify    *
  * it under the terms of the GNU General Public License as published by    *
@@ -111,6 +111,7 @@ namespace UniLib {
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
     UNIVERSUM_LIB_API DRString getTimeSinceStart();
+	UNIVERSUM_LIB_API Json::Value readJsonConfig(std::string filename);
 }
 
 

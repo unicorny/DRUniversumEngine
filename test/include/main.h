@@ -4,6 +4,6 @@
 #include "UniversumLib.h"
 #include "UnitTest.h"
 #include "TimerTest.h"
-#include "BufferedConnectionTest.h"
+#include "LoginTest.h"
 
 #endif //__UNIVERSUM_LIB_TEST_MAIN__

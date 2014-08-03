@@ -3,7 +3,7 @@
  * Engine, Engine-Lib interface class for many things,                     *
  * implementierung in extern libs                               	   *
  * Copyright (C) 2012, 20013, 2014 Dario Rekowski.			   *
- * Email: dario.rekowski@gmx.de   Web: www.einhornimmond.de                *
+ * Email: dario.rekowski@gmx.de   Web: www.spacecrafting.de                *
  *                                                                         *
  * This program is free software: you can redistribute it and/or modify    *
  * it under the terms of the GNU General Public License as published by    *
@@ -67,9 +67,15 @@ public:
     virtual DRReturn init();
     virtual void exit();
 
+	// \brief login on server
+	// \param username 
+	// \param password encrypted with public key from server
+	// \return true if login was successfully
+	virtual bool login(std::string username, std::string password);
+
 	// \brief connect to server
 	// \param config contains server config in json format
-	// \return connection number
+	// \return connection number, return 0 by error
 	virtual u16 connect(std::string configJson);
 
 	// \brief disconnect from server
@@ -77,7 +83,7 @@ public:
 	virtual void disconnect(u16 connectionNumber);
 
 	// \brief send data 
-	virtual DRNet_Status send(std::string dataJson, u16 connectionNUmber);
+	virtual DRNet_Status send(std::string dataJson, u16 connectionNumber);
 
 	// \breif recv data
 	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);

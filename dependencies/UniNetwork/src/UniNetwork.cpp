@@ -17,14 +17,23 @@ void UniNetwork::exit()
 {
 }
 
+bool UniNetwork::login(std::string username, std::string password)
+{
+	return false;
+}
+
 // \brief connect to server
 // \param config contains server config in json format
 // \return connection number
 u16 UniNetwork::connect(std::string configJson)
 {
+	Connection* con = mConnectionFactory.createConnection(configJson);
+
 	mConnectionMutex.lock();
+	u16 key = mConnections.size();
+	mConnections.insert(CONNECTION_PAIR(key, con));
 	mConnectionMutex.unlock();
-	return 0;
+	return key;
 }
 
 // \brief disconnect from server
@@ -32,6 +41,8 @@ u16 UniNetwork::connect(std::string configJson)
 void UniNetwork::disconnect(u16 connectionNumber)
 {
 	mConnectionMutex.lock();
+	DR_SAVE_DELETE(mConnections[connectionNumber]);
+	mConnections.erase(connectionNumber);
 	mConnectionMutex.unlock();
 }
 

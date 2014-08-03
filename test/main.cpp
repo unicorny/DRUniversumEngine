@@ -9,7 +9,7 @@ void fillTests()
 {
 	gTests.push_back(new UnitTest());
 	gTests.push_back(new TimerTest());
-	gTests.push_back(new BufferedConnectionTest());
+	gTests.push_back(new LoginTest());
 }
 
 DRReturn load() {

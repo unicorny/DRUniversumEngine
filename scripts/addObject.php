@@ -17,7 +17,7 @@ function writeHeader($openFile, $namespace, $objectName)
    ."* UniversumLib, collection of classes for generating and go through a     *\n"
    ."* whole universe. It is for my Gameproject Spacecraft					   *\n" 
    ."* Copyright (C) 2014, 2015, 2016, 2017 Dario Rekowski.					   *\n"
-   ."* Email: dario.rekowski@gmx.de   Web: www.einhornimmond.de                *\n"
+   ."* Email: dario.rekowski@gmx.de   Web: www.spacecrafting.de                *\n"
    ."*                                                                         *\n"
    ."* This program is free software: you can redistribute it and/or modify    *\n"
    ."* it under the terms of the GNU General Public License as published by    *\n"

@@ -3,7 +3,7 @@
  * Engine, Engine-Lib interface class for many things,                     *
  * implementierung in extern libs                               	   *
  * Copyright (C) 2012, 20013, 2014 Dario Rekowski.			   *
- * Email: dario.rekowski@gmx.de   Web: www.einhornimmond.de                *
+ * Email: dario.rekowski@gmx.de   Web: www.spacecrafting.de                *
  *                                                                         *
  * This program is free software: you can redistribute it and/or modify    *
  * it under the terms of the GNU General Public License as published by    *

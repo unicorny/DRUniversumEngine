@@ -10,5 +10,6 @@ ConnectionFactory::~ConnectionFactory()
 
 Connection* ConnectionFactory::createConnection(std::string connectionConfig)
 {
-	return NULL;
+
+	return new Connection();
 }

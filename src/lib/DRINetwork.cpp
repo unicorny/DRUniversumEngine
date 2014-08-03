@@ -56,6 +56,12 @@ u16 DRINetwork::connect(std::string configJson)
     return 0;
 }
 
+bool DRINetwork::login(std::string username, std::string password)
+{
+	LOG_WARNING("not implemented");
+	return false;
+}
+
 void DRINetwork::disconnect(u16 connectionNumber)
 {
 	LOG_WARNING("not implemented");
