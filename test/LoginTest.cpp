@@ -17,9 +17,9 @@ namespace UniversumLibTest {
 	{
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
 		DRFileManager::Instance().addOrdner("cfg");
-		Json::Value value = UniLib::readJsonConfig("LoginServer.json");
-		UniLib::EngineLog.writeToLog("Json Config: %s, <br>styled: %s", value.asString(), value.toStyledString());
-		mConnectionNumber = DRINetwork::Instance()->connect(value.asString());
+		std::string value = UniLib::readFileAsString("LoginServer.json");
+		mConnectionNumber = DRINetwork::Instance()->connect(value, std::string("LoginServer"));
+		UniLib::EngineLog.writeToLog("connectionNumber get: %d", mConnectionNumber);
 		//DRINetwork::Instance()->HTTPRequest("127.0.0.1/spacecraft", NET_GET, "", "spaceCraft");
 		return DR_OK;
 	}

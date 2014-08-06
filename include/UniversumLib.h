@@ -111,7 +111,7 @@ namespace UniLib {
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
     UNIVERSUM_LIB_API DRString getTimeSinceStart();
-	UNIVERSUM_LIB_API Json::Value readJsonConfig(std::string filename);
+	UNIVERSUM_LIB_API std::string readFileAsString(std::string filename);
 }
 
 

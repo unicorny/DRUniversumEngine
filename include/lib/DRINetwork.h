@@ -76,7 +76,7 @@ public:
 	// \brief connect to server
 	// \param config contains server config in json format
 	// \return connection number, return 0 by error
-	virtual u16 connect(std::string configJson);
+	virtual u16 connect(std::string configJson, std::string section);
 
 	// \brief disconnect from server
 	// \param connectionNumber return value from connect

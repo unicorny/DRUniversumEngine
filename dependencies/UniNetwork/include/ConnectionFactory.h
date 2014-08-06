@@ -24,14 +24,18 @@
 #define __UNI_NETWORK_CONNECTION_FACTORY__H
 
 
+
 class UNI_NETWORK_API ConnectionFactory 
 {
 public:
-	ConnectionFactory();
+	ConnectionFactory(std::string logFilename = std::string("log/connectionFactoryLog.txt"));
 	~ConnectionFactory();
 
-	Connection* createConnection(std::string connectionConfig);
+	Connection* createConnection(std::string connectionConfig, std::string section);
 protected:
+	std::string mLogFilename;
+
+	void logFatal(std::string msg, std::string functionName);
 private:
 };
 

@@ -10,11 +10,13 @@ UniNetwork::~UniNetwork()
     //init and exit
 DRReturn UniNetwork::init()
 {
+	Poco::Net::initializeNetwork();
 	return DR_OK;
 }
 
 void UniNetwork::exit()
 {
+	Poco::Net::uninitializeNetwork();
 }
 
 bool UniNetwork::login(std::string username, std::string password)
@@ -25,12 +27,13 @@ bool UniNetwork::login(std::string username, std::string password)
 // \brief connect to server
 // \param config contains server config in json format
 // \return connection number
-u16 UniNetwork::connect(std::string configJson)
+u16 UniNetwork::connect(std::string configJson, std::string section)
 {
-	Connection* con = mConnectionFactory.createConnection(configJson);
-
+	Connection* con = mConnectionFactory.createConnection(configJson, section);
+	//if(!con) LOG_ERROR("Error by creating connection", 0);
+	
 	mConnectionMutex.lock();
-	u16 key = mConnections.size();
+	u16 key = mConnections.size()+1;
 	mConnections.insert(CONNECTION_PAIR(key, con));
 	mConnectionMutex.unlock();
 	return key;

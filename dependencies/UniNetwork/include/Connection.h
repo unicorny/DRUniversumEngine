@@ -20,51 +20,23 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#ifdef _WIN32
-#define _WINSOCKAPI_
-#include <windows.h>
-#else
-#endif
-
-#include <UniversumLib.h> 
-#include "Poco/FileChannel.h"
-#include "Poco/Message.h"
-#include "Poco/Runnable.h"
-#include "Poco/Event.h"
-#include "Poco/Timer.h"
-#include "Poco/Mutex.h"
-#include "Poco/SynchronizedObject.h"
-#include "Poco/AutoPtr.h"
-#include "Poco/Net/Net.h"
-#include "Poco/Net/HTTPClientSession.h"
-#include "Poco/Net/HTTPRequest.h"
+#ifndef __UNI_NETWORK_CONNECTION_H
+#define __UNI_NETWORK_CONNECTION_H
 
 
-#ifdef _WIN32
-    #ifdef BUILD_DLL_UNI_NETWORK
-        #define UNI_NETWORK_API __declspec(dllexport)
-    #else
-        #define UNI_NETWORK_API __declspec(dllimport)
-    #endif
-#else
-    #define UNI_NETWORK_API
-#endif
-
-
-#include "Connection.h"
-#include "HTTPConnection.h"
-#include "ConnectionFactory.h"
-#include "UniNetwork.h"
-
-#ifdef __cplusplus
-extern "C"
+class UNI_NETWORK_API Connection
 {
-#endif
+public:
+	Connection(long periodicRunningIntervall);
+	~Connection();
 
-UNI_NETWORK_API DRINetwork* getInstance();
+	// resume thread from timer
+	void resume();
 
-#ifdef __cplusplus
-}
-#endif
+	virtual DRReturn run() = 0;
+protected:
+	Poco::Mutex mThreadRunningMutex;
+	Poco::Timer mTimer;
+};
 
+#endif __UNI_NETWORK_CONNECTION_H

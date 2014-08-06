@@ -72,7 +72,7 @@ namespace UniLib {
         return DRString(timeBuffer);
     }
 
-	UNIVERSUM_LIB_API Json::Value readJsonConfig(std::string filename)
+	UNIVERSUM_LIB_API std::string readFileAsString(std::string filename)
 	{
 		//std::string completePath = 
 		const char* path = DRFileManager::Instance().getWholePfad(filename.data());
@@ -85,22 +85,17 @@ namespace UniLib {
 		}
 
 		DRFile file(complete.data(), "rb");
-		if(!file.isOpen()) LOG_ERROR("Error by opening config", Json::Value());
+		if(!file.isOpen()) LOG_ERROR("Error by opening config", std::string());
 		unsigned long size = file.getSize();
 		void* data = malloc(size+1);
 		memset(data, 0, size+1);
 		if(file.read(data, size, 1)) 
-			LOG_ERROR("Error by reading config", Json::Value());
+			LOG_ERROR("Error by reading config", std::string());
 		file.close();
 		/// parsing
 
-		Json::Reader reader;
-		Json::Value result;
-		if(!reader.parse(std::string((const char*)data), result))
-		{
-			EngineLog.writeToLog("Error parsing JsonConfig: %s", reader.getFormattedErrorMessages());
-			LOG_ERROR("error by parsing json config", Json::Value());
-		}
+		std::string result((const char*)data);
+		
 		free(data);
 		return result;
 	}
