@@ -24,7 +24,7 @@
 #define __UNI_NETWORK_CONNECTION_H
 
 
-class UNI_NETWORK_API Connection
+class UNI_NETWORK_API Connection : public Loggable
 {
 public:
 	Connection(long periodicRunningIntervall);
@@ -35,9 +35,12 @@ public:
 
 	virtual DRReturn run() = 0;
 
-	virtual DRNet_Status send(Json::Value sendRequest) = 0;
+	virtual DRNet_Status send(std::string sendRequest) = 0;
+	virtual DRNet_Status recv(std::string& recvString) = 0;
 
 protected:
+	DRReturn parseJson(std::string jsonString, Json::Value& json);
+
 	Poco::Mutex mThreadRunningMutex;
 	Poco::Timer mTimer;
 };

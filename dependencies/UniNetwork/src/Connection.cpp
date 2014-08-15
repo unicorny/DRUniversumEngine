@@ -3,7 +3,7 @@
 using namespace Poco;
 
 Connection::Connection(long periodicRunningInterval)
-	: mTimer(0, periodicRunningInterval)
+	: Loggable("connection.log", "Connection"), mTimer(0, periodicRunningInterval)
 {
 	TimerCallback<Connection> tc(*this, &Connection::resume);
 	mTimer.start(tc);
@@ -27,3 +27,16 @@ void Connection::resume(Timer& timer)
 	mThreadRunningMutex.unlock();
 }
 
+DRReturn Connection::parseJson(std::string jsonString, Json::Value& json)
+{
+	
+	Json::Reader reader;
+	reader.parse(jsonString, json);
+	if(json.empty()) 
+	{
+		POCO_LOG_FATAL(std::string("parsing error: ") + std::string(reader.getFormattedErrorMessages()));
+		//poco_debugger_msg("parsing error");
+		return DR_ERROR;		
+	}
+	return DR_OK;
+}

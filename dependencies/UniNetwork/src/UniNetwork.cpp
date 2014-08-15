@@ -7,6 +7,8 @@ UniNetwork::~UniNetwork()
 {
 }
 
+
+
     //init and exit
 DRReturn UniNetwork::init()
 {
@@ -59,5 +61,7 @@ DRNet_Status UniNetwork::send(std::string dataJson, u16 connectionNumber)
 // \breif recv data
 DRNet_Status UniNetwork::recv(std::string& dataJson, u16 connectionNumber)
 {
-	return NET_ERROR;
+	if(!mConnections[connectionNumber]) return NET_NOT_FOUND;
+	return mConnections[connectionNumber]->recv(dataJson);
 }
+

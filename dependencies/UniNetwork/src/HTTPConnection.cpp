@@ -29,7 +29,8 @@ DRReturn HTTPConnection::run()
 	mRequestMutex.unlock();
 
 	// parse and request
-	HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString());
+	HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString(), "HTTP/1.1");
+	request.set("User-Agent", "UniLibTest");
 	if(sendRequest.get("contentType", "").asString() != "") {
 		request.setContentType(sendRequest.get("contentType", "").asString());
 		std::string body = sendRequest.get("content", "").asString();
@@ -42,24 +43,28 @@ DRReturn HTTPConnection::run()
 
 	// recv answear
 	HTTPResponse response;
-	std::string responseString;
-	mClientSession.receiveResponse(response) >> responseString;
+	
+	std::istream& is = mClientSession.receiveResponse(response);// >> responseString;
+	std::ostringstream ostr;	
+	StreamCopier::copyStream(is, ostr);	
 	mRecvMutex.lock();
-	mReciveDatas.push(responseString);
+	mReciveDatas.push(ostr.str());
 	mRecvMutex.unlock();
 
 	return DR_OK;	
 }
 
-DRNet_Status HTTPConnection::send(Json::Value sendRequest)
+DRNet_Status HTTPConnection::send(std::string sendRequest)
 {
+	Json::Value json;
+	parseJson(sendRequest, json);
 	mRequestMutex.lock();
-	mSendRequests.push(sendRequest);
+	mSendRequests.push(json);
 	mRequestMutex.unlock();
 	return NET_OK;
 }
 
-DRNet_Status HTTPConnection::recv(Json::Value& recvDatas)
+DRNet_Status HTTPConnection::recv(std::string& recvDatas)
 {
 	mRecvMutex.lock();
 	if(mReciveDatas.size() == 0) {

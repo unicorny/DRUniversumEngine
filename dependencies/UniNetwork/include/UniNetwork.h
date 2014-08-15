@@ -61,6 +61,7 @@ public:
 	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
 
 protected:
+
 	std::map<int, Connection*> mConnections;
 	typedef std::pair<int, Connection*> CONNECTION_PAIR;
 

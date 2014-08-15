@@ -28,13 +28,22 @@ namespace UniversumLibTest {
 	DRReturn LoginTest::test()
 	{
 		Uint32 startTicks = SDL_GetTicks();
+		std::string request = "{\"url\":\"/spacecraft/publicKey/get\"}";
+		Json::Reader reader;
+		Json::Value json;
+		reader.parse(request, json);
+		UniLib::EngineLog.writeToLog("url: %s", json.get("url", ""));
+		DRINetwork::Instance()->send(request, mConnectionNumber);
 		DRINetwork::Instance()->login("dariofrodo", "ssss");
 
 		while(SDL_GetTicks() - startTicks < 8000) 
 		{
-		
-					
-			SDL_Delay(1000);
+			std::string recv;
+			if(DRINetwork::Instance()->recv(recv, mConnectionNumber) == NET_COMPLETE) {
+				UniLib::EngineLog.writeToLog("connection recv: %s", recv.data());
+				break;
+			}
+			SDL_Delay(100);
 		}
 		DRINetwork::Instance()->disconnect(mConnectionNumber);
 

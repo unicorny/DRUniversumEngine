@@ -33,8 +33,8 @@ public:
 
 	virtual DRReturn run();
 
-	virtual DRNet_Status send(Json::Value sendRequest);
-	virtual DRNet_Status recv(Json::Value& recvDatas);
+	virtual DRNet_Status send(std::string sendRequest);
+	virtual DRNet_Status recv(std::string& recvDatas);
 
 protected:
 	Poco::Mutex mRequestMutex;
@@ -42,7 +42,7 @@ protected:
 	Poco::Net::HTTPClientSession mClientSession;
 
 	std::queue<Json::Value>	mSendRequests;
-	std::queue<Json::Value> mReciveDatas;
+	std::queue<std::string> mReciveDatas;
 };
 
 #endif __UNI_NETWORK_HTTP_CONNECTION_H

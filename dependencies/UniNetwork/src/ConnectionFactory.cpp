@@ -16,6 +16,7 @@ ConnectionFactory::~ConnectionFactory()
 
 Connection* ConnectionFactory::createConnection(std::string connectionConfig, std::string section)
 {
+
 	Json::Reader reader;
 	Json::Value value;
 	reader.parse(connectionConfig, value);
