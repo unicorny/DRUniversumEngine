@@ -38,12 +38,14 @@ Datum: 16.09.09
 
 enum DRNet_Status
 {
+	NET_OK = 0,
     NET_NOT_READY = 1, // not ready to read or write
     NET_NOT_COMPLETE = 2, // not all writed/readed
     NET_COMPLETE = 4, // all writetd/readed
     NET_DATA_CORRUPTED = 8, // datas defekt
     NET_SOCKET_ERROR = 16, // error by creating socket
-    NET_ERROR    = -1 // Fehler
+    NET_ERROR    = -1, // Fehler
+	NET_NOT_FOUND = -2
 };
 
 

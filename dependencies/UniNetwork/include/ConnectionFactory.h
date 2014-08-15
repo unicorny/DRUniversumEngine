@@ -25,7 +25,7 @@
 
 
 
-class UNI_NETWORK_API ConnectionFactory 
+class UNI_NETWORK_API ConnectionFactory : public Loggable
 {
 public:
 	ConnectionFactory(std::string logFilename = std::string("log/connectionFactoryLog.txt"));
@@ -33,9 +33,6 @@ public:
 
 	Connection* createConnection(std::string connectionConfig, std::string section);
 protected:
-	std::string mLogFilename;
-
-	void logFatal(std::string msg, std::string functionName);
 private:
 };
 

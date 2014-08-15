@@ -3,7 +3,7 @@
 using namespace Poco;
 
 ConnectionFactory::ConnectionFactory(std::string logFilename/* = std::string("log/connectionFactoryLog.txt")*/)
-	: mLogFilename(logFilename)
+	: Loggable(logFilename, "ConnectionFactory")
 {
 }
 
@@ -11,16 +11,7 @@ ConnectionFactory::~ConnectionFactory()
 {
 }
 
-void ConnectionFactory::logFatal(std::string msg, std::string functionName)
-{
-	AutoPtr<FileChannel> logging = new FileChannel(mLogFilename);
-	logging->open();
-	Poco::Message p_msg(std::string("[Connection::") + functionName + std::string("]"),
-				  msg,
-				  Poco::Message::PRIO_FATAL);
-	logging->log(p_msg);
-	logging->close();
-}
+
 
 
 Connection* ConnectionFactory::createConnection(std::string connectionConfig, std::string section)
@@ -30,7 +21,7 @@ Connection* ConnectionFactory::createConnection(std::string connectionConfig, st
 	reader.parse(connectionConfig, value);
 	if(value.empty()) 
 	{
-		logFatal(std::string("parsing error: ") + std::string(reader.getFormattedErrorMessages()), std::string(__FUNCTION__));
+		POCO_LOG_FATAL(std::string("parsing error: ") + std::string(reader.getFormattedErrorMessages()));
 		poco_debugger_msg("parsing error");
 		return NULL;		
 	}

@@ -50,6 +50,10 @@
 #include "lib/Logging.h"
 #include "../../thirdparty/include/json/json.h"
 
+#include <istream>
+#include <ostream>
+#include <sstream>
+
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
 }

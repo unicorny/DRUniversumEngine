@@ -31,9 +31,12 @@ public:
 	~Connection();
 
 	// resume thread from timer
-	void resume();
+	void resume(Poco::Timer& timer);
 
 	virtual DRReturn run() = 0;
+
+	virtual DRNet_Status send(Json::Value sendRequest) = 0;
+
 protected:
 	Poco::Mutex mThreadRunningMutex;
 	Poco::Timer mTimer;

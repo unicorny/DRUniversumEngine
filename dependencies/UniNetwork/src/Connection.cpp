@@ -17,10 +17,10 @@ Connection::~Connection()
 }
 
 // called from timer
-void Connection::resume() 
+void Connection::resume(Timer& timer) 
 {
 	mThreadRunningMutex.lock();
-	// error in runImpl
+	// error in runImpl, then exit timer
 	if(run()) {
 		mTimer.restart(0);
 	}

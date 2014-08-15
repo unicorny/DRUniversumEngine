@@ -36,9 +36,11 @@
 #include "Poco/Mutex.h"
 #include "Poco/SynchronizedObject.h"
 #include "Poco/AutoPtr.h"
+#include "Poco/StreamCopier.h"
 #include "Poco/Net/Net.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"
+#include "Poco/Net/HTTPResponse.h"
 
 
 #ifdef _WIN32
@@ -51,7 +53,7 @@
     #define UNI_NETWORK_API
 #endif
 
-
+#include "Loggable.h"
 #include "Connection.h"
 #include "HTTPConnection.h"
 #include "ConnectionFactory.h"
