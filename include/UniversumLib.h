@@ -50,12 +50,22 @@
 #include "lib/Logging.h"
 #include "../../thirdparty/include/json/json.h"
 
+// rsa
+//#include <cryptopp/dll.h>
+#include <cryptopp/rsa.h>
+#include <cryptopp/osrng.h>
+#include <cryptopp/base64.h>
+#include <cryptopp/files.h>
+#include <cryptopp/filters.h>
+
+
 #include <istream>
 #include <ostream>
 #include <sstream>
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
+
 }
 
 #undef WRITETOLOG
@@ -83,6 +93,7 @@ namespace UniLib {
 #include "lib/DRInterface.h"
 
 #include "lib/Thread.h"
+#include "lib/RSA.h"
 
 #include "server/Server.h"
 #include "lib/DRINetwork.h"
@@ -109,9 +120,14 @@ namespace UniLib {
 #define  __inline__ inline
 #endif
 
+namespace UniLib {
+	// globale modules
+	UNIVERSUM_LIB_API extern lib::RSA* g_RSAModule;
+}
 
 // engine functions
 namespace UniLib {
+	
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
     UNIVERSUM_LIB_API DRString getTimeSinceStart();

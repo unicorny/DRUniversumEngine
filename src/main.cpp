@@ -4,6 +4,7 @@
 int         g_iProzess = 0;
 int			g_iProzessFunk = 0;
 
+
 #ifdef _WIN32
 //DLL Main Funktion
 int WINAPI DllMain(HINSTANCE DllHandle, unsigned long ReasonForCall, void* Reserved)
@@ -43,18 +44,21 @@ int WINAPI DllMain(HINSTANCE DllHandle, unsigned long ReasonForCall, void* Reser
 namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
+	RSA* g_RSAModule = NULL;
 
     DRReturn init()
     {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
+		g_RSAModule = new RSA();
 
         return DR_OK;
     }
 
     void exit() 
     {
+		DR_SAVE_DELETE(g_RSAModule);
 		SDL_Quit();
         EngineLog.exit();
         Core2_exit();
@@ -72,7 +76,7 @@ namespace UniLib {
         return DRString(timeBuffer);
     }
 
-	UNIVERSUM_LIB_API std::string readFileAsString(std::string filename)
+	std::string readFileAsString(std::string filename)
 	{
 		//std::string completePath = 
 		const char* path = DRFileManager::Instance().getWholePfad(filename.data());

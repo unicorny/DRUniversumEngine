@@ -41,7 +41,7 @@ protected:
 	Poco::Mutex mRecvMutex;
 	Poco::Net::HTTPClientSession mClientSession;
 
-	std::queue<Json::Value>	mSendRequests;
+	std::queue<std::string>	mSendRequests;
 	std::queue<std::string> mReciveDatas;
 };
 

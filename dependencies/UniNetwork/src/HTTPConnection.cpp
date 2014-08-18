@@ -24,7 +24,9 @@ DRReturn HTTPConnection::run()
 		mRequestMutex.unlock();
 		return DR_OK;
 	}
-	Json::Value sendRequest = mSendRequests.front();
+	std::string requestString = mSendRequests.front();
+	Json::Value sendRequest;
+	parseJson(requestString, sendRequest);
 	mSendRequests.pop();
 	mRequestMutex.unlock();
 
@@ -56,10 +58,8 @@ DRReturn HTTPConnection::run()
 
 DRNet_Status HTTPConnection::send(std::string sendRequest)
 {
-	Json::Value json;
-	parseJson(sendRequest, json);
 	mRequestMutex.lock();
-	mSendRequests.push(json);
+	mSendRequests.push(sendRequest);
 	mRequestMutex.unlock();
 	return NET_OK;
 }
