@@ -38,35 +38,44 @@ namespace UniLib {
 		{
 		public:
 			enum OperationType {
-				CRYPT_PUBLIC = 1,
-				CRYPT_PRIVATE = 2,
-				UNCRYPT_PUBLIC = 3,
-				UNCRYPT_PRIVATE = 4
+				CRYPT_WITH_CLIENT_PUBLIC = 1,
+				CRYPT_WITH_CLIENT_PRIVATE = 2,
+				UNCRYPT_WITH_SERVER_PUBLIC = 3,
+				CRYPT_WITH_SERVER_PUBLIC = 4,
+				UNCRYPT_WITH_CLIENT_PRIVATE = 5,
+				UNCRYPT_WITH_CLIENT_PUBLIC = 6
 			};
 			Crypto();
 			~Crypto();
 
 			std::string crypt(std::string input, OperationType type);
 
-			DRReturn generateKeys();
-			__inline__ std::string getPublicKey() {return mPublicKey;}
-			__inline__ void setPublicKey(std::string key) {mPublicKey = key;}
-			__inline__ std::string getPrivateKey() {return mPrivateKey;}
-			__inline__ void setPrivateKey(std::string key) {mPrivateKey = key;}
+			// client keys
+			DRReturn generateClientKeys(int validatingLevel = 3);
+			std::string getClientPublicKey();
+			std::string getClientPrivateKey();
 
-			DRReturn setServerPublicKey(std::string pbKey, int validationLevel);
-
-			DRReturn getPublicKeyFromPEM(std::string pemPublickKey, CryptoPP::RSA::PublicKey& pbKey);
+			// server keys
+			DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
+			std::string getServerPublicKey();
 
 		protected:
 			// keys of application client
-			std::string mPublicKey;
-			std::string mPrivateKey;
+			CryptoPP::RSA::PublicKey mClientPublicKey;
+			CryptoPP::RSA::PrivateKey mClientPrivateKey;
+			//std::string mPublicKey;
+			//std::string mPrivateKey;
 
 			// public key of server
 			CryptoPP::RSA::PublicKey mServerPublic;
 
-			DRReturn loadPublicKeyFromString(std::string );
+			// helper
+			std::string queueToBase64String(CryptoPP::BufferedTransformation &bt);
+			// return pointer, must be freed
+			CryptoPP::BufferedTransformation* base64StringToQueue(std::string base64);
+
+			std::string removePEMHeader(std::string input);
+
 		};
 	};
 };

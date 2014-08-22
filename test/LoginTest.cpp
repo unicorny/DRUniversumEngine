@@ -37,9 +37,9 @@ namespace UniversumLibTest {
 		DRINetwork::Instance()->login("dariofrodo", "ssss");
 
 		std::string pubKey, privateKey;
-		UniLib::g_RSAModule->generateKeys();
-		pubKey =  UniLib::g_RSAModule->getPublicKey();
-		privateKey = UniLib::g_RSAModule->getPrivateKey();
+		UniLib::g_RSAModule->generateClientKeys();
+		pubKey =  UniLib::g_RSAModule->getClientPublicKey();
+		privateKey = UniLib::g_RSAModule->getClientPrivateKey();
 		UniLib::EngineLog.writeToLog(std::string("generate Keys: public key: ") + pubKey + std::string(", privateKey: ") + privateKey);
 		
 		//printf("publickey: %s, privateKey: %s\n", pubKey.data(), privateKey.data());
@@ -58,7 +58,7 @@ namespace UniversumLibTest {
 				UniLib::EngineLog.writeToLog("public key: %s", pub_key.data());
 				if(UniLib::g_RSAModule->setServerPublicKey(pub_key, 3))
 					LOG_ERROR("key isn't valid", DR_ERROR);
-				UniLib::g_RSAModule->crypt("h7JD83l29DK", UniLib::lib::Crypto::CRYPT_PUBLIC);
+				UniLib::g_RSAModule->crypt("h7JD83l29DK", UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
 				break;
 			}
 			SDL_Delay(100);
