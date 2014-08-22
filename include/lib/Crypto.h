@@ -28,26 +28,47 @@
  * @Desc Class for easy rsa encryption
  */
  
-#ifndef __DR_UNIVERSUM_LIB_RSA__
-#define __DR_UNIVERSUM_LIB_RSA__
+#ifndef __DR_UNIVERSUM_LIB_CRYPTO__
+#define __DR_UNIVERSUM_LIB_CRYPTO__
+
 
 namespace UniLib {
 	namespace lib {
-		class UNIVERSUM_LIB_API RSA 
+		class UNIVERSUM_LIB_API Crypto 
 		{
 		public:
-			RSA();
-			~RSA();
+			enum OperationType {
+				CRYPT_PUBLIC = 1,
+				CRYPT_PRIVATE = 2,
+				UNCRYPT_PUBLIC = 3,
+				UNCRYPT_PRIVATE = 4
+			};
+			Crypto();
+			~Crypto();
 
-			std::string crypt(std::string input, std::string key);
+			std::string crypt(std::string input, OperationType type);
 
-			DRReturn generateKeyPair(std::string& pubKey, std::string& privateKey);
+			DRReturn generateKeys();
+			__inline__ std::string getPublicKey() {return mPublicKey;}
+			__inline__ void setPublicKey(std::string key) {mPublicKey = key;}
+			__inline__ std::string getPrivateKey() {return mPrivateKey;}
+			__inline__ void setPrivateKey(std::string key) {mPrivateKey = key;}
 
+			DRReturn setServerPublicKey(std::string pbKey, int validationLevel);
+
+			DRReturn getPublicKeyFromPEM(std::string pemPublickKey, CryptoPP::RSA::PublicKey& pbKey);
 
 		protected:
-			std::string copyStringToOutput(std::string in);
+			// keys of application client
+			std::string mPublicKey;
+			std::string mPrivateKey;
+
+			// public key of server
+			CryptoPP::RSA::PublicKey mServerPublic;
+
+			DRReturn loadPublicKeyFromString(std::string );
 		};
 	};
 };
 
-#endif //__DR_UNIVERSUM_LIB_RSA__
+#endif //__DR_UNIVERSUM_LIB_CRYPTO__

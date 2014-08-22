@@ -57,6 +57,8 @@
 #include <cryptopp/base64.h>
 #include <cryptopp/files.h>
 #include <cryptopp/filters.h>
+#include <cryptopp/pubkey.h>
+
 
 
 #include <istream>
@@ -93,7 +95,7 @@ namespace UniLib {
 #include "lib/DRInterface.h"
 
 #include "lib/Thread.h"
-#include "lib/RSA.h"
+#include "lib/Crypto.h"
 
 #include "server/Server.h"
 #include "lib/DRINetwork.h"
@@ -122,7 +124,7 @@ namespace UniLib {
 
 namespace UniLib {
 	// globale modules
-	UNIVERSUM_LIB_API extern lib::RSA* g_RSAModule;
+	UNIVERSUM_LIB_API extern lib::Crypto* g_RSAModule;
 }
 
 // engine functions

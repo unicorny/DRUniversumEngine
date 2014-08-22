@@ -44,14 +44,14 @@ int WINAPI DllMain(HINSTANCE DllHandle, unsigned long ReasonForCall, void* Reser
 namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
-	RSA* g_RSAModule = NULL;
+	Crypto* g_RSAModule = NULL;
 
     DRReturn init()
     {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
-		g_RSAModule = new RSA();
+		g_RSAModule = new Crypto();
 
         return DR_OK;
     }
