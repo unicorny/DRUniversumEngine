@@ -21,7 +21,7 @@ namespace UniLib {
 			AutoSeededRandomPool rng;
 
 			InvertibleRSAFunction params;
-			params.GenerateRandomWithKeySize( rng, 3024 );
+			params.GenerateRandomWithKeySize( rng, 2048 );
 
 			mClientPrivateKey = RSA::PrivateKey( params );
 			mClientPublicKey =  RSA::PublicKey( params );
@@ -88,18 +88,59 @@ namespace UniLib {
 		DRReturn Crypto::setServerPublicKey(std::string pbKey, int validationLevel /* = 3*/)
 		{
 			AutoSeededRandomPool rng;
-			BufferedTransformation* queue = base64StringToQueue(removePEMHeader(pbKey));
+			ByteQueue queue;
+			base64StringToQueue(removePEMHeader(pbKey), queue);
 			try {
-				mServerPublic.Load(*queue);
+				mServerPublic.Load(queue);
 			}
 			catch(CryptoPP::BERDecodeErr err) 
 			{
 				EngineLog.writeToLog("Crypto Error: %s", err.what());
 				LOG_ERROR("error by loading key", DR_ERROR);
 			}
-			DR_SAVE_DELETE(queue);
+			FileSink fs("serverPublic.pem");
+			Base64Encoder encoder;
+			ByteQueue out;
+
+			// encode
+			encoder.Attach(new Redirector(out));
+			mServerPublic.Save(encoder);
+			encoder.MessageEnd();
+
+			// copy to file
+			out.CopyTo(fs);
+			fs.MessageEnd();
 			if(mServerPublic.Validate(rng, validationLevel))
 				LOG_ERROR("key isn't valid", DR_ERROR);
+			return DR_OK;
+		}
+
+		DRReturn Crypto::setServerPublicKey(std::string e, std::string n, int validationLevel /* = 3*/)
+		{
+			AutoSeededRandomPool rng;
+
+			ByteQueue eQ;
+			ByteQueue nQ;
+			char test[] = "Mg==";
+			base64StringToQueue(e, eQ);
+			//base64StringToQueue(n, nQ);
+			try {
+				//mServerPublic.SetModulus(Integer(eQ));
+				//Integer i(eQ);
+				std::string stest;
+				StringSink ss(stest);
+				eQ.TransferTo(ss);
+				ss.MessageEnd();
+				UniLib::EngineLog.writeToLog("long: %s",  stest.data());
+				//mServerPublic.SetPublicExponent(Integer(nQ));
+			} catch(CryptoPP::Exception err) {
+				UniLib::EngineLog.writeToLog("exception: %s", err.what());
+				LOG_ERROR("error by encode to key", DR_ERROR);
+			}
+
+			if(mServerPublic.Validate(rng, validationLevel)) 
+				LOG_ERROR("key isn't valid", DR_ERROR);
+			
 			return DR_OK;
 		}
 
@@ -129,15 +170,30 @@ namespace UniLib {
 			return stringOut;
 		}
 
-		BufferedTransformation* Crypto::base64StringToQueue(std::string base64)
+		DRReturn Crypto::base64StringToQueue(std::string base64, CryptoPP::BufferedTransformation &bt)
 		{
-			Base64Decoder* decoder = new Base64Decoder();
-			//FileSource loadFile("rsa-roundtrip.key", true /*pumpAll*/);
+			try {
+				StringSource ss(base64, true, new Base64Decoder(new Redirector(bt)));
+			} catch(CryptoPP::Exception err) {
+				UniLib::EngineLog.writeToLog("exception: %s", err.what());
+				LOG_ERROR("error by base64 decoding to key", DR_ERROR);
+			}
+			return DR_OK;
+			/*Base64Decoder decoder;
+			//FileSource loadFile("rsa-roundtrip.key", true);
 			StringSource ss(base64, true);
 
-			ss.TransferTo(*decoder);
-			decoder->MessageEnd();
-			return decoder;
+			try {
+				ss.TransferTo(decoder);
+				decoder.MessageEnd();
+				decoder.TransferTo(bt);
+				bt.MessageEnd();
+			} catch(CryptoPP::BERDecodeErr err) {
+				UniLib::EngineLog.writeToLog("error by decode string: %s", err.what());
+				LOG_ERROR("error", DR_ERROR);
+			}
+			return DR_OK;
+			//*/
 		}
 
 		std::string Crypto::removePEMHeader(std::string input)

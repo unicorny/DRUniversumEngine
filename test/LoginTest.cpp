@@ -41,6 +41,7 @@ namespace UniversumLibTest {
 		pubKey =  UniLib::g_RSAModule->getClientPublicKey();
 		privateKey = UniLib::g_RSAModule->getClientPrivateKey();
 		UniLib::EngineLog.writeToLog(std::string("generate Keys: public key: ") + pubKey + std::string(", privateKey: ") + privateKey);
+		UniLib::EngineLog.writeToLog("<hr>");
 		
 		//printf("publickey: %s, privateKey: %s\n", pubKey.data(), privateKey.data());
 
@@ -53,11 +54,41 @@ namespace UniversumLibTest {
 				Json::Value json;
 				reader.parse(recv, json);
 				if(json.empty()) 
+				{
+					UniLib::EngineLog.writeToLog(std::string("recv: ") + recv);
 					LOG_ERROR(reader.getFormattedErrorMessages().data(), DR_ERROR);
-				std::string pub_key = json.get("public_key", "").asString();
-				UniLib::EngineLog.writeToLog("public key: %s", pub_key.data());
-				if(UniLib::g_RSAModule->setServerPublicKey(pub_key, 3))
-					LOG_ERROR("key isn't valid", DR_ERROR);
+				}
+				Json::Value publicKey = json.get("public_key", "");
+				std::string test = json.get("test", "").asString();
+				UniLib::EngineLog.writeToLog(std::string("test: ") + test);
+				if(publicKey.isObject()) 
+				{
+					std::string key = publicKey.get("key", "").asString();
+					int type = atoi(publicKey.get("type", "").asString().c_str());
+					int bits = atoi(publicKey.get("bits", "").asString().c_str());
+					std::string e = publicKey.get("e", "").asString();
+					std::string n = publicKey.get("n", "").asString();
+					
+					UniLib::EngineLog.writeToLog(std::string("key: ") + key + std::string("<br>e: ") + e + std::string(", n:") + n );
+					UniLib::EngineLog.writeToLog("type: %d, bits: %d", type, bits);
+					if(UniLib::g_RSAModule->setServerPublicKey(key, 3)) {
+						LOG_WARNING("key isn't valid");
+					} else {
+						LOG_INFO("key is valid");
+					}
+					if(UniLib::g_RSAModule->setServerPublicKey(test, n, 3)) {
+						LOG_ERROR("key e n isn't valid", DR_ERROR);
+					} else {
+						LOG_INFO("key e n is valid");
+					}
+				}
+				else if(publicKey.isString() )
+				{
+					std::string pub_key = json.get("public_key", "").asString();
+					UniLib::EngineLog.writeToLog("public key: %s", pub_key.data());
+//				if(UniLib::g_RSAModule->setServerPublicKey(pub_key, 3))
+	//				LOG_ERROR("key isn't valid", DR_ERROR);
+				}
 				UniLib::g_RSAModule->crypt("h7JD83l29DK", UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
 				break;
 			}

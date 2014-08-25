@@ -57,6 +57,7 @@ namespace UniLib {
 
 			// server keys
 			DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
+			DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3);
 			std::string getServerPublicKey();
 
 		protected:
@@ -71,8 +72,8 @@ namespace UniLib {
 
 			// helper
 			std::string queueToBase64String(CryptoPP::BufferedTransformation &bt);
-			// return pointer, must be freed
-			CryptoPP::BufferedTransformation* base64StringToQueue(std::string base64);
+			
+			DRReturn base64StringToQueue(std::string base64, CryptoPP::BufferedTransformation &bt);
 
 			std::string removePEMHeader(std::string input);
 
