@@ -21,9 +21,13 @@ void UniNetwork::exit()
 	Poco::Net::uninitializeNetwork();
 }
 
-bool UniNetwork::login(std::string username, std::string password)
+UniLib::lib::Crypto* UniNetwork::createCrypto() 
 {
-	return false;
+	return new NetCrypto;
+}
+void UniNetwork::freeCrypto(UniLib::lib::Crypto* crypto)
+{
+	DR_SAVE_DELETE(crypto);
 }
 
 // \brief connect to server
@@ -38,6 +42,7 @@ u16 UniNetwork::connect(std::string configJson, std::string section)
 	u16 key = mConnections.size()+1;
 	mConnections.insert(CONNECTION_PAIR(key, con));
 	mConnectionMutex.unlock();
+
 	return key;
 }
 

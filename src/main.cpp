@@ -51,14 +51,16 @@ namespace UniLib {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
-		g_RSAModule = new Crypto();
+		g_RSAModule = DRINetwork::Instance()->createCrypto();
 
         return DR_OK;
     }
 
     void exit() 
     {
-		DR_SAVE_DELETE(g_RSAModule);
+		//DR_SAVE_DELETE(g_RSAModule);
+		DRINetwork::Instance()->freeCrypto(g_RSAModule);
+		g_RSAModule = NULL;
 		SDL_Quit();
         EngineLog.exit();
         Core2_exit();

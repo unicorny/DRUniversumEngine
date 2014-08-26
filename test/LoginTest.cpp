@@ -34,7 +34,7 @@ namespace UniversumLibTest {
 		reader.parse(request, json);
 		UniLib::EngineLog.writeToLog("url: %s", json.get("url", ""));
 		DRINetwork::Instance()->send(request, mConnectionNumber);
-		DRINetwork::Instance()->login("dariofrodo", "ssss");
+//		DRINetwork::Instance()->login("dariofrodo", "ssss");
 
 		std::string pubKey, privateKey;
 		UniLib::g_RSAModule->generateClientKeys();

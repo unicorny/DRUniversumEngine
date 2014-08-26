@@ -56,11 +56,6 @@ u16 DRINetwork::connect(std::string configJson, std::string section)
     return 0;
 }
 
-bool DRINetwork::login(std::string username, std::string password)
-{
-	LOG_WARNING("not implemented");
-	return false;
-}
 
 void DRINetwork::disconnect(u16 connectionNumber)
 {
@@ -77,4 +72,15 @@ DRNet_Status DRINetwork::recv(std::string& dataJson, u16 connectionNumber)
 {
 	LOG_WARNING("not implemented");
 	return NET_ERROR;
+}
+
+UniLib::lib::Crypto* DRINetwork::createCrypto() 
+{
+	LOG_WARNING("not implemented");
+	return NULL;
+}
+
+void DRINetwork::freeCrypto(UniLib::lib::Crypto* crypto)
+{
+	LOG_WARNING("not implemented");
 }

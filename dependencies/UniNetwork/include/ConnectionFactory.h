@@ -32,6 +32,7 @@ public:
 	~ConnectionFactory();
 
 	Connection* createConnection(std::string connectionConfig, std::string section);
+	
 protected:
 private:
 };

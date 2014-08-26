@@ -50,15 +50,6 @@
 #include "lib/Logging.h"
 #include "../../thirdparty/include/json/json.h"
 
-// rsa
-//#include <cryptopp/dll.h>
-#include <cryptopp/rsa.h>
-#include <cryptopp/osrng.h>
-#include <cryptopp/base64.h>
-#include <cryptopp/files.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/pubkey.h>
-
 
 
 #include <istream>

@@ -20,54 +20,29 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __NETWORK_NET_CRYPTO_H__
+#define __NETWORK_NET_CRYPTO_H__
 
-#ifdef _WIN32
-#define _WINSOCKAPI_
-#include <windows.h>
-#else
-#endif
-
-#include <UniversumLib.h> 
-#include "Poco/FileChannel.h"
-#include "Poco/Message.h"
-#include "Poco/Runnable.h"
-#include "Poco/Event.h"
-#include "Poco/Timer.h"
-#include "Poco/Mutex.h"
-#include "Poco/SynchronizedObject.h"
-#include "Poco/AutoPtr.h"
-#include "Poco/StreamCopier.h"
-#include "Poco/Net/Net.h"
-#include "Poco/Net/HTTPClientSession.h"
-#include "Poco/Net/HTTPRequest.h"
-#include "Poco/Net/HTTPResponse.h"
-
-
-#ifdef _WIN32
-    #ifdef BUILD_DLL_UNI_NETWORK
-        #define UNI_NETWORK_API __declspec(dllexport)
-    #else
-        #define UNI_NETWORK_API __declspec(dllimport)
-    #endif
-#else
-    #define UNI_NETWORK_API
-#endif
-
-#include "Loggable.h"
-#include "Connection.h"
-#include "HTTPConnection.h"
-#include "ConnectionFactory.h"
-#include "UniNetwork.h"
-#include "NetCrypto.h"
-
-#ifdef __cplusplus
-extern "C"
+class UNI_NETWORK_API NetCrypto : public UniLib::lib::Crypto 
 {
-#endif
+public:
+		NetCrypto();
+		virtual ~NetCrypto();
 
-UNI_NETWORK_API DRINetwork* getInstance();
+		virtual std::string crypt(std::string input, OperationType type);
 
-#ifdef __cplusplus
-}
-#endif
+		// client keys
+		virtual DRReturn generateClientKeys();
+		virtual std::string getClientPublicKey();
+		virtual std::string getClientPrivateKey();
 
+		// server keys
+		virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
+		virtual DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3);
+		virtual std::string getServerPublicKey();
+
+protected:
+};
+
+
+#endif //__NETWORK_NET_CRYPTO_H__

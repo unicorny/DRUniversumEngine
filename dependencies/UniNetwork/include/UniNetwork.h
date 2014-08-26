@@ -39,12 +39,7 @@ public:
     virtual void exit();
 
 
-	// \brief login on server
-	// \param username 
-	// \param password encrypted with public key from server
-	// \return true if login was successfully
-	virtual bool login(std::string username, std::string password);
-
+	
 	// \brief connect to server
 	// \param config contains server config in json format
 	// \return connection number
@@ -60,6 +55,10 @@ public:
 	// \breif recv data
 	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
 
+	// helper
+	virtual UniLib::lib::Crypto* createCrypto();
+	virtual void freeCrypto(UniLib::lib::Crypto* crypto);
+
 protected:
 
 	std::map<int, Connection*> mConnections;
@@ -67,6 +66,10 @@ protected:
 
 	Poco::Mutex mConnectionMutex;
 	ConnectionFactory mConnectionFactory;
+
+	//login
+	std::string mUsername;
+	std::string mPassword;
 private:
 };
 

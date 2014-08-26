@@ -46,36 +46,19 @@ namespace UniLib {
 				UNCRYPT_WITH_CLIENT_PUBLIC = 6
 			};
 			Crypto();
-			~Crypto();
+			virtual ~Crypto();
 
-			std::string crypt(std::string input, OperationType type);
+			virtual std::string crypt(std::string input, OperationType type) = 0;
 
 			// client keys
-			DRReturn generateClientKeys(int validatingLevel = 3);
-			std::string getClientPublicKey();
-			std::string getClientPrivateKey();
+			virtual DRReturn generateClientKeys() = 0;
+			virtual std::string getClientPublicKey() = 0;
+			virtual std::string getClientPrivateKey() = 0;
 
 			// server keys
-			DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
-			DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3);
-			std::string getServerPublicKey();
-
-		protected:
-			// keys of application client
-			CryptoPP::RSA::PublicKey mClientPublicKey;
-			CryptoPP::RSA::PrivateKey mClientPrivateKey;
-			//std::string mPublicKey;
-			//std::string mPrivateKey;
-
-			// public key of server
-			CryptoPP::RSA::PublicKey mServerPublic;
-
-			// helper
-			std::string queueToBase64String(CryptoPP::BufferedTransformation &bt);
-			
-			DRReturn base64StringToQueue(std::string base64, CryptoPP::BufferedTransformation &bt);
-
-			std::string removePEMHeader(std::string input);
+			virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3) = 0;
+			virtual DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3) = 0;
+			virtual std::string getServerPublicKey() = 0;					
 
 		};
 	};

@@ -16,6 +16,7 @@ HTTPConnection::~HTTPConnection()
 
 }
 
+
 DRReturn HTTPConnection::run() 
 {
 	// get send request from queue
@@ -24,7 +25,7 @@ DRReturn HTTPConnection::run()
 		mRequestMutex.unlock();
 		return DR_OK;
 	}
-	assert(mSendRequests.size());
+//	assert(mSendRequests.size());
 	std::string requestString = mSendRequests.front();
 	Json::Value sendRequest;
 	parseJson(requestString, sendRequest);
