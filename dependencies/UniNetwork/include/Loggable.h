@@ -40,8 +40,10 @@ protected:
 	std::string mClassName;
 	void logFatal(std::string msg, std::string functionName);
 	void logWarning(std::string msg, std::string functionName);
+	void logError(std::string msg, std::string functionName);
 
 #define POCO_LOG_WARNING(msg) logWarning(msg, __FUNCTION__)
+#define POCO_LOG_ERROR(msg) logError(msg, __FUNCTION__)
 #define POCO_LOG_FATAL(msg) logFatal(msg, __FUNCTION__)
 
 private:

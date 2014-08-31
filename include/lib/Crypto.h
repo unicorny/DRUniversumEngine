@@ -57,8 +57,10 @@ namespace UniLib {
 
 			// server keys
 			virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3) = 0;
-			virtual DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3) = 0;
 			virtual std::string getServerPublicKey() = 0;					
+
+			// static strings
+			static std::string getOperationTypeString(OperationType type);
 
 		};
 	};

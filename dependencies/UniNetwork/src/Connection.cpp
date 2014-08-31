@@ -3,7 +3,7 @@
 using namespace Poco;
 
 Connection::Connection(long periodicRunningInterval)
-	: Loggable("connection.log", "Connection"), mTimer(0, periodicRunningInterval)
+	: Loggable("connection.log", "Connection"), mTimer(1000, periodicRunningInterval)
 {
 	TimerCallback<Connection> tc(*this, &Connection::resume);
 	mTimer.start(tc);

@@ -23,25 +23,29 @@
 #ifndef __NETWORK_NET_CRYPTO_H__
 #define __NETWORK_NET_CRYPTO_H__
 
-class UNI_NETWORK_API NetCrypto : public UniLib::lib::Crypto 
+class UNI_NETWORK_API NetCrypto : public UniLib::lib::Crypto, Loggable 
 {
 public:
-		NetCrypto();
-		virtual ~NetCrypto();
+	NetCrypto();
+	virtual ~NetCrypto();
 
-		virtual std::string crypt(std::string input, OperationType type);
+	virtual std::string crypt(std::string input, OperationType type);
 
-		// client keys
-		virtual DRReturn generateClientKeys();
-		virtual std::string getClientPublicKey();
-		virtual std::string getClientPrivateKey();
+	// client keys
+	virtual DRReturn generateClientKeys();
+	virtual std::string getClientPublicKey();
+	virtual std::string getClientPrivateKey();
 
-		// server keys
-		virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
-		virtual DRReturn setServerPublicKey(std::string e, std::string n, int validationLevel = 3);
-		virtual std::string getServerPublicKey();
+	// server keys
+	virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
+	virtual std::string getServerPublicKey();
 
 protected:
+	Poco::Crypto::RSAKey*	mClientKey;
+	std::string				mClientPublicKeyString;
+	std::string				mClientPrivateKeyString;
+
+	Poco::Crypto::RSAKey*	mServerKey;
 };
 
 

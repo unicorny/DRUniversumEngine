@@ -21,6 +21,10 @@ void Loggable::logWarning(std::string msg, std::string functionName)
 {
 	log(msg, functionName, Poco::Message::PRIO_WARNING);
 }
+void Loggable::logError(std::string msg, std::string functionName)
+{
+	log(msg, functionName, Poco::Message::PRIO_ERROR);
+}
 
 void Loggable::log(std::string msg, std::string functionName, Poco::Message::Priority prio)
 {

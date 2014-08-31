@@ -34,7 +34,7 @@ DRReturn HTTPConnection::run()
 
 	// parse and request
 	HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString(), "HTTP/1.1");
-	request.set("User-Agent", "UniLibTest");
+	request.set("User-Agent", "UniLib");
 	if(sendRequest.get("contentType", "").asString() != "") {
 		request.setContentType(sendRequest.get("contentType", "").asString());
 		std::string body = sendRequest.get("content", "").asString();
