@@ -19,16 +19,21 @@ std::string NetCrypto::crypt(std::string input, OperationType type)
 	bool crypt = true;// if set to false, uncrypt
 	switch(type) {
 	case CRYPT_WITH_SERVER_PUBLIC:
-		pCipher = Poco::Crypto::CipherFactory::defaultFactory().createCipher(*mServerKey);
+		pCipher = Poco::Crypto::CipherFactory::defaultFactory().createCipher(*mServerKey, RSA_PADDING_PKCS1);
 		break;
 	default: 
 		POCO_LOG_WARNING(std::string("operation type isn't implemented, " + getOperationTypeString(type)));
 		return "";
 	};
-	if(crypt){
-		return pCipher->encryptString(input, Poco::Crypto::Cipher::ENC_BASE64);
-	} else {
-		return pCipher->decryptString(input, Poco::Crypto::Cipher::ENC_BASE64);
+	try {
+		if(crypt){
+			return pCipher->encryptString(input, Poco::Crypto::Cipher::ENC_BINHEX_NO_LF);
+		} else {
+			return pCipher->decryptString(input, Poco::Crypto::Cipher::ENC_BINHEX_NO_LF);
+		}
+	} catch(Poco::IOException exception) {
+		POCO_LOG_FATAL(std::string("error by crypt with input: ") + input);
+		return "";
 	}
 
 	return "";
@@ -54,17 +59,23 @@ DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* 
 	DR_SAVE_DELETE(mServerKey);
 	//std::istringstream str(removePEMHeader(pbKey));
 	//Poco::Base64Decoder decode(str);
+	//Poco::Base64Decoder
 	std::istringstream str(pbKey);
-	Poco::Crypto::X509Certificate cert(str);
+	
 	try {
+		Poco::Crypto::X509Certificate cert(str);
 		mServerKey = new Poco::Crypto::RSAKey(cert);
-	} catch(Poco::Exception what) {
+	} catch(Poco::IOException what) {
+		POCO_LOG_FATAL(std::string("io exception: ") + what.displayText() + std::string(", with pbkey: ") + pbKey);
+		return DR_ERROR;
+	}
+	catch(Poco::Exception what) {
 		//what.displayText
 		//LOG_ERROR("Poco throw an exception", DR_ERROR);
 		//printf(what.displayText().data());
 		POCO_LOG_ERROR(what.displayText());
 		return DR_ERROR;
-	}
+	} 
 	
 	return DR_OK;
 }

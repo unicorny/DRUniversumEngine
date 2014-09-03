@@ -51,6 +51,7 @@ namespace UniversumLibTest {
 						UniLib::EngineLog.writeToLog(std::string("recv: ") + recv);
 						LOG_ERROR(reader.getFormattedErrorMessages().data(), DR_ERROR);
 					}
+					//UniLib::EngineLog.writeToLog(std::string("recv: ") + recv);
 					Json::Value publicKey = json.get("public_key", "");
 					std::string pub_key;
 					if(publicKey.isObject()) 
@@ -66,17 +67,24 @@ namespace UniversumLibTest {
 						UniLib::EngineLog.writeToLog(std::string("transfered public key: ") + pub_key);
 						LOG_ERROR("cannot use transfered public key", DR_ERROR);
 					}
+					
 					std::string encrypted = UniLib::g_RSAModule->crypt("h7JD83l29DK", UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
-					UniLib::EngineLog.writeToLog(std::string("encrypted: ") + encrypted);
+					//std::string encrypted = UniLib::g_RSAModule->crypt("halloWelt", UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
+					//UniLib::EngineLog.writeToLog(std::string("client encrypted: ") + encrypted);
 					Json::Value loginRequest(Json::objectValue);
-					loginRequest["url"] = "/spacecraft/players/login_raw";
+					loginRequest["url"] = "/spacecraft/playersRaw/login";
+					//loginRequest["url"] = "/spacecraft/players/login";
+					//loginRequest["url"] = "/spacecraftLoginTest.php";
 					loginRequest["method"] = "POST";
-					loginRequest["contentType"] = "application/json";
-					loginRequest["content"] = encrypted;
+					loginRequest["contentType"] = "application/x-www-form-urlencoded";
+					//loginRequest["contentType"] = "application/jsonrequest";
+					//loginRequest["content"] = encrypted;
+					//loginRequest["content"] = "{\"now\":\"entchen\",\"username\":\"einhornimmond\"}";
+					loginRequest["content"] = std::string("json={\"username\":\"admin\",\"password\":\"") + encrypted + std::string("\"}");
+					//loginRequest["content"] = std::string("json={\"username\":\"admin\",\"password\":\"") + std::string("h7JD83l29DK") + std::string("\"}");
 					Json::FastWriter writer;
 					DRINetwork::Instance()->send(writer.write(loginRequest), mConnectionNumber);
 					state = 1;
-					break;
 					//login with crypted password
 				} else if(state == 1) {
 					UniLib::EngineLog.writeToLog(std::string("recv login answear") + recv);

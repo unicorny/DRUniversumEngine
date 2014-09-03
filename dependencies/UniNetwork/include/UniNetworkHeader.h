@@ -42,6 +42,7 @@
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Base64Decoder.h"
+#include "Poco/HexBinaryEncoder.h"
 #include "Poco/Crypto/X509Certificate.h"
 #include "Poco/Crypto/RSAKey.h"
 #include "Poco/Crypto/Cipher.h"

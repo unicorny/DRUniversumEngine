@@ -38,7 +38,10 @@ DRReturn HTTPConnection::run()
 	if(sendRequest.get("contentType", "").asString() != "") {
 		request.setContentType(sendRequest.get("contentType", "").asString());
 		std::string body = sendRequest.get("content", "").asString();
+		//body.append("\r\n0\r\n");
+		request.setChunkedTransferEncoding(false);
 		request.setContentLength((int)body.length());
+		
 		mClientSession.sendRequest(request) << body;		
 	}
 	else {
