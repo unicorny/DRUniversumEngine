@@ -36,6 +36,10 @@ public:
 	virtual std::string getClientPublicKey();
 	virtual std::string getClientPrivateKey();
 
+	//signature
+	virtual std::string sign(std::string input);
+	virtual bool checkSign(std::string input, std::string signature);
+
 	// server keys
 	virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
 	virtual std::string getServerPublicKey();

@@ -45,6 +45,7 @@
 #include "Poco/HexBinaryEncoder.h"
 #include "Poco/Crypto/X509Certificate.h"
 #include "Poco/Crypto/RSAKey.h"
+#include "Poco/Crypto/RSADigestEngine.h"
 #include "Poco/Crypto/Cipher.h"
 #include "Poco/Crypto/CipherFactory.h"
 

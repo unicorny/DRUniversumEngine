@@ -49,6 +49,8 @@ namespace UniLib {
 			virtual ~Crypto();
 
 			virtual std::string crypt(std::string input, OperationType type) = 0;
+			virtual std::string sign(std::string input) = 0;
+			virtual bool checkSign(std::string input, std::string signature) = 0;
 
 			// client keys
 			virtual DRReturn generateClientKeys() = 0;

@@ -18,6 +18,7 @@ namespace UniversumLibTest {
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
 		DRFileManager::Instance().addOrdner("cfg");
 		std::string value = UniLib::readFileAsString("LoginServer.json");
+		UniLib::g_RSAModule->generateClientKeys();
 		mConnectionNumber = DRINetwork::Instance()->connect(value, std::string("LoginServer"));
 		UniLib::EngineLog.writeToLog("connectionNumber get: %d", mConnectionNumber);
 		//DRINetwork::Instance()->HTTPRequest("127.0.0.1/spacecraft", NET_GET, "", "spaceCraft");
@@ -28,9 +29,17 @@ namespace UniversumLibTest {
 	DRReturn LoginTest::test()
 	{
 		Uint32 startTicks = SDL_GetTicks();
-		std::string request = "{\"url\":\"/spacecraft/serverKeys/get\"}";
 		
-		DRINetwork::Instance()->send(request, mConnectionNumber);
+		Json::Value getKeyRequest(Json::objectValue);
+		Json::FastWriter writer;
+		Json::Reader reader;
+		Json::Value json;
+		
+
+		getKeyRequest["url"] = "/spacecraft/serverKeys/get";
+		//getKeyRequest["userAgent"] = UniLib::g_RSAModule->getClientPublicKey();
+		
+		DRINetwork::Instance()->send(writer.write(getKeyRequest), mConnectionNumber);
 //		DRINetwork::Instance()->login("dariofrodo", "ssss");
 
 		
@@ -43,8 +52,6 @@ namespace UniversumLibTest {
 				// get public key from server
 				if(!state) {
 					//UniLib::EngineLog.writeToLog("connection recv: %s", recv.data());
-					Json::Reader reader;
-					Json::Value json;
 					reader.parse(recv, json);
 					if(json.empty()) 
 					{
@@ -72,22 +79,50 @@ namespace UniversumLibTest {
 					//std::string encrypted = UniLib::g_RSAModule->crypt("halloWelt", UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
 					//UniLib::EngineLog.writeToLog(std::string("client encrypted: ") + encrypted);
 					Json::Value loginRequest(Json::objectValue);
+					Json::Value contentJson(Json::objectValue);
+					contentJson["username"] = "admin";
+					contentJson["password"] = encrypted;
+					contentJson["publicKey"] = UniLib::g_RSAModule->getClientPrivateKey();
+					//UniLib::EngineLog.writeToLog(std::string("public key send to server: ") + UniLib::g_RSAModule->getClientPublicKey());
+					//UniLib::EngineLog.writeToLog(std::string("public key send to server hex encoded: ") + UniLib::g_RSAModule->getClientPrivateKey());
 					loginRequest["url"] = "/spacecraft/playersRaw/login";
 					//loginRequest["url"] = "/spacecraft/players/login";
 					//loginRequest["url"] = "/spacecraftLoginTest.php";
 					loginRequest["method"] = "POST";
 					loginRequest["contentType"] = "application/x-www-form-urlencoded";
+					loginRequest["userAgent"] = "UniLib::Test";
 					//loginRequest["contentType"] = "application/jsonrequest";
 					//loginRequest["content"] = encrypted;
 					//loginRequest["content"] = "{\"now\":\"entchen\",\"username\":\"einhornimmond\"}";
-					loginRequest["content"] = std::string("json={\"username\":\"admin\",\"password\":\"") + encrypted + std::string("\"}");
+					loginRequest["content"] = std::string("json=") + writer.write(contentJson);//{\"username\":\"admin\",\"password\":\"") + encrypted + std::string("\"}");
 					//loginRequest["content"] = std::string("json={\"username\":\"admin\",\"password\":\"") + std::string("h7JD83l29DK") + std::string("\"}");
-					Json::FastWriter writer;
 					DRINetwork::Instance()->send(writer.write(loginRequest), mConnectionNumber);
 					state = 1;
 					//login with crypted password
 				} else if(state == 1) {
-					UniLib::EngineLog.writeToLog(std::string("recv login answear") + recv);
+					//UniLib::EngineLog.writeToLog(std::string("recv login answear: ") + recv);
+					reader.parse(recv, json);
+					std::string requestToken = UniLib::g_RSAModule->crypt(json.get("requestToken", "").asString(), UniLib::lib::Crypto::UNCRYPT_WITH_CLIENT_PRIVATE);
+					//UniLib::EngineLog.writeToLog(std::string("encryptet request token: ") + requestToken);
+					std::string cryptetRequestToken = UniLib::g_RSAModule->crypt(requestToken, UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
+					std::string signature = json.get("signature", "").asString();
+					//UniLib::EngineLog.writeToLog(std::string("Signature: ") + signature);
+					Json::Value request(Json::objectValue);
+					Json::Value content(Json::objectValue);
+					content["requestToken"] = cryptetRequestToken;
+					content["request"] = "empty";
+
+					request["url"] = "/spacecraft/requestHandler";
+					request["method"] = "POST";
+					request["contentType"] = "application/x-www-form-urlencoded";
+					request["userAgent"] = "UniLib::Test";
+					request["content"] = std::string("json=") + writer.write(content);
+					
+					DRINetwork::Instance()->send(writer.write(request), mConnectionNumber);
+					state = 2;
+				} else if(state == 2) {
+					UniLib::EngineLog.writeToLog(std::string("recv request answear:<br>") + recv);
+					reader.parse(recv, json);
 				}
 			}
 			SDL_Delay(100);

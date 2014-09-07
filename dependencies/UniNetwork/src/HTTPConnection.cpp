@@ -32,31 +32,44 @@ DRReturn HTTPConnection::run()
 	mSendRequests.pop();
 	mRequestMutex.unlock();
 
-	// parse and request
-	HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString(), "HTTP/1.1");
-	request.set("User-Agent", "UniLib");
-	if(sendRequest.get("contentType", "").asString() != "") {
-		request.setContentType(sendRequest.get("contentType", "").asString());
-		std::string body = sendRequest.get("content", "").asString();
-		//body.append("\r\n0\r\n");
-		request.setChunkedTransferEncoding(false);
-		request.setContentLength((int)body.length());
+	try {
+		// parse and request
+		HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString(), "HTTP/1.1");
+
+		request.set("User-Agent", sendRequest.get("userAgent", "UniLib").asString());
+		//printf("user agent: %s\n",  sendRequest.get("userAgent", "UniLib").asString().data());
+		//POCO_LOG_WARNING(std::string("user agent: ") + sendRequest.get("userAgent", "UniLib").asString());
+		if(sendRequest.get("contentType", "").asString() != "") {
+			request.setContentType(sendRequest.get("contentType", "").asString());
+			std::string body = sendRequest.get("content", "").asString();
+			//body.append("\r\n0\r\n");
+			request.setChunkedTransferEncoding(false);
+			request.setContentLength((int)body.length());
 		
-		mClientSession.sendRequest(request) << body;		
-	}
-	else {
-		mClientSession.sendRequest(request);
+			mClientSession.sendRequest(request) << body;		
+		}
+		else {
+			mClientSession.sendRequest(request);
+		}
+	} catch(Poco::Exception what) {
+		POCO_LOG_FATAL(std::string("error by sending: ") + std::string(what.displayText()));
+		return DR_ERROR;
 	}
 
-	// recv answear
-	HTTPResponse response;
+	try {
+		// recv answear
+		HTTPResponse response;
 	
-	std::istream& is = mClientSession.receiveResponse(response);// >> responseString;
-	std::ostringstream ostr;	
-	StreamCopier::copyStream(is, ostr);	
-	mRecvMutex.lock();
-	mReciveDatas.push(ostr.str());
-	mRecvMutex.unlock();
+		std::istream& is = mClientSession.receiveResponse(response);// >> responseString;
+		std::ostringstream ostr;	
+		StreamCopier::copyStream(is, ostr);	
+		mRecvMutex.lock();
+		mReciveDatas.push(ostr.str());
+		mRecvMutex.unlock();
+	} catch (Poco::Exception what) {
+		POCO_LOG_FATAL(std::string("error by reciving: ") + std::string(what.displayText()));
+		return DR_ERROR;
+	}
 
 	return DR_OK;	
 }
