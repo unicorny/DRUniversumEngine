@@ -96,4 +96,32 @@ void Net_API uninitializeNetwork();
 } } // namespace Poco::Net
 
 
+// Default to enabled IPv6 support if not explicitly disabled
+#if !defined(POCO_NET_NO_IPv6) && !defined (POCO_HAVE_IPv6)
+	#define POCO_HAVE_IPv6
+#elif defined(POCO_NET_NO_IPv6) && defined (POCO_HAVE_IPv6)
+	#undef POCO_HAVE_IPv6
+#endif // POCO_NET_NO_IPv6, POCO_HAVE_IPv6
+
+
+#if !defined(s6_addr16)
+	#if defined(POCO_OS_FAMILY_WINDOWS)
+		#define s6_addr16 u.Word
+	#else
+		#define s6_addr16 __u6_addr.__u6_addr16
+	#endif
+#endif
+
+
+#if !defined(s6_addr32)
+	#if defined(POCO_OS_FAMILY_UNIX)
+		#if (POCO_OS == POCO_OS_SOLARIS)
+			#define s6_addr32 _S6_un._S6_u32
+		#else
+			#define s6_addr32 __u6_addr.__u6_addr32
+		#endif
+	#endif
+#endif
+
+
 #endif // Net_Net_INCLUDED

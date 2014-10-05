@@ -1,7 +1,7 @@
 //
 // SocketAddress.h
 //
-// $Id: //poco/1.4/Net/include/Poco/Net/SocketAddress.h#3 $
+// $Id: //poco/1.4/Net/include/Poco/Net/SocketAddress.h#2 $
 //
 // Library: Net
 // Package: NetCore
@@ -73,13 +73,13 @@ public:
 		/// be in dotted decimal (IPv4) or hex string (IPv6) format.
 
 	SocketAddress(const std::string& host, const std::string& port);
-		/// Creates a SocketAddress from an IP address and a 
+		/// Creates a SocketAddress from an IP address and a
 		/// service name or port number.
 		///
 		/// The IP address must either be a domain name, or it must
 		/// be in dotted decimal (IPv4) or hex string (IPv6) format.
 		///
-		/// The given port must either be a decimal port number, or 
+		/// The given port must either be a decimal port number, or
 		/// a service name.
 
 	explicit SocketAddress(const std::string& hostAndPort);

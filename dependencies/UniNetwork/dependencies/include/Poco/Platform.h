@@ -1,7 +1,7 @@
 //
 // Platform.h
 //
-// $Id: //poco/1.4/Foundation/include/Poco/Platform.h#9 $
+// $Id: //poco/1.4/Foundation/include/Poco/Platform.h#4 $
 //
 // Library: Foundation
 // Package: Core
@@ -65,7 +65,7 @@
 #define POCO_OS_VMS           0x2001
 
 
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
 	#define POCO_OS_FAMILY_UNIX 1
 	#define POCO_OS_FAMILY_BSD 1
 	#define POCO_OS POCO_OS_FREE_BSD
@@ -102,9 +102,6 @@
 #elif defined(__QNX__)
 	#define POCO_OS_FAMILY_UNIX 1
 	#define POCO_OS POCO_OS_QNX
-#elif defined(__CYGWIN__)
-	#define POCO_OS_FAMILY_UNIX 1
-	#define POCO_OS POCO_OS_CYGWIN
 #elif defined(unix) || defined(__unix) || defined(__unix__)
 	#define POCO_OS_FAMILY_UNIX 1
 	#define POCO_OS POCO_OS_UNKNOWN_UNIX
@@ -114,17 +111,15 @@
 #elif defined(_WIN32) || defined(_WIN64)
 	#define POCO_OS_FAMILY_WINDOWS 1
 	#define POCO_OS POCO_OS_WINDOWS_NT
+#elif defined(__CYGWIN__)
+	#define POCO_OS_FAMILY_UNIX 1
+	#define POCO_OS POCO_OS_CYGWIN
 #elif defined(__VMS)
 	#define POCO_OS_FAMILY_VMS 1
 	#define POCO_OS POCO_OS_VMS
 #elif defined(POCO_VXWORKS)
   #define POCO_OS_FAMILY_UNIX 1
   #define POCO_OS POCO_OS_VXWORKS
-#endif
-
-
-#if !defined(POCO_OS)
-	#error "Unknown Platform."
 #endif
 
 
@@ -145,7 +140,6 @@
 #define POCO_ARCH_S390    0x0c
 #define POCO_ARCH_SH      0x0d
 #define POCO_ARCH_NIOS2   0x0e
-#define POCO_ARCH_ARM64   0x0f
 
 
 #if defined(__ALPHA) || defined(__alpha) || defined(__alpha__) || defined(_M_ALPHA)
@@ -188,24 +182,15 @@
 	#else
 		#define POCO_ARCH_LITTLE_ENDIAN 1
 	#endif
-#elif defined(__arm64__) || defined(__arm64) 
-	#define POCO_ARCH POCO_ARCH_ARM64
-	#if defined(__ARMEB__)
-		#define POCO_ARCH_BIG_ENDIAN 1
-	#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-		#define POCO_ARCH_BIG_ENDIAN 1
-	#else
-		#define POCO_ARCH_LITTLE_ENDIAN 1
-	#endif
 #elif defined(__m68k__)
 	#define POCO_ARCH POCO_ARCH_M68K
 	#define POCO_ARCH_BIG_ENDIAN 1
 #elif defined(__s390__)
 	#define POCO_ARCH POCO_ARCH_S390
 	#define POCO_ARCH_BIG_ENDIAN 1
-#elif defined(__sh__) || defined(__sh) || defined(SHx) || defined(_SHX_)
+#elif defined(__sh__) || defined(__sh)
 	#define POCO_ARCH POCO_ARCH_SH
-	#if defined(__LITTLE_ENDIAN__) || (POCO_OS == POCO_OS_WINDOWS_CE)
+	#if defined(__LITTLE_ENDIAN__)
 		#define POCO_ARCH_LITTLE_ENDIAN 1
 	#else
 		#define POCO_ARCH_BIG_ENDIAN 1
@@ -218,21 +203,6 @@
 		#define POCO_ARCH_BIG_ENDIAN 1
 	#endif
 
-#endif
-
-
-#if !defined(POCO_ARCH)
-	#error "Unknown Hardware Architecture."
-#endif
-
-
-//
-// Thread-safety of local static initialization
-//
-#if __cplusplus >= 201103L || __GNUC__ >= 4 || defined(__clang__)
-#ifndef POCO_LOCAL_STATIC_INIT_IS_THREADSAFE
-#define POCO_LOCAL_STATIC_INIT_IS_THREADSAFE 1
-#endif
 #endif
 
 

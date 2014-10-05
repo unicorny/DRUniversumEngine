@@ -1,7 +1,7 @@
 //
 // Types.h
 //
-// $Id: //poco/1.4/Foundation/include/Poco/Types.h#3 $
+// $Id: //poco/1.4/Foundation/include/Poco/Types.h#2 $
 //
 // Library: Foundation
 // Package: Core
@@ -69,7 +69,7 @@ namespace Poco {
 	#define POCO_HAVE_INT64 1
 #elif defined(__GNUC__) || defined(__clang__)
 	//
-	// Unix/GCC/Clang
+	// Unix/GCC
 	//
 	typedef signed char            Int8;
 	typedef unsigned char          UInt8;

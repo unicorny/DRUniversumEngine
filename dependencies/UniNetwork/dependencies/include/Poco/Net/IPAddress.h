@@ -42,9 +42,14 @@
 
 #include "Poco/Net/Net.h"
 #include "Poco/Net/SocketDefs.h"
+#include <vector>
 
 
 namespace Poco {
+
+class BinaryReader;
+class BinaryWriter;
+
 namespace Net {
 
 
@@ -70,11 +75,15 @@ class Net_API IPAddress
 	/// supports IPv6.
 {
 public:
+	typedef std::vector<IPAddress> List;
+
 	enum Family
 		/// Possible address families for IP addresses.
 	{
-		IPv4,
-		IPv6
+		IPv4
+#ifdef POCO_HAVE_IPv6
+		,IPv6
+#endif
 	};
 	
 	IPAddress();
@@ -115,6 +124,18 @@ public:
 		/// passed. Additionally, for an IPv6 address, a scope ID
 		/// may be specified. The scope ID will be ignored if an IPv4
 		/// address is specified.
+
+	IPAddress(unsigned prefix, Family family);
+			/// Creates an IPAddress mask with the given length of prefix.
+
+#if defined(_WIN32)
+	IPAddress(const SOCKET_ADDRESS& socket_address);
+			/// Creates an IPAddress from Windows SOCKET_ADDRESS structure.
+#endif
+
+	IPAddress(const struct sockaddr& sockaddr);
+		/// Same for struct sock_addr on POSIX.
+
 
 	~IPAddress();
 		/// Destroys the IPAddress.
@@ -177,7 +198,7 @@ public:
 		/// Only IPv4 addresses can be broadcast addresses. In a broadcast
 		/// address, all bits are one.
 		///
-		/// For a IPv6 address, returns always false.
+		/// For an IPv6 address, returns always false.
 	
 	bool isLoopback() const;
 		/// Returns true iff the address is a loopback address.
@@ -217,8 +238,10 @@ public:
 		/// IPv4 site local addresses are in on of the 10.0.0.0/24,
 		/// 192.168.0.0/16 or 172.16.0.0 to 172.31.255.255 ranges.
 		///
-		/// IPv6 site local addresses have 1111 1110 11 as the first
-		/// 10 bits, followed by 38 zeros.
+		/// Originally, IPv6 site-local addresses had FEC0/10 (1111 1110 11) 
+		/// prefix (RFC 4291), followed by 38 zeros. Interfaces using  
+		/// this mask are supported, but obsolete; RFC 4193 prescribes
+		/// fc00::/7 (1111 110) as local unicast prefix.
 		
 	bool isIPv4Compatible() const;
 		/// Returns true iff the address is IPv4 compatible.
@@ -296,6 +319,10 @@ public:
 	bool operator <= (const IPAddress& addr) const;
 	bool operator >  (const IPAddress& addr) const;
 	bool operator >= (const IPAddress& addr) const;
+	IPAddress operator & (const IPAddress& addr) const;
+	IPAddress operator | (const IPAddress& addr) const;
+	IPAddress operator ^ (const IPAddress& addr) const;
+	IPAddress operator ~ () const;
 		
 	poco_socklen_t length() const;
 		/// Returns the length in bytes of the internal socket address structure.	
@@ -305,6 +332,9 @@ public:
 		
 	int af() const;
 		/// Returns the address family (AF_INET or AF_INET6) of the address.
+
+	unsigned prefixLength() const;
+		/// Returns the prefix length.
 		
 	void mask(const IPAddress& mask);
 		/// Masks the IP address using the given netmask, which is usually
@@ -373,6 +403,9 @@ inline void swap(IPAddress& addr1, IPAddress& addr2)
 	addr1.swap(addr2);
 }
 
+
+BinaryWriter& operator << (BinaryWriter& writer, const IPAddress& value);
+BinaryReader& operator >> (BinaryReader& reader, IPAddress& value);
 
 } } // namespace Poco::Net
 

@@ -61,13 +61,19 @@ bool NetCrypto::checkSign(std::string input, std::string signature)
 {
 	// verify
 	try {
-		Poco::Crypto::RSADigestEngine eng2(*mServerKey);
-		eng2.update(input.c_str(), static_cast<unsigned>(input.length()));
-		eng2.verify(signature);
+		Poco::Crypto::RSADigestEngine eng(*mServerKey);
+		//Poco::Crypto::RSADigestEngine eng(*mClientKey);
+		eng.update(input.c_str(), static_cast<unsigned>(input.length()));
+		//const Poco::DigestEngine::Digest& sig = eng.signature();
+		const Poco::DigestEngine::Digest& sig = Poco::Crypto::RSADigestEngine::digestFromHex(signature);
+		return eng.verify(sig);
+		//std::string hexSignature = Poco::DigestEngine::digestToHex(sig);
+		//if(hexSignature.compare(signature) == 0) return true;
+		//eng2.verify(signature);
 
 	} catch(Poco::Exception what) {
 			POCO_LOG_FATAL(std::string("error by checking signature with input: ") + input +
-					std::string(", siganture: ") + signature + std:string(", error: ") + what.displayText());
+					std::string(", signature: ") + signature + std::string(", error: ") + what.displayText());
 	}
 	return false;
 }

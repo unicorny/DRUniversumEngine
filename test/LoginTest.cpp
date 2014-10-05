@@ -106,6 +106,9 @@ namespace UniversumLibTest {
 					//UniLib::EngineLog.writeToLog(std::string("encryptet request token: ") + requestToken);
 					std::string cryptetRequestToken = UniLib::g_RSAModule->crypt(requestToken, UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
 					std::string signature = json.get("signature", "").asString();
+					if(!UniLib::g_RSAModule->checkSign(requestToken, signature)) {
+						LOG_WARNING("signature isn't valid");
+					}
 					//UniLib::EngineLog.writeToLog(std::string("Signature: ") + signature);
 					Json::Value request(Json::objectValue);
 					Json::Value content(Json::objectValue);

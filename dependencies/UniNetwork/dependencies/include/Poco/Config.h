@@ -43,6 +43,9 @@
 // Define to enable Windows Unicode (UTF-8) support
 #define POCO_WIN32_UTF8
 
+// Define to enable C++11 support
+//#define POCO_ENABLE_CPP11
+
 
 // Define to disable implicit linking
 // #define POCO_NO_AUTOMATIC_LIBS
@@ -67,7 +70,7 @@
 // Define to desired default thread stack size
 // Zero means OS default
 #ifndef POCO_THREAD_STACK_SIZE
-#define POCO_THREAD_STACK_SIZE 0
+	#define POCO_THREAD_STACK_SIZE 0
 #endif
 
 
@@ -108,6 +111,10 @@
 // #define POCO_NO_SYSLOGCHANNEL
 
 
+// Define to enable MSVC secure warnings
+// #define POCO_MSVC_SECURE_WARNINGS
+
+
 // No support for INI file configurations in
 // Poco::Util::Application.
 // #define POCO_UTIL_NO_INIFILECONFIGURATION
@@ -117,6 +124,17 @@
 // Poco::Util::Application. Avoids linking of XML
 // library and saves a few 100 Kbytes.
 // #define POCO_UTIL_NO_XMLCONFIGURATION
+
+
+// No IPv6 support
+// Define to disable IPv6
+// #define POCO_NET_NO_IPv6
+
+
+// Windows CE has no locale support
+#if defined(_WIN32_WCE)
+#define POCO_NO_LOCALE
+#endif
 
 
 #endif // Foundation_Config_INCLUDED
