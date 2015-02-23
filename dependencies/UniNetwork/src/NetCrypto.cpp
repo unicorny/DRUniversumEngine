@@ -87,25 +87,42 @@ DRReturn NetCrypto::generateClientKeys()
 	
 	std::ostringstream publicKey;
 	std::ostringstream privateKey;
-	std::ostringstream hexEncodedKey;
-	Poco::HexBinaryEncoder encode(hexEncodedKey);
-	mClientKey->save(&publicKey, &privateKey, "as723kas78DKLJash8d3");
-	mClientPublicKeyString = publicKey.str();
-	mClientKey->save(&encode, &privateKey, "as723kas78DKLJash8d3");
-	encode.close();
-	mClientPrivateKeyString = hexEncodedKey.str();
+	//std::ostringstream hexEncodedKey;
+	//Poco::HexBinaryEncoder encode(hexEncodedKey);
+	//mClientKey->save(&publicKey, &privateKey, "as723kas78DKLJash8d3");
+	//mClientPublicKeyString = publicKey.str();
 	//mClientPrivateKeyString = privateKey.str();
-
+	mClientKey->save(&publicKey, &privateKey, "as723kas78DKLJash8d3");
+	//encode.close();
+	mClientPublicKeyString = publicKey.str();
+	mClientPrivateKeyString = privateKey.str();
 
 	return DR_OK;
 }
-std::string NetCrypto::getClientPublicKey()
+std::string NetCrypto::getClientPublicKey(OutputType outputType/* = STRING*/)
 {
-	return mClientPublicKeyString;
+	if(outputType == STRING) {
+		return mClientPublicKeyString;
+	} else {
+		return encodeToHex(mClientPublicKeyString);
+	}
 }
-std::string NetCrypto::getClientPrivateKey()
+std::string NetCrypto::getClientPrivateKey(OutputType outputType/* = STRING*/)
 {
-	return mClientPrivateKeyString;
+	if(outputType == STRING) {
+		return mClientPrivateKeyString;
+	} else {
+		return encodeToHex(mClientPrivateKeyString);
+	}
+}
+
+std::string NetCrypto::encodeToHex(std::string input) 
+{
+	std::ostringstream hexEncoded;
+	Poco::HexBinaryEncoder encode(hexEncoded);
+	encode << input;
+	encode.close();
+	return hexEncoded.str();
 }
 
 // server keys
@@ -136,7 +153,7 @@ DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* 
 }
 
 
-std::string NetCrypto::getServerPublicKey()
+std::string NetCrypto::getServerPublicKey(OutputType outputType/* = STRING*/)
 {
 	return "";
 }

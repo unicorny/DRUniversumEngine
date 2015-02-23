@@ -45,7 +45,7 @@ namespace UniversumLibTest {
 		
 		//printf("publickey: %s, privateKey: %s\n", pubKey.data(), privateKey.data());
 		unsigned int state = 0;
-		while(SDL_GetTicks() - startTicks < 8000) 
+		while(SDL_GetTicks() - startTicks < 10000) 
 		{
 			std::string recv;
 			if(DRINetwork::Instance()->recv(recv, mConnectionNumber) == NET_COMPLETE) {
@@ -82,7 +82,8 @@ namespace UniversumLibTest {
 					Json::Value contentJson(Json::objectValue);
 					contentJson["username"] = "admin";
 					contentJson["password"] = encrypted;
-					contentJson["publicKey"] = UniLib::g_RSAModule->getClientPrivateKey();
+					//contentJson["publicKey"] = UniLib::g_RSAModule->getClientPrivateKey();
+					contentJson["publicKey"] = UniLib::g_RSAModule->getClientPublicKey(UniLib::lib::Crypto::HEX);
 					//UniLib::EngineLog.writeToLog(std::string("public key send to server: ") + UniLib::g_RSAModule->getClientPublicKey());
 					//UniLib::EngineLog.writeToLog(std::string("public key send to server hex encoded: ") + UniLib::g_RSAModule->getClientPrivateKey());
 					loginRequest["url"] = "/spacecraft/playersRaw/login";
@@ -100,14 +101,23 @@ namespace UniversumLibTest {
 					state = 1;
 					//login with crypted password
 				} else if(state == 1) {
-					//UniLib::EngineLog.writeToLog(std::string("recv login answear: ") + recv);
+					state = 2;
+					//UniLib::EngineLog.writeToLog(std::string("<u>recv login answear: </u>") + recv);
 					reader.parse(recv, json);
+					std::string state = json.get("status", "not found").asString();
+					if(state != std::string("succeed")) {
+						UniLib::EngineLog.writeToLog("returned state: %s", state.data());
+						UniLib::EngineLog.writeToLog(std::string("error message: ") + json.get("message", "not found").asString());
+						LOG_ERROR("Error by login", DR_ERROR);
+					}
 					std::string requestToken = UniLib::g_RSAModule->crypt(json.get("requestToken", "").asString(), UniLib::lib::Crypto::UNCRYPT_WITH_CLIENT_PRIVATE);
 					//UniLib::EngineLog.writeToLog(std::string("encryptet request token: ") + requestToken);
 					std::string cryptetRequestToken = UniLib::g_RSAModule->crypt(requestToken, UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
 					std::string signature = json.get("signature", "").asString();
 					if(!UniLib::g_RSAModule->checkSign(requestToken, signature)) {
 						LOG_WARNING("signature isn't valid");
+					} else {
+						LOG_INFO("signature from request token is valid");
 					}
 					//UniLib::EngineLog.writeToLog(std::string("Signature: ") + signature);
 					Json::Value request(Json::objectValue);
@@ -122,10 +132,11 @@ namespace UniversumLibTest {
 					request["content"] = std::string("json=") + writer.write(content);
 					
 					DRINetwork::Instance()->send(writer.write(request), mConnectionNumber);
-					state = 2;
 				} else if(state == 2) {
+					state = 3;
 					UniLib::EngineLog.writeToLog(std::string("recv request answear:<br>") + recv);
 					reader.parse(recv, json);
+					
 				}
 			}
 			SDL_Delay(100);

@@ -33,8 +33,8 @@ public:
 
 	// client keys
 	virtual DRReturn generateClientKeys();
-	virtual std::string getClientPublicKey();
-	virtual std::string getClientPrivateKey();
+	virtual std::string getClientPublicKey(OutputType outputType = STRING);
+	virtual std::string getClientPrivateKey(OutputType outputType = STRING);
 
 	//signature
 	virtual std::string sign(std::string input);
@@ -42,9 +42,11 @@ public:
 
 	// server keys
 	virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
-	virtual std::string getServerPublicKey();
+	virtual std::string getServerPublicKey(OutputType outputType = STRING);
 
 protected:
+	std::string encodeToHex(std::string input);
+
 	Poco::Crypto::RSAKey*	mClientKey;
 	std::string				mClientPublicKeyString;
 	std::string				mClientPrivateKeyString;

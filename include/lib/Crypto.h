@@ -45,6 +45,10 @@ namespace UniLib {
 				UNCRYPT_WITH_CLIENT_PRIVATE = 5,
 				UNCRYPT_WITH_CLIENT_PUBLIC = 6
 			};
+			enum OutputType {
+				STRING = 0,
+				HEX = 1
+			};
 			Crypto();
 			virtual ~Crypto();
 
@@ -54,12 +58,12 @@ namespace UniLib {
 
 			// client keys
 			virtual DRReturn generateClientKeys() = 0;
-			virtual std::string getClientPublicKey() = 0;
-			virtual std::string getClientPrivateKey() = 0;
+			virtual std::string getClientPublicKey(OutputType outputType = STRING) = 0;
+			virtual std::string getClientPrivateKey(OutputType outputType = STRING) = 0;
 
 			// server keys
 			virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3) = 0;
-			virtual std::string getServerPublicKey() = 0;					
+			virtual std::string getServerPublicKey(OutputType outputType = STRING) = 0;					
 
 			// static strings
 			static std::string getOperationTypeString(OperationType type);
