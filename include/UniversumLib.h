@@ -50,12 +50,6 @@
 #include "lib/Logging.h"
 #include "../../thirdparty/include/json/json.h"
 
-
-
-#include <istream>
-#include <ostream>
-#include <sstream>
-
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
 
@@ -81,46 +75,14 @@ namespace UniLib {
 #define LOG_ERROR_SDL_VOID() {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2){ LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__); return;}}
 #define LOG_WARNING_SDL() {const char* pcErrorSDL = SDL_GetError(); if(strlen(pcErrorSDL) > 2) LOG_SDL_INTERN(pcErrorSDL, DRRemoveDir(__FILE__), __LINE__, __FUNCTION__);}
 
-// interfaces to dynamic linked libs
-#include "lib/Timer.h"
-#include "lib/DRInterface.h"
-
-#include "lib/Thread.h"
-#include "lib/Crypto.h"
-
-#include "server/Server.h"
-#include "lib/DRINetwork.h"
-#include "lib/BufferedNetworkPacket.h"
-
-
-
-#include "model/Unit.h"
-#include "view/Camera.h"
-
-#include "view/Sektor.h"
-#include "model/Sektor.h"
-#include "generator/Sektor.h"
-
-#include "controller/Sektor.h"
-//#include "model/Planet.h"
-//#include "generator/Planet.h"
-//#include "view/Planet.h"
-//#include "controller/Planet.h"
-
-
 
 #ifndef __inline__
 #define  __inline__ inline
 #endif
 
-namespace UniLib {
-	// globale modules
-	UNIVERSUM_LIB_API extern lib::Crypto* g_RSAModule;
-}
 
 // engine functions
-namespace UniLib {
-	
+namespace UniLib {	
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
     UNIVERSUM_LIB_API DRString getTimeSinceStart();

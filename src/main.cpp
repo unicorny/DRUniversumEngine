@@ -1,5 +1,6 @@
 ﻿#include "UniversumLib.h"
 
+
 // some dll stuff for windows
 int         g_iProzess = 0;
 int			g_iProzessFunk = 0;
@@ -44,23 +45,18 @@ int WINAPI DllMain(HINSTANCE DllHandle, unsigned long ReasonForCall, void* Reser
 namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
-	Crypto* g_RSAModule = NULL;
 
     DRReturn init()
     {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
-		g_RSAModule = DRINetwork::Instance()->createCrypto();
 
         return DR_OK;
     }
 
     void exit() 
     {
-		//DR_SAVE_DELETE(g_RSAModule);
-		DRINetwork::Instance()->freeCrypto(g_RSAModule);
-		g_RSAModule = NULL;
 		SDL_Quit();
         EngineLog.exit();
         Core2_exit();

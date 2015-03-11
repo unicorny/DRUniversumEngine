@@ -1,4 +1,4 @@
-#include "UniversumLib.h"
+#include "lib/DRInterface.h"
 
 #ifdef _WIN32
 HMODULE   DRInterface::mDLL = 0;

@@ -1,4 +1,4 @@
-#include "UniversumLib.h"
+#include "lib/Crypto.h"
 
 
 namespace UniLib {
@@ -23,7 +23,7 @@ namespace UniLib {
 			case UNCRYPT_WITH_CLIENT_PUBLIC: return std::string("uncrypt with client public");
 			default: return std::string("");
 			}
-			return std::string("");
+			//return std::string("");
 		}
 	}
 }

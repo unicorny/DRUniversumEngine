@@ -1,4 +1,4 @@
-#include "UniversumLib.h"
+#include "view/Sektor.h"
 
 namespace UniLib {
 	namespace view {

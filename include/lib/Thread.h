@@ -30,6 +30,7 @@
 #ifndef __DR_UNIVERSUM_LIB_THREAD__
 #define __DR_UNIVERSUM_LIB_THREAD__
 
+#include "Timer.h"
 #include <sdl/SDL_thread.h>
 
 namespace UniLib {

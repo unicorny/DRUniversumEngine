@@ -20,21 +20,21 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER_H__
-#define __DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER_H__
+#ifndef __DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_WORLD_DATA_SERVER_H__
+#define __DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_WORLD_DATA_SERVER_H__
 
 #include "UniversumLib.h"
 
 namespace UniLib {
 	namespace server {
-		class UNIVERSUM_LIB_API ConnectionToServer
+		class UNIVERSUM_LIB_API ConnectionToWorldDataServer
 		{
 		public:
-			ConnectionToServer();
-			~ConnectionToServer();
+			ConnectionToWorldDataServer();
+			virtual ~ConnectionToWorldDataServer();
 		private:
 		};
 	};
 };
 
-#endif //__DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER_H__
+#endif //__DR_UNIVERSUM_LIB_SERVER_CONNECTION_TO_WORLD_DATA_SERVER_H__

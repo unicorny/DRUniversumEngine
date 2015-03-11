@@ -26,6 +26,10 @@
 #include "UniversumLib.h"
 
 namespace UniLib {
+	namespace view {
+		class Camera;
+		class Sektor;
+	}
 	namespace model {
 		/*!
 		 * Sektor model prototyp, contains active and inactive objects in sector,

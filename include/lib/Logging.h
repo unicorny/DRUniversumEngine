@@ -22,8 +22,14 @@
 #ifndef __DR_UNIVERSUM_LIB_ENGINE_LOGGER__
 #define __DR_UNIVERSUM_LIB_ENGINE_LOGGER__
 
+//#include "UniversumLib.h"
+
 /**!
- * class for saving texture to filesystem
+ * \author: Dario Rekowski
+ *
+ * \date:
+ * 
+ * \desc: Base Thread Safe Logging class 
  */
 namespace UniLib {
     namespace lib {

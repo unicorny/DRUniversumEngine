@@ -23,6 +23,7 @@
 #ifndef __UNIVERSUM_LIB_LIB_BUFFERED_NETWORK_PACKET_H__
 #define __UNIVERSUM_LIB_LIB_BUFFERED_NETWORK_PACKET_H__
 
+#include "UniversumLib.h"
 #include <queue>
 
 enum DRNet_RequestTyp;

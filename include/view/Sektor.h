@@ -30,6 +30,9 @@
 
 namespace UniLib {
 	namespace view {
+
+		class Camera;
+
 		class UNIVERSUM_LIB_API Sektor
 		{
 		public:

@@ -34,6 +34,7 @@ Netzwerk klasse f�r das einfache arbeiten mit sockets
 Autor: Dario Rekowski
 Datum: 16.09.09
 */
+#include "DRInterface.h"
 #include <map>
 
 enum DRNet_Status
@@ -82,6 +83,12 @@ struct DRNetServerConfig
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
 enum UNIVERSUM_LIB_API DRNet_Status;
 #endif
+
+namespace UniLib {
+	namespace lib {
+		class Crypto;
+	}
+}
 
 // Interface klasse f�r Netzwerk, implementierung erfolgt in Network.dll
 class UNIVERSUM_LIB_API DRINetwork : public DRInterface

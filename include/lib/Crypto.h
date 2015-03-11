@@ -31,6 +31,7 @@
 #ifndef __DR_UNIVERSUM_LIB_CRYPTO__
 #define __DR_UNIVERSUM_LIB_CRYPTO__
 
+#include "UniversumLib.h"
 
 namespace UniLib {
 	namespace lib {

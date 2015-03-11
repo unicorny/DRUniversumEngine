@@ -1,6 +1,7 @@
 //#include "Engine2Main.h"
-#include "UniversumLib.h"
-
+//#include "UniversumLib.h"
+#include "lib/DRINetwork.h"
+#include "lib/Crypto.h"
 
 
 DRINetwork* DRINetwork::mTheOneAndOnly = NULL;

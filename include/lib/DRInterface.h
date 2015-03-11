@@ -28,6 +28,8 @@
 #ifndef __DR_UNIVERSUM_LIB_INTERFACE__
 #define __DR_UNIVERSUM_LIB_INTERFACE__
 
+#include "UniversumLib.h"
+
 class UNIVERSUM_LIB_API DRInterface
 {
 public:

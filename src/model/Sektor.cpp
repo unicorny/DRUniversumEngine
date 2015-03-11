@@ -1,4 +1,4 @@
-#include "UniversumLib.h"
+#include "model/Sektor.h"
 
 namespace UniLib {
 	namespace model {
