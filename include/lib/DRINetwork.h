@@ -48,6 +48,36 @@ enum DRNet_Status
 	NET_NOT_FOUND = -2
 };
 
+enum DRNet_Request_Method {
+	NET_REQUEST_METHOD_GET = 0,
+	NET_REQUEST_METHOD_POST = 1
+};
+
+enum DRNet_Request_ContentType
+{
+	//application/x-www-form-urlencoded
+	NET_REQUEST_CONTENT_TYPE_FORM_URLENCODED = 0
+};
+
+struct DRNetRequest
+{
+	std::string url;
+	DRNet_Request_Method method;
+	DRNet_Request_ContentType contentType;
+	std::string userAgent;
+	Json::Value content; // json encoded content
+};
+
+enum DRNet_Server_Type
+{
+	NET_SERVER_TYPE_HTTP = 0
+};
+struct DRNetServerConfig
+{
+	std::string url;//or ip
+	int port;
+	DRNet_Server_Type serverType;
+};
 
 #if (_MSC_VER >= 1200 && _MSC_VER < 1310)
 enum UNIVERSUM_LIB_API DRNet_Status;
@@ -73,7 +103,7 @@ public:
 	// \brief connect to server
 	// \param config contains server config in json format
 	// \return connection number, return 0 by error
-	virtual u16 connect(std::string configJson, std::string section);
+	virtual u16 connect(const DRNetServerConfig& cfg);
 
 	// \brief disconnect from server
 	// \param connectionNumber return value from connect

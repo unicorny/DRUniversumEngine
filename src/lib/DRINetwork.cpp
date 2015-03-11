@@ -50,7 +50,7 @@ DRINetwork* DRINetwork::Instance()
    // return NULL;
 }
 
-u16 DRINetwork::connect(std::string configJson, std::string section)
+u16 DRINetwork::connect(const DRNetServerConfig& cfg)
 {
     LOG_WARNING("not implemented");
     return 0;

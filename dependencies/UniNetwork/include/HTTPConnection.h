@@ -28,7 +28,7 @@
 class UNI_NETWORK_API HTTPConnection : public Connection
 {
 public:
-	HTTPConnection(Json::Value cfg);
+	HTTPConnection(const DRNetServerConfig& cfg);
 	~HTTPConnection();
 
 	virtual DRReturn run();

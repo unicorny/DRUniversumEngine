@@ -52,6 +52,7 @@ protected:
 	std::string				mClientPrivateKeyString;
 
 	Poco::Crypto::RSAKey*	mServerKey;
+	std::string             mServerPublicKeyString; 
 };
 
 

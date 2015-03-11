@@ -43,7 +43,7 @@ public:
 	// \brief connect to server
 	// \param config contains server config in json format
 	// \return connection number
-	virtual u16 connect(std::string configJson, std::string section);
+	virtual u16 connect(const DRNetServerConfig& cfg);
 
 	// \brief disconnect from server
 	// \param connectionNumber return value from connect

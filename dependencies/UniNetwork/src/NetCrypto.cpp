@@ -132,6 +132,7 @@ DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* 
 	//std::istringstream str(removePEMHeader(pbKey));
 	//Poco::Base64Decoder decode(str);
 	//Poco::Base64Decoder
+	mServerPublicKeyString = pbKey;
 	std::istringstream str(pbKey);
 	
 	try {
@@ -155,5 +156,9 @@ DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* 
 
 std::string NetCrypto::getServerPublicKey(OutputType outputType/* = STRING*/)
 {
-	return "";
+	if(outputType == STRING) {
+		return mServerPublicKeyString;
+	} else {
+		return encodeToHex(mServerPublicKeyString);
+	}
 }

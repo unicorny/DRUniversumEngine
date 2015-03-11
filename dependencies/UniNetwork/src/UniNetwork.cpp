@@ -33,9 +33,9 @@ void UniNetwork::freeCrypto(UniLib::lib::Crypto* crypto)
 // \brief connect to server
 // \param config contains server config in json format
 // \return connection number
-u16 UniNetwork::connect(std::string configJson, std::string section)
+u16 UniNetwork::connect(const DRNetServerConfig& cfg)
 {
-	Connection* con = mConnectionFactory.createConnection(configJson, section);
+	Connection* con = mConnectionFactory.createConnection(cfg);
 	//if(!con) LOG_ERROR("Error by creating connection", 0);
 	
 	mConnectionMutex.lock();

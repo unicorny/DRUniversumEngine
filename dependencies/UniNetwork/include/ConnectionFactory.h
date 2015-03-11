@@ -31,7 +31,7 @@ public:
 	ConnectionFactory(std::string logFilename = std::string("log/connectionFactoryLog.txt"));
 	~ConnectionFactory();
 
-	Connection* createConnection(std::string connectionConfig, std::string section);
+	Connection* createConnection(const DRNetServerConfig& cfg);
 	
 protected:
 private:
