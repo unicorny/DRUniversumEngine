@@ -1,4 +1,4 @@
-#include "UniNetworkHeader.h"
+#include "Connection.h"
 
 using namespace Poco;
 
@@ -28,8 +28,7 @@ void Connection::resume(Timer& timer)
 }
 
 DRReturn Connection::parseJson(std::string jsonString, Json::Value& json)
-{
-	
+{	
 	Json::Reader reader;
 	reader.parse(jsonString, json);
 	if(json.empty()) 

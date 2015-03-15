@@ -23,6 +23,15 @@
 #ifndef __NETWORK_NET_CRYPTO_H__
 #define __NETWORK_NET_CRYPTO_H__
 
+#include "lib/Crypto.h"
+#include "Loggable.h"
+
+namespace Poco {
+    namespace Crypto {
+        class RSAKey;
+    }
+}
+
 class UNI_NETWORK_API NetCrypto : public UniLib::lib::Crypto, Loggable 
 {
 public:

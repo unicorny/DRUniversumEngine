@@ -27,7 +27,11 @@
 #else
 #endif
 
+//#define POCO_STATIC
+
 #include <UniversumLib.h> 
+#include <lib/DRINetwork.h>
+/*
 #include "Poco/FileChannel.h"
 #include "Poco/Message.h"
 #include "Poco/Runnable.h"
@@ -48,7 +52,7 @@
 #include "Poco/Crypto/RSADigestEngine.h"
 #include "Poco/Crypto/Cipher.h"
 #include "Poco/Crypto/CipherFactory.h"
-
+*/
 
 #ifdef _WIN32
     #ifdef BUILD_DLL_UNI_NETWORK
@@ -59,13 +63,15 @@
 #else
     #define UNI_NETWORK_API
 #endif
-
+/*
 #include "Loggable.h"
 #include "Connection.h"
 #include "HTTPConnection.h"
 #include "ConnectionFactory.h"
 #include "UniNetwork.h"
 #include "NetCrypto.h"
+*/
+
 
 #ifdef __cplusplus
 extern "C"

@@ -23,10 +23,17 @@
 #ifndef __NETWORK_MAIN_H__
 #define __NETWORK_MAIN_H__
 
-#include "Poco\Mutex.h"
+#include "UniNetworkHeader.h"
+#include "Poco/Mutex.h"
+#include "lib/DRINetwork.h"
+#include "ConnectionFactory.h"
 
-
-
+class Connection;
+namespace UniLib {
+    namespace lib {
+        class Crypto;
+    }
+}
 
 // Interface klasse für Netzwerk, implementierung erfolgt in Network.dll
 class UNI_NETWORK_API UniNetwork : public DRINetwork

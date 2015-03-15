@@ -1,4 +1,5 @@
-#include "UniNetworkHeader.h"
+#include "ConnectionFactory.h"
+#include "HTTPConnection.h"
 
 using namespace Poco;
 

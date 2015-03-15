@@ -23,6 +23,14 @@
 #ifndef __UNI_NETWORK_HTTP_CONNECTION_H
 #define __UNI_NETWORK_HTTP_CONNECTION_H
 
+#include <queue>
+
+#include "Connection.h"
+
+#include "Poco/Net/Net.h"
+#include "Poco/Net/HTTPClientSession.h"
+#include "Poco/Mutex.h"
+
 
 
 class UNI_NETWORK_API HTTPConnection : public Connection

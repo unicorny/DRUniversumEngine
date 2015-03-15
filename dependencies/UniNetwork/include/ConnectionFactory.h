@@ -23,7 +23,8 @@
 #ifndef __UNI_NETWORK_CONNECTION_FACTORY__H
 #define __UNI_NETWORK_CONNECTION_FACTORY__H
 
-
+#include "Loggable.h"
+#include "Connection.h"
 
 class UNI_NETWORK_API ConnectionFactory : public Loggable
 {

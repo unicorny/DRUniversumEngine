@@ -1,4 +1,9 @@
-#include "UniNetworkHeader.h"
+#include "HTTPConnection.h"
+
+#include "Poco/Net/HTTPRequest.h"
+#include "Poco/Net/HTTPResponse.h"
+#include "Poco/StreamCopier.h"
+#include <sstream>
 
 using namespace Json;
 using namespace Poco;
@@ -7,8 +12,8 @@ using namespace Poco::Net;
 HTTPConnection::HTTPConnection(const DRNetServerConfig& cfg)
 	: Connection(1000)
 {
-	mClientSession.setPort(cfg.port);
-	mClientSession.setHost(cfg.ip);
+	mClientSession.setPort((Poco::UInt16)cfg.port);
+	mClientSession.setHost(cfg.url);
 }
 
 HTTPConnection::~HTTPConnection()

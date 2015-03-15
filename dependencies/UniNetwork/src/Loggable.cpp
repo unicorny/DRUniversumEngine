@@ -1,4 +1,7 @@
-#include "UniNetworkHeader.h"
+#include "Loggable.h"
+
+#include "Poco/AutoPtr.h"
+#include "Poco/FileChannel.h"
 
 using namespace Poco;
 

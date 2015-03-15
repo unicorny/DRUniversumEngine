@@ -1,5 +1,7 @@
-#include "UniNetworkHeader.h"
+#include "UniNetwork.h"
+#include "Poco/Net/Net.h"
 
+#include "NetCrypto.h"
 
 using namespace std;
 
@@ -39,7 +41,7 @@ u16 UniNetwork::connect(const DRNetServerConfig& cfg)
 	//if(!con) LOG_ERROR("Error by creating connection", 0);
 	
 	mConnectionMutex.lock();
-	u16 key = mConnections.size()+1;
+	u16 key = (u16)mConnections.size()+1;
 	mConnections.insert(CONNECTION_PAIR(key, con));
 	mConnectionMutex.unlock();
 

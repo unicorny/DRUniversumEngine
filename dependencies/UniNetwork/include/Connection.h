@@ -23,6 +23,8 @@
 #ifndef __UNI_NETWORK_CONNECTION_H
 #define __UNI_NETWORK_CONNECTION_H
 
+#include "Loggable.h"
+#include "Poco/Timer.h"
 
 class UNI_NETWORK_API Connection : public Loggable
 {

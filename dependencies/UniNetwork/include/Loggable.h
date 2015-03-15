@@ -29,6 +29,10 @@
 #ifndef __UNI_NETWORK_LOGGABLE_H
 #define __UNI_NETWORK_LOGGABLE_H
 
+#include "UniNetworkHeader.h"
+#include "Poco/Message.h"
+
+
 class UNI_NETWORK_API Loggable 
 {
 public: 
