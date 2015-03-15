@@ -2,6 +2,7 @@
 #define __UNIVERSUM_LIB_TEST_TIMER__
 
 #include "UniversumLib.h"
+#include "lib/Timer.h"
 #include "Test.h"
 
 namespace UniversumLibTest {

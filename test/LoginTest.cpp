@@ -1,4 +1,5 @@
-#include "include\main.h"
+#include "include/main.h"
+#include "lib/DRINetwork.h"
 
 namespace UniversumLibTest {
 	LoginTest::LoginTest()
