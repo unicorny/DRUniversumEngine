@@ -71,7 +71,8 @@ struct DRNetRequest
 
 enum DRNet_Server_Type
 {
-	NET_SERVER_TYPE_HTTP = 0
+	NET_SERVER_TYPE_HTTP = 0,
+    NET_SERVER_TYPE_SOCKET = 1
 };
 struct DRNetServerConfig
 {

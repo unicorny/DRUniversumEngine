@@ -25,30 +25,25 @@
  * 
  * \date 18.03.15
  * 
- * \desc Base Class for Server Connection Classes
+ * \desc Callback Commands for communication with server
  */
 
-#ifndef __UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
-#define __UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
+#ifndef __UNIVERSUM_LIB_SERVER_CALLBACKS_H
+#define __UNIVERSUM_LIB_SERVER_CALLBACKS_H
 
-#include "Callbacks.h"
+#include "../lib/DRINetwork.h"
+
 
 namespace UniLib {
-    namespace lib {
-        class Crypto;
-    }
     namespace server {
-
-        class UNIVERSUM_LIB_API ConnectionToServer 
+        class CallbackCommand 
         {
         public:
-            ConnectionToServer();
-            virtual ~ConnectionToServer();
-
+            void execute(DRNet_Status status);
         protected:
-           lib::Crypto* mRSAModule;
+                
         };
     }
 }
 
-#endif //__UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
+#endif //__UNIVERSUM_LIB_SERVER_CALLBACKS_H

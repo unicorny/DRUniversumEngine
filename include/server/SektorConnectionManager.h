@@ -25,7 +25,7 @@
  * 
  * \date 11.03.15
  * 
- * \desc Base Class for singleton classes
+ * \desc Singleton Server Connection Manage, managed various Server connections
  */
 
 #ifndef __DR_UNIVERSUM_LIB_SERVER_SEKTOR_CONNECTION_MANAGER_H__
@@ -35,6 +35,12 @@
 
 namespace UniLib {
 	namespace server {
+        class ConnectionToServer;
+
+        enum ServerType {
+
+        };
+
 		class UNIVERSUM_LIB_API SektorConnectionManager: public lib::Singleton
 		{
 		public:
@@ -45,6 +51,7 @@ namespace UniLib {
 			virtual ~SektorConnectionManager();
 
 			// member variables
+
 
 		};
 	};
