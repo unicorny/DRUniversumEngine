@@ -57,7 +57,7 @@ public:
 	virtual void disconnect(u16 connectionNumber);
 
 	// \brief send data 
-	virtual DRNet_Status send(std::string dataJson, u16 connectionNumber);
+	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber);
 
 	// \breif recv data
 	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);

@@ -37,7 +37,7 @@ public:
 
 	virtual DRReturn run() = 0;
 
-	virtual DRNet_Status send(std::string sendRequest) = 0;
+	virtual DRNet_Status send(const DRNetRequest& sendRequest) = 0;
 	virtual DRNet_Status recv(std::string& recvString) = 0;
 
 protected:

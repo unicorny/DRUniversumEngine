@@ -59,10 +59,10 @@ void UniNetwork::disconnect(u16 connectionNumber)
 }
 
 // \brief send data 
-DRNet_Status UniNetwork::send(std::string dataJson, u16 connectionNumber)
+DRNet_Status UniNetwork::send(const DRNetRequest& sendRequest, u16 connectionNumber)
 {
 	if(!mConnections[connectionNumber]) return NET_NOT_FOUND;
-	return mConnections[connectionNumber]->send(dataJson);
+	return mConnections[connectionNumber]->send(sendRequest);
 }
 
 // \breif recv data

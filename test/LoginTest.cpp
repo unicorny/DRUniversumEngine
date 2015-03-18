@@ -1,14 +1,18 @@
-#include "include/main.h"
+
+#include "include/LoginTest.h"
 #include "lib/DRINetwork.h"
+#include "lib/Crypto.h"
+//#include "UniversumLib.h"
 
 namespace UniversumLibTest {
 	LoginTest::LoginTest()
-		: mConnectionNumber(0)
+		: mConnectionNumber(0), mRSA(NULL)
 	{
 	}
 
 	LoginTest::~LoginTest()
 	{
+		DRINetwork::Instance()->freeCrypto(mRSA);
 		DRINetwork::Instance()->exit();
 	}
 
@@ -18,11 +22,13 @@ namespace UniversumLibTest {
 	{
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
 		DRFileManager::Instance().addOrdner("cfg");
-		std::string value = UniLib::readFileAsString("LoginServer.json");
-		UniLib::g_RSAModule->generateClientKeys();
-		mConnectionNumber = DRINetwork::Instance()->connect(value, std::string("LoginServer"));
+		//std::string value = UniLib::readFileAsString("LoginServer.json");
+		mRSA = DRINetwork::getSingleton().createCrypto();
+		mRSA->generateClientKeys();
+		DRNetServerConfig cfg;
+		cfg.readFromJson(UniLib::convertStringToJson(UniLib::readFileAsString("LoginServer.json")));
+		mConnectionNumber = DRINetwork::Instance()->connect(cfg);
 		UniLib::EngineLog.writeToLog("connectionNumber get: %d", mConnectionNumber);
-		//DRINetwork::Instance()->HTTPRequest("127.0.0.1/spacecraft", NET_GET, "", "spaceCraft");
 		return DR_OK;
 	}
 
@@ -31,16 +37,19 @@ namespace UniversumLibTest {
 	{
 		Uint32 startTicks = SDL_GetTicks();
 		
-		Json::Value getKeyRequest(Json::objectValue);
+		//Json::Value getKeyRequest(Json::objectValue);
 		Json::FastWriter writer;
 		Json::Reader reader;
 		Json::Value json;
 		
+		DRNetRequest keyRequest;
+		keyRequest.url = "/spacecraft/serverKeys/get";
 
-		getKeyRequest["url"] = "/spacecraft/serverKeys/get";
+		//getKeyRequest["url"] = "/spacecraft/serverKeys/get";
 		//getKeyRequest["userAgent"] = UniLib::g_RSAModule->getClientPublicKey();
 		
-		DRINetwork::Instance()->send(writer.write(getKeyRequest), mConnectionNumber);
+		DRINetwork::Instance()->send(keyRequest, mConnectionNumber);
+
 //		DRINetwork::Instance()->login("dariofrodo", "ssss");
 
 		
