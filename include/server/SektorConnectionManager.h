@@ -33,12 +33,22 @@
 
 #include "lib/Singleton.h"
 
+struct DRNetRequest;
+
 namespace UniLib {
+    namespace model {
+        class SektorID;
+    }
 	namespace server {
         class ConnectionToServer;
+        class ConnectionToAccountServer;
+        class CallbackCommand;
 
-        enum ServerType {
-
+        enum ConnectionType {
+             CONNECTION_NONE = 0,
+             CONNECTION_TO_LIVE_SERVER = 1,
+             CONNECTION_TO_WORLD_DATA_SERVER = 2,
+             CONNECTION_TO_ACCOUNT_SERVER = 3
         };
 
 		class UNIVERSUM_LIB_API SektorConnectionManager: public lib::Singleton
@@ -46,13 +56,27 @@ namespace UniLib {
 		public:
 			const static SektorConnectionManager* getInstance();
 
+            // login
+            void login(const char* username, const char* password, CallbackCommand* callback = NULL);
+            __inline__ bool isLogin() {return mAccountServer->isLogin();}
+
+            // default request
+            DRReturn sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+
 		private:
 			SektorConnectionManager();
 			virtual ~SektorConnectionManager();
 
 			// member variables
+            // Connections
+            ConnectionToAccountServer* mAccountServer;
 
-
+            // Request answear stacks
+            struct RequestCommand {
+                DRNetRequest* request;
+                CallbackCommand* command;
+            };
+            std::stack<RequestCommand> mRequestCommands;
 		};
 	};
 };
