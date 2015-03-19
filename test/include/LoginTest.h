@@ -1,6 +1,15 @@
 #ifndef __UNIVERSUM_LIB_TEST_LOGIN_TEST__
 #define __UNIVERSUM_LIB_TEST_LOGIN_TEST__
 
+#include "Test.h"
+
+namespace UniLib
+{
+	namespace lib {
+		class Crypto;
+	}
+}
+
 namespace UniversumLibTest {
 
 	class LoginTest: public Test
@@ -13,7 +22,8 @@ namespace UniversumLibTest {
 		virtual DRReturn test();
 		virtual const char* getName() {return "Login Test";};
 	private:
-		int			mConnectionNumber;
+		int						mConnectionNumber;
+		UniLib::lib::Crypto*	mRSA;
 	};
 
 

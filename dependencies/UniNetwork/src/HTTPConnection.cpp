@@ -31,22 +31,21 @@ DRReturn HTTPConnection::run()
 		return DR_OK;
 	}
 //	assert(mSendRequests.size());
-	std::string requestString = mSendRequests.front();
-	Json::Value sendRequest;
-	parseJson(requestString, sendRequest);
+	DRNetRequest requestCfg = mSendRequests.front();
 	mSendRequests.pop();
 	mRequestMutex.unlock();
 
 	try {
 		// parse and request
-		HTTPRequest request(sendRequest.get("method", "GET").asString(), sendRequest.get("url", "").asString(), "HTTP/1.1");
+		HTTPRequest request(DRNetRequest::getRequestMethodAsString(requestCfg.method),
+							requestCfg.url, "HTTP/1.1");
 
-		request.set("User-Agent", sendRequest.get("userAgent", "UniLib").asString());
+		request.set("User-Agent", requestCfg.userAgent);
 		//printf("user agent: %s\n",  sendRequest.get("userAgent", "UniLib").asString().data());
 		//POCO_LOG_WARNING(std::string("user agent: ") + sendRequest.get("userAgent", "UniLib").asString());
-		if(sendRequest.get("contentType", "").asString() != "") {
-			request.setContentType(sendRequest.get("contentType", "").asString());
-			std::string body = sendRequest.get("content", "").asString();
+		if(requestCfg.contentType != NET_REQUEST_CONTENT_TYPE_NONE) {
+			request.setContentType(DRNetRequest::getRequestContentTypeAsString(requestCfg.contentType));
+			std::string body = "json=" + requestCfg.content.asString();
 			//body.append("\r\n0\r\n");
 			request.setChunkedTransferEncoding(false);
 			request.setContentLength((int)body.length());
@@ -79,7 +78,7 @@ DRReturn HTTPConnection::run()
 	return DR_OK;	
 }
 
-DRNet_Status HTTPConnection::send(std::string sendRequest)
+DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest)
 {
 	mRequestMutex.lock();
 	mSendRequests.push(sendRequest);

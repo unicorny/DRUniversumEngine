@@ -63,7 +63,7 @@ void DRINetwork::disconnect(u16 connectionNumber)
 	LOG_WARNING("not implemented");
 }
 
-DRNet_Status DRINetwork::send(std::string dataJson, u16 connectionNumber)
+DRNet_Status DRINetwork::send(const DRNetRequest& sendRequest, u16 connectionNumber)
 {
     LOG_WARNING("not implemented");
     return NET_ERROR;

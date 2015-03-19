@@ -41,7 +41,7 @@ public:
 
 	virtual DRReturn run();
 
-	virtual DRNet_Status send(std::string sendRequest);
+	virtual DRNet_Status send(const DRNetRequest&  sendRequest);
 	virtual DRNet_Status recv(std::string& recvDatas);
 
 protected:
@@ -49,7 +49,7 @@ protected:
 	Poco::Mutex mRecvMutex;
 	Poco::Net::HTTPClientSession mClientSession;
 
-	std::queue<std::string>	mSendRequests;
+	std::queue<DRNetRequest> mSendRequests;
 	std::queue<std::string> mReciveDatas;
 };
 
