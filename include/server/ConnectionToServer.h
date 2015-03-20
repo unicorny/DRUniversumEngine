@@ -33,20 +33,45 @@
 
 #include "Callbacks.h"
 
+struct DRNetServerConfig;
+
 namespace UniLib {
     namespace lib {
         class Crypto;
     }
+    namespace model {
+        class SektorID;
+    }
     namespace server {
 
-        class UNIVERSUM_LIB_API ConnectionToServer 
+        class UNIVERSUM_LIB_API ConnectionToServer
         {
         public:
-            ConnectionToServer();
+            ConnectionToServer(DRNetServerConfig* config);
             virtual ~ConnectionToServer();
 
+            virtual void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+
+            // called every time a new packet came from network hardware
+            virtual DRReturn update();
+
+            __inline__ bool isConnectionValid()  {return mConnectionNumber >= 0;}
         protected:
+            // crypto modul
            lib::Crypto* mRSAModule;
+           // connection number
+           int          mConnectionNumber;
+           // mutex
+           SDL_mutex*   mWorkMutex;
+
+           // Request answear stacks
+           struct RequestCommand {
+               RequestCommand(DRNetRequest* request, CallbackCommand* callback)
+                   : request(request), command(callback) {}
+               DRNetRequest* request;
+               CallbackCommand* command;
+           };
+           std::stack<RequestCommand> mRequestCommands;
         };
     }
 }

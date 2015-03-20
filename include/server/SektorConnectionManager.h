@@ -32,6 +32,10 @@
 #define __DR_UNIVERSUM_LIB_SERVER_SEKTOR_CONNECTION_MANAGER_H__
 
 #include "lib/Singleton.h"
+#include "lib/Thread.h"
+#include "lib/DRMemoryList.h"
+
+#define NET_REQUEST_MEMORY_LIST_OBJECT_COUNT 128
 
 struct DRNetRequest;
 
@@ -40,28 +44,35 @@ namespace UniLib {
         class SektorID;
     }
 	namespace server {
-        class ConnectionToServer;
         class ConnectionToAccountServer;
         class CallbackCommand;
 
-        enum ConnectionType {
-             CONNECTION_NONE = 0,
-             CONNECTION_TO_LIVE_SERVER = 1,
-             CONNECTION_TO_WORLD_DATA_SERVER = 2,
-             CONNECTION_TO_ACCOUNT_SERVER = 3
+        enum RequestType {
+             REQUEST_TYPE_NONE = 0,
+             REQUEST_TYPE_LOGIN = 1,
+             REQUEST_TYPE_ACCOUNT_DATA = 2,
+             REQUEST_TYPE_BLOCK_DATA = 3,
+             REQUEST_TYPE_LIVE_DATA = 4
         };
 
-		class UNIVERSUM_LIB_API SektorConnectionManager: public lib::Singleton
+		class UNIVERSUM_LIB_API SektorConnectionManager: public lib::Singleton, public lib::Thread
 		{
 		public:
-			const static SektorConnectionManager* getInstance();
+			static SektorConnectionManager* const getInstance();
 
             // login
             void login(const char* username, const char* password, CallbackCommand* callback = NULL);
-            __inline__ bool isLogin() {return mAccountServer->isLogin();}
+            __inline__ bool isLogin() {return mLoginSuccessfully;}
 
             // default request
-            DRReturn sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+            DRReturn sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+
+            // memory management
+            DRNetRequest* getFreeNetRequest();
+            void freeNetRequest(DRNetRequest* request);
+
+        protected:
+            virtual int ThreadFunction();
 
 		private:
 			SektorConnectionManager();
@@ -71,12 +82,11 @@ namespace UniLib {
             // Connections
             ConnectionToAccountServer* mAccountServer;
 
-            // Request answear stacks
-            struct RequestCommand {
-                DRNetRequest* request;
-                CallbackCommand* command;
-            };
-            std::stack<RequestCommand> mRequestCommands;
+            // state variables
+            bool    mLoginSuccessfully;
+            
+            // memory management
+            DRMemoryList<DRNetRequest> mNetRequestsMemoryList;
 		};
 	};
 };

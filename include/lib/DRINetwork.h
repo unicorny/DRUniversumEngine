@@ -91,7 +91,7 @@ public:
 	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber);
 
 	// \breif recv data
-	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
+	virtual DRNet_Status recv(std::string& data, u16 connectionNumber);
 
 	// helper
 	virtual UniLib::lib::Crypto* createCrypto();

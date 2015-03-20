@@ -47,13 +47,12 @@ namespace UniLib {
             // signal data chance, will continue thread, if he is paused
             DRReturn condSignal();
 
+        protected:
             //! \brief will be called every time from thread, when condSignal was called
             //! will be called from thread with locked working mutex,<br>
             //! mutex will be unlock after calling this function
             //! \return if return isn't 0, thread will exit
             virtual int ThreadFunction() = 0;
-
-        protected:
 
             static int run(void* data);
 
