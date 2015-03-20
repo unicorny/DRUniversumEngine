@@ -33,7 +33,6 @@
 
 #include "lib/Singleton.h"
 #include "lib/Thread.h"
-#include "lib/DRMemoryList.h"
 
 #define NET_REQUEST_MEMORY_LIST_OBJECT_COUNT 128
 

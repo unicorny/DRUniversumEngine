@@ -50,12 +50,15 @@ namespace UniLib {
             ConnectionToServer(DRNetServerConfig* config);
             virtual ~ConnectionToServer();
 
+            virtual DRReturn init();
+
             virtual void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
 
             // called every time a new packet came from network hardware
             virtual DRReturn update();
 
             __inline__ bool isConnectionValid()  {return mConnectionNumber >= 0;}
+            __inline__ bool isInitalized() {return mInitalized;}
         protected:
             // crypto modul
            lib::Crypto* mRSAModule;
@@ -63,6 +66,9 @@ namespace UniLib {
            int          mConnectionNumber;
            // mutex
            SDL_mutex*   mWorkMutex;
+
+           // initalized
+           bool         mInitalized;
 
            // Request answear stacks
            struct RequestCommand {

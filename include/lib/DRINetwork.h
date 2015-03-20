@@ -47,7 +47,8 @@ enum DRNet_Status
     NET_DATA_CORRUPTED = 8, // datas defekt
     NET_SOCKET_ERROR = 16, // error by creating socket
     NET_ERROR    = -1, // Fehler
-	NET_NOT_FOUND = -2
+	NET_NOT_FOUND = -2,
+    NET_CONNECTION_CLOSED = -3
 };
 
 
