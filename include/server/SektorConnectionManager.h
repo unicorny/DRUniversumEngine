@@ -37,6 +37,7 @@
 #define NET_REQUEST_MEMORY_LIST_OBJECT_COUNT 128
 
 struct DRNetRequest;
+struct DRNetServerConfig;
 
 namespace UniLib {
     namespace model {
@@ -60,7 +61,7 @@ namespace UniLib {
 			static SektorConnectionManager* const getInstance();
 
             // login
-            void login(const char* username, const char* password, CallbackCommand* callback = NULL);
+            void login(const char* username, const char* password, DRNetServerConfig* accountServerConfig, CallbackCommand* callback = NULL);
             __inline__ bool isLogin() {return mLoginSuccessfully;}
 
             // default request
@@ -83,9 +84,13 @@ namespace UniLib {
 
             // state variables
             bool    mLoginSuccessfully;
+			bool    mInitalized;
             
             // memory management
             DRMemoryList<DRNetRequest> mNetRequestsMemoryList;
+
+			// request waiting to getting startet
+			//struct 
 		};
 	};
 };

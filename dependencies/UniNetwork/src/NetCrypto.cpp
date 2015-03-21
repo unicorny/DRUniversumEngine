@@ -11,7 +11,7 @@
 #include <sstream>
 
 NetCrypto::NetCrypto()
-	: Loggable("crypto.log", "NetCrypto"), mClientKey(NULL), mServerKey(NULL)
+	: Loggable("crypto.log", "NetCrypto"), mClientKey(NULL), mServerKey(NULL), mServerPublicKeyValid(false)
 {
 }
 
@@ -135,7 +135,7 @@ std::string NetCrypto::encodeToHex(std::string input)
 }
 
 // server keys
-DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* = 3*/)
+DRReturn NetCrypto::setServerPublicKey(const std::string& pbKey, int validationLevel/* = 3*/)
 {
 	DR_SAVE_DELETE(mServerKey);
 	//std::istringstream str(removePEMHeader(pbKey));
@@ -158,7 +158,7 @@ DRReturn NetCrypto::setServerPublicKey(std::string pbKey, int validationLevel/* 
 		POCO_LOG_ERROR(what.displayText());
 		return DR_ERROR;
 	} 
-	
+	mServerPublicKeyValid = true;
 	return DR_OK;
 }
 

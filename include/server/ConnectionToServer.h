@@ -32,6 +32,7 @@
 #define __UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
 
 #include "Callbacks.h"
+#include "UniversumLib.h"
 
 struct DRNetServerConfig;
 
@@ -47,37 +48,61 @@ namespace UniLib {
         class UNIVERSUM_LIB_API ConnectionToServer
         {
         public:
-            ConnectionToServer(DRNetServerConfig* config);
+            ConnectionToServer(const DRNetServerConfig* config);
             virtual ~ConnectionToServer();
 
             virtual DRReturn init();
 
-            virtual void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+            void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
 
             // called every time a new packet came from network hardware
             virtual DRReturn update();
 
+			// inline check state
             __inline__ bool isConnectionValid()  {return mConnectionNumber >= 0;}
             __inline__ bool isInitalized() {return mInitalized;}
+			
         protected:
+			// member structures
+			// request command structure
+			struct RequestCommand {
+				RequestCommand(DRNetRequest* request, CallbackCommand* callback)
+					: request(request), command(callback) {}
+				DRNetRequest* request;
+				CallbackCommand* command;
+			};
+
+			class GetPublicKeyCommand : public CallbackCommand
+			{
+			public: 
+				GetPublicKeyCommand(ConnectionToServer* parent) : mParent(parent) {};
+				virtual void execute(DRNet_Status status, std::string& data);
+			protected: 
+				ConnectionToServer* mParent;
+			};
+
+			// member function
+			void cleanUpRequestCommandQueue(std::queue<RequestCommand>& requestCommandQueue);
+			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest) = 0;
+			void sendRequestDirect(DRNetRequest* request, CallbackCommand* callback = NULL);
+
             // crypto modul
            lib::Crypto* mRSAModule;
            // connection number
            int          mConnectionNumber;
+		   // connection config
+		   DRNetServerConfig mServerConfig;
            // mutex
            SDL_mutex*   mWorkMutex;
+		   SDL_mutex*   mPendingWorkMutex;
 
            // initalized
            bool         mInitalized;
 
            // Request answear stacks
-           struct RequestCommand {
-               RequestCommand(DRNetRequest* request, CallbackCommand* callback)
-                   : request(request), command(callback) {}
-               DRNetRequest* request;
-               CallbackCommand* command;
-           };
-           std::stack<RequestCommand> mRequestCommands;
+           
+           std::queue<RequestCommand> mRequestCommands;
+		   std::queue<RequestCommand> mPendingRequestCommands;
         };
     }
 }

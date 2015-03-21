@@ -39,8 +39,7 @@ namespace UniLib {
         class CallbackCommand 
         {
         public:
-            void execute(DRNet_Status status, std::string& data);
-        protected:
+            virtual void execute(DRNet_Status status, std::string& data) = 0;
                 
         };
     }

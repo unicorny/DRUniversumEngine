@@ -45,10 +45,13 @@
 #include <dlfcn.h>
 #endif //_WIN32
 
+
 #include "../../thirdparty/include/Core2/Core2Main.h"
 #include "../../thirdparty/include/sdl/SDL.h"
 #include "lib/Logging.h"
 #include "../../thirdparty/include/json/json.h"
+
+#include <queue>
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;

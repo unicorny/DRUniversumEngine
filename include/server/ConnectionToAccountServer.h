@@ -38,12 +38,21 @@ namespace UniLib {
         class UNIVERSUM_LIB_API ConnectionToAccountServer: public ConnectionToServer
         {
         public:
-            ConnectionToAccountServer();
+            ConnectionToAccountServer(const DRNetServerConfig* serveConfig);
             virtual ~ConnectionToAccountServer();
+
+			// derived from parent
+			virtual DRReturn init();
+			virtual DRReturn update();
 
             __inline__ bool isLogin() {return mSuccesfullyLoggedIn;}
         protected:
+			// member functions, derived from parent
+			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest);
+
             bool mSuccesfullyLoggedIn;
+			// getting from server after login, needed for all requests
+			std::string mRequestKey;
         };
     }
 }

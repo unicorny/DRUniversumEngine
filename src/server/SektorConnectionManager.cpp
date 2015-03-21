@@ -4,9 +4,9 @@
 namespace UniLib {
 	namespace server {
 		SektorConnectionManager::SektorConnectionManager()
-            : mAccountServer(NULL), mLoginSuccessfully(false), mNetRequestsMemoryList(NET_REQUEST_MEMORY_LIST_OBJECT_COUNT)
+            : mAccountServer(NULL), mLoginSuccessfully(false), mInitalized(false), mNetRequestsMemoryList(NET_REQUEST_MEMORY_LIST_OBJECT_COUNT)
 		{
-            mAccountServer = new ConnectionToAccountServer;
+            
 		}
 
 		SektorConnectionManager::~SektorConnectionManager() 
@@ -14,7 +14,7 @@ namespace UniLib {
             DR_SAVE_DELETE(mAccountServer); 
 		}
 
-		const SektorConnectionManager* SektorConnectionManager::getInstance()
+		SektorConnectionManager* const SektorConnectionManager::getInstance()
 		{
 			if(!mpInstanz) {
 				mpInstanz = new SektorConnectionManager;
@@ -24,13 +24,21 @@ namespace UniLib {
 		}
 
          int SektorConnectionManager::ThreadFunction()
-         {
-             mAccountServer->update();
+         {			 			  
+			 if(mAccountServer) {
+				mAccountServer->update();
+			 }
              // return good
              return 0;
          }
-         void SektorConnectionManager::login(const char* username, const char* password, CallbackCommand* callback/* = NULL*/)
+         void SektorConnectionManager::login(const char* username, const char* password, DRNetServerConfig* accountServerConfig, CallbackCommand* callback/* = NULL*/)
          {
+			 if(mAccountServer && mAccountServer->isLogin()) return;
+			 if(!mAccountServer) {
+				mAccountServer = new ConnectionToAccountServer(accountServerConfig);
+			 }
+			 
+			 
              DRNetRequest* request = getFreeNetRequest();
              //request->method         
          }
@@ -47,7 +55,9 @@ namespace UniLib {
          // memory management
          DRNetRequest* SektorConnectionManager::getFreeNetRequest()
          {
-             return mNetRequestsMemoryList.NewInstance();
+			 DRNetRequest* request = mNetRequestsMemoryList.NewInstance();
+			 if(!request) LOG_ERROR("no space left for a new net request", NULL);
+			 return request;
          }
          void SektorConnectionManager::freeNetRequest(DRNetRequest* request)
          {

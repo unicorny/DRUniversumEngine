@@ -63,8 +63,9 @@ namespace UniLib {
 			virtual std::string getClientPrivateKey(OutputType outputType = STRING) = 0;
 
 			// server keys
-			virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3) = 0;
-			virtual std::string getServerPublicKey(OutputType outputType = STRING) = 0;					
+			virtual DRReturn setServerPublicKey(const std::string& pbKey, int validationLevel = 3) = 0;
+			virtual std::string getServerPublicKey(OutputType outputType = STRING) = 0;	
+			virtual __inline__ bool isServerPublicKeyExist() = 0;
 
 			// static strings
 			static std::string getOperationTypeString(OperationType type);

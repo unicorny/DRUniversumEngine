@@ -50,8 +50,9 @@ public:
 	virtual bool checkSign(std::string input, std::string signature);
 
 	// server keys
-	virtual DRReturn setServerPublicKey(std::string pbKey, int validationLevel = 3);
+	virtual DRReturn setServerPublicKey(const std::string& pbKey, int validationLevel = 3);
 	virtual std::string getServerPublicKey(OutputType outputType = STRING);
+	virtual __inline__ bool isServerPublicKeyExist() {return mServerPublicKeyValid;}
 
 protected:
 	std::string encodeToHex(std::string input);
@@ -62,6 +63,7 @@ protected:
 
 	Poco::Crypto::RSAKey*	mServerKey;
 	std::string             mServerPublicKeyString; 
+	bool					mServerPublicKeyValid;
 };
 
 
