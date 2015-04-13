@@ -127,7 +127,7 @@ namespace UniLib {
 		// ***************************************************************************************************************
 		// commands
 		// ***************************************************************************************************************
-		void ConnectionToServer::GetPublicKeyCommand::excecute(DRNet_Status status, std::string& data)
+		void ConnectionToServer::GetPublicKeyCommand::execute(DRNet_Status status, std::string& data)
 		{
 			if(status == NET_COMPLETE) {
 				if(mParent->mRSAModule->setServerPublicKey(data)) {
