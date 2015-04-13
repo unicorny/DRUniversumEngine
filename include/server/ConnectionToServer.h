@@ -45,6 +45,16 @@ namespace UniLib {
     }
     namespace server {
 
+		
+
+		/*!
+		 * \author Dario Rekowski
+		 *
+		 * \date 09.04.15
+		 *
+		 * \brief connection to server base class
+		 * 
+		 */
         class UNIVERSUM_LIB_API ConnectionToServer
         {
         public:
@@ -53,9 +63,15 @@ namespace UniLib {
 
             virtual DRReturn init();
 
+			//! \brief store request in queue, Thread safe
+			//! \param request the net request
+			//! \param sektorID the sektor to which the requested data belong
+			//! \param callback called after receiving answer is complete
             void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
 
-            // called every time a new packet came from network hardware
+            //! \brief called every time a new packet came from network hardware
+			//! check if request in queue, if then call additionalFieldsAndCryptRequest and sendRequestDirect
+			//! check if request answers existing, if then call callbackCommand and remove request and command afterwards
             virtual DRReturn update();
 
 			// inline check state
@@ -76,14 +92,18 @@ namespace UniLib {
 			{
 			public: 
 				GetPublicKeyCommand(ConnectionToServer* parent) : mParent(parent) {};
-				virtual void execute(DRNet_Status status, std::string& data);
 			protected: 
+				virtual void execute(DRNet_Status status, std::string& data);
 				ConnectionToServer* mParent;
 			};
 
 			// member function
+			//! \brief remove all request command from queue and call them with NET_CONNECTION_CLOSED
+			//! called on exit
 			void cleanUpRequestCommandQueue(std::queue<RequestCommand>& requestCommandQueue);
+
 			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest) = 0;
+
 			void sendRequestDirect(DRNetRequest* request, CallbackCommand* callback = NULL);
 
             // crypto modul
