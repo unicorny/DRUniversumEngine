@@ -48,6 +48,18 @@ namespace UniLib
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // PROTECTED AREA
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        UniformSet::UniformEntry::UniformEntry(int* data, size_t arrayEntryCount, std::string name)
+            : type(0), intArray(NULL), name(name) 
+        {
+            intArray = new int[arrayEntryCount];
+            memcpy(intArray, data, arrayEntryCount*sizeof(int));
+        }
+        UniformSet::UniformEntry::UniformEntry(float* data, size_t arrayEntryCount, std::string name)
+            : type(0), floatArray(NULL), name(name)
+        {
+            floatArray = new float[arrayEntryCount];
+            memcpy(floatArray, data, arrayEntryCount*sizeof(float));
+        }
         UniformSet::UniformEntry::~UniformEntry()
         {
             switch(type) {
@@ -59,6 +71,7 @@ namespace UniLib
             }
             data = 0;
         }
+
         // ******************************************************************
         DRReturn UniformSet::addUniform(UniformEntry* newUniform)
         {

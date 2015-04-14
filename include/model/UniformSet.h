@@ -54,28 +54,24 @@ namespace UniLib {
             DRReturn setUniform(std::string name, DRVector3i value);
             DRReturn setUniform(std::string name, DRVector2i value);
 
-            
         protected:
-            enum UniformEntryTypes {
-                UNIFORM_INT = 0,
-                UNIFORM_FLOAT = 1,
-                UNIFORM_VEC2 = 2,
-                UNIFORM_VEC2I = 3,
-                UNIFORM_VEC3 = 4,
-                UNIFORM_VEC3I = 5,
-                UNIFORM_VEC4 = 6
-            };
             struct UniformEntry
             {
-                UniformEntry(): type(UNIFORM_INT), data(0), dirtyFlag(false) {}
-                UniformEntry(UniformEntryTypes type, int data, std::string name)
-                   : type(type), data(data), name(name), dirtyFlag(true) {}
+                UniformEntry(): type(0),intArray(NULL) {}
+                UniformEntry(int* data, size_t arrayEntryCount, std::string name);
+                UniformEntry(float* data, size_t arrayEntryCount, std::string name);
                 ~UniformEntry();
                 // ---------------------------------------------
-                UniformEntryTypes type;
-                int data;
+                u8 type;
+                union {
+                    int* intArray;
+                    float* floatArray;
+                };
+                //! first 6 bit tell the array size
+                //! 7 bit is dirty flag
+                //! if last bit set it is a float array
+                
                 std::string name;
-                bool dirtyFlag;
             };
             std::map<int, UniformEntry*> mUniformEntrys;
 
