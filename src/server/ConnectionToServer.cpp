@@ -132,11 +132,13 @@ namespace UniLib {
 			if(status == NET_COMPLETE) {
 				if(mParent->mRSAModule->setServerPublicKey(data)) {
 					delete this;
-					LOG_ERROR_VOID("setting server public key failed with data: %s", data.data());
+                    DRLog.writeToLog("setting server public key failed with data: %s", data.data());
+					LOG_ERROR_VOID("failed with setting server key");
 				}
 			}
 			delete this;
-			LOG_ERROR_VOID("setting server public key failed with status: %d", status); 
+            DRLog.writeToLog("setting server public key failed with status: %d", status);
+			LOG_ERROR_VOID("failed with setting server key"); 
 		}
     }
 }
