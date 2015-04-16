@@ -61,6 +61,8 @@ namespace UniLib {
                 UniformEntry(int* data, size_t arrayEntryCount, std::string name);
                 UniformEntry(float* data, size_t arrayEntryCount, std::string name);
                 ~UniformEntry();
+
+                DRReturn update(UniformEntry* entry);
                 // ---------------------------------------------
                 u8 type;
                 union {
@@ -74,8 +76,9 @@ namespace UniLib {
                 std::string name;
             };
             std::map<int, UniformEntry*> mUniformEntrys;
+            typedef std::pair<int, UniformEntry*> UNIFORM_ENTRY_PAIR;
 
-            DRReturn addUniform(UniformEntry* newUniform);
+            DRReturn setUniform(UniformEntry* newUniform);
         };
 
         // *****************************************************************

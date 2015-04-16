@@ -62,20 +62,27 @@ namespace UniLib
         }
         UniformSet::UniformEntry::~UniformEntry()
         {
-            switch(type) {
-            case UNIFORM_VEC2: DRVector2* v2 = (DRVector2*)data; DR_SAVE_DELETE(v2); break;
-            case UNIFORM_VEC3: DRVector3* v3 = (DRVector3*)data; DR_SAVE_DELETE(v3); break;
-            case UNIFORM_VEC4: DRColor* col = (DRColor*)data; DR_SAVE_DELETE(col); break;
-            case UNIFORM_VEC3I: DRVector3i* v3i = (DRVector3i*)data; DR_SAVE_DELETE(v3i); break;
-            case UNIFORM_VEC2I: DRVector2i* v2i = (DRVector2i*)data; DR_SAVE_DELETE(v2i); break;
-            }
-            data = 0;
+           DR_SAVE_DELETE_ARRAY(intArray);
         }
 
-        // ******************************************************************
-        DRReturn UniformSet::addUniform(UniformEntry* newUniform)
+        DRReturn UniformSet::UniformEntry::update(UniformEntry* entry)
         {
-            mUniformEntrys.push_back(newUniform);
+            return DR_OK;
+        }
+        // ******************************************************************
+        DRReturn UniformSet::setUniform(UniformEntry* newUniform)
+        {
+            if(!newUniform) return DR_ZERO_POINTER;
+            HASH hash = DRMakeStringHash(newUniform->name.data());
+            std::map<int, UniformEntry*>::iterator it = mUniformEntrys.find(hash);
+            if(it != mUniformEntrys.end()) {
+                DRReturn result = it->second->update(newUniform);
+                DR_SAVE_DELETE(newUniform);
+                return result;
+            } else {
+                mUniformEntrys.insert(UNIFORM_ENTRY_PAIR(hash, newUniform));
+            }
+            
             return DR_OK;
         }
 
