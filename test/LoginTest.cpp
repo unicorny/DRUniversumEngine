@@ -2,17 +2,17 @@
 #include "include/LoginTest.h"
 #include "lib/DRINetwork.h"
 #include "lib/Crypto.h"
+#include "server/SektorConnectionManager.h"
 //#include "UniversumLib.h"
 
 namespace UniversumLibTest {
 	LoginTest::LoginTest()
-		: mConnectionNumber(0), mRSA(NULL)
+		
 	{
 	}
 
 	LoginTest::~LoginTest()
 	{
-		DRINetwork::Instance()->freeCrypto(mRSA);
 		DRINetwork::Instance()->exit();
 	}
 
@@ -21,7 +21,9 @@ namespace UniversumLibTest {
 	DRReturn LoginTest::init()
 	{
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
-		DRFileManager::Instance().addOrdner("cfg");
+		DRFileManager::Instance().addOrdner("data");
+        return DR_OK;
+        /*UniLib::server::SektorConnectionManager::getInstance()->login();
 		//std::string value = UniLib::readFileAsString("LoginServer.json");
 		mRSA = DRINetwork::getSingleton().createCrypto();
         if(!mRSA) return DR_ERROR; 
@@ -31,13 +33,20 @@ namespace UniversumLibTest {
 		mConnectionNumber = DRINetwork::Instance()->connect(cfg);
 		UniLib::EngineLog.writeToLog("connectionNumber get: %d", mConnectionNumber);
 		return DR_OK;
+        */
 	}
 
 
 	DRReturn LoginTest::test()
 	{
-        if(!mRSA) return DR_ERROR; 
 		Uint32 startTicks = SDL_GetTicks();
+        DRNetServerConfig cfg;
+        std::string cfgString = UniLib::readFileAsString("LoginServer.json");
+        if(cfgString.size() <= 1) LOG_ERROR("cannot open LoginServer.json", DR_ERROR);
+        cfg.readFromJson(UniLib::convertStringToJson(cfgString));
+        UniLib::server::SektorConnectionManager::getInstance()->login("dariofrodo", "h7JD83l29DK", &cfg);
+        return DR_ERROR;
+        /*
 		
 		//Json::Value getKeyRequest(Json::objectValue);
 		Json::FastWriter writer;
@@ -57,8 +66,7 @@ namespace UniversumLibTest {
 		
 		//printf("publickey: %s, privateKey: %s\n", pubKey.data(), privateKey.data());
 		unsigned int state = 0;
-        return DR_ERROR;
-        /*
+        
 		while(SDL_GetTicks() - startTicks < 10000) 
 		{
 			std::string recv;

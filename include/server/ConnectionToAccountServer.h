@@ -45,6 +45,7 @@ namespace UniLib {
 			virtual DRReturn init();
 			virtual DRReturn update();
 
+
             __inline__ bool isLogin() {return mSuccesfullyLoggedIn;}
         protected:
 			// member functions, derived from parent

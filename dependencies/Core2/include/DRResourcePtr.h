@@ -98,6 +98,7 @@ public:
     ~DRResourcePtr();
 
     DRResourcePtr<ResourceType> & operator= (const DRResourcePtr<ResourceType> & resPtr);
+    DRResourcePtr<ResourceType> & operator= (DRResourcePtrHolder* pHolder);
 
     ResourceType * operator->() const { return static_cast<ResourceType *>(mResourceHolder->mResource); }
     ResourceType & operator*() const { return *(static_cast<ResourceType *>(mResourceHolder->mResource)); }
@@ -161,11 +162,19 @@ DRResourcePtr<ResourceType> & DRResourcePtr<ResourceType>::operator= (const DRRe
 {
     if (mResourceHolder != resPtr.getResourcePtrHolder())
     {
-        if (mResourceHolder != NULL)
-            mResourceHolder->release(); 
+        if (mResourceHolder != NULL) mResourceHolder->release(); 
         mResourceHolder = resPtr.getResourcePtrHolder();
-        if (mResourceHolder != NULL)
-            mResourceHolder->addRef();    
+        if (mResourceHolder != NULL) mResourceHolder->addRef();    
+    }
+    return *this;
+}
+template <class ResourceType>
+DRResourcePtr<ResourceType> & DRResourcePtr<ResourceType>::operator= (DRResourcePtrHolder* pHolder)
+{
+    if(pHolder != mResourceHolder) {
+        if(mResourceHolder != NULL) mResourceHolder->release();
+        mResourceHolder = pHolder;
+        if(mResourceHolder != NULL) mResourceHolder->addRef();
     }
     return *this;
 }

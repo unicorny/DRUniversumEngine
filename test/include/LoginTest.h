@@ -3,6 +3,7 @@
 
 #include "Test.h"
 
+
 namespace UniLib
 {
 	namespace lib {
@@ -22,8 +23,6 @@ namespace UniversumLibTest {
 		virtual DRReturn test();
 		virtual const char* getName() {return "Login Test";};
 	private:
-		int						mConnectionNumber;
-		UniLib::lib::Crypto*	mRSA;
 	};
 
 

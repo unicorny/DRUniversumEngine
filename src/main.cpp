@@ -106,8 +106,8 @@ namespace UniLib {
 	{
 		Json::Reader read;
 		Json::Value result;
-		if(read.parse(jsonString, result)) {
-			LOG_ERROR(read.getFormattedErrorMessages(), Json::Value(Json::objectValue));
+		if(!read.parse(jsonString, result)) {
+			LOG_ERROR(read.getFormattedErrorMessages().data(), Json::Value(Json::objectValue));
 		}
 		return result;
 	}
