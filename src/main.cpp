@@ -111,4 +111,18 @@ namespace UniLib {
 		}
 		return result;
 	}
+
+    DRString getValueAsBinaryString(u8 zahl)
+    {
+        char buffer[9];memset(buffer, 0, 9);
+        for(int i = 0; i < 8; i++) {
+            u8 compareZahl = (u8)pow(2.0, i);
+            if((compareZahl & zahl) == compareZahl) {
+                buffer[i] = '1';
+            } else {
+                buffer[i] = '0';
+            }
+        }
+        return DRString(buffer);
+    }
 }

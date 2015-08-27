@@ -47,7 +47,14 @@ namespace UniLib {
             virtual DRReturn writeToLogDirect(const char* pcText, ...);
             virtual DRReturn writeToLog(const char* pcText, ...);
             virtual DRReturn writeToLog(DRString text);
+            virtual DRReturn writeAsBinary(DRString name, u8 zahl);
+            virtual DRReturn writeAsBinary(DRString name, u16 zahl);
+            virtual DRReturn writeAsBinary(DRString name, u32 zahl);
+            virtual DRReturn writeAsBinary(DRString name, u64 zahl);
         protected:
+            
+            virtual DRReturn writeAsBinary_intern(DRString name, DRString zahlBuffer);
+
             SDL_mutex*  mMutex;
 
         private:

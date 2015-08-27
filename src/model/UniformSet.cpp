@@ -10,39 +10,39 @@ namespace UniLib
         // -------------------------------------------------------------------
         UniformSet::~UniformSet()
         {
-            for(std::list<UniformEntry*>::iterator it = mUniformEntrys.begin(); it != mUniformEntrys.end(); it++) {
-                DR_SAVE_DELETE(*it);
+            for(std::map<int, UniformEntry*>::iterator it = mUniformEntrys.begin(); it != mUniformEntrys.end(); it++) {
+                delete it->second;
             }
             mUniformEntrys.clear();
         }
 
         DRReturn UniformSet::setUniform(std::string name, int value)
         {
-            return addUniform(new UniformEntry(UNIFORM_INT, value, name));
+            return setUniform(new UniformEntry(&value, 1, name));
         }
         DRReturn UniformSet::setUniform(std::string name, float value)
         {
-            return addUniform(new UniformEntry(UNIFORM_FLOAT, (int)value, name));
+            return setUniform(new UniformEntry(&value, 1, name));
         }
         DRReturn UniformSet::setUniform(std::string name, DRVector2 value)
         {
-            return addUniform(new UniformEntry(UNIFORM_VEC2, (int)new DRVector2(value), name));
+            return setUniform(new UniformEntry(value.c, 2, name));
         }
         DRReturn UniformSet::setUniform(std::string name, DRVector3 value)
         {
-            return addUniform(new UniformEntry(UNIFORM_VEC3, (int)new DRVector3(value), name));
+            return setUniform(new UniformEntry(value.c, 3, name));
         }
         DRReturn UniformSet::setUniform(std::string name, DRColor value)
         {
-            return addUniform(new UniformEntry(UNIFORM_VEC4, (int)new DRColor(value), name));
+            return setUniform(new UniformEntry(value.c, 4, name));
         }
         DRReturn UniformSet::setUniform(std::string name, DRVector3i value)
         {
-            return addUniform(new UniformEntry(UNIFORM_VEC3I, (int)new DRVector3i(value), name));
+            return setUniform(new UniformEntry(value.c, 3, name));
         }
         DRReturn UniformSet::setUniform(std::string name, DRVector2i value)
         {
-            return addUniform(new UniformEntry(UNIFORM_VEC2I, (int)new DRVector2i(value), name));
+            return setUniform(new UniformEntry(value.c, 2, name));
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

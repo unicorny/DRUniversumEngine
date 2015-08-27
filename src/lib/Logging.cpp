@@ -83,6 +83,47 @@ namespace UniLib {
 
             return writeToLogDirect(final);
         }
+       
+        DRReturn EngineLogger::writeAsBinary(DRString name, u8 zahl)
+        {
+            return writeAsBinary_intern(name, getValueAsBinaryString(zahl));
+        }
+        DRReturn EngineLogger::writeAsBinary(DRString name, u16 zahl)
+        {
+            u8 zahl1 = (u8)zahl;
+            u8 zahl2 = (u8)(zahl >> 8);
+            DRString zahlBuffer = getValueAsBinaryString(zahl1) + " " + getValueAsBinaryString(zahl2);
+            return writeAsBinary_intern(name, zahlBuffer);
+        }
+        DRReturn EngineLogger::writeAsBinary(DRString name, u32 zahl)
+        {
+            u8 zahlen[4];
+            DRString zahlBuffer;
+            for(int i = 0; i < 4; i++) {
+                zahlBuffer += getValueAsBinaryString((u8)(zahl >> 8*i));
+                if(i < 3) zahlBuffer += DRString(" ");
+            }
+            return writeAsBinary_intern(name, zahlBuffer);
+        }
+        DRReturn EngineLogger::writeAsBinary(DRString name, u64 zahl)
+        {
+            u8 zahlen[8];
+            DRString zahlBuffer;
+            for(int i = 0; i < 8; i++) {
+                zahlBuffer += getValueAsBinaryString((u8)(zahl >> 8*i));
+                if(i < 7) zahlBuffer += DRString(" ");
+            }
+            return writeAsBinary_intern(name, zahlBuffer);
+        }
 
+        DRReturn EngineLogger::writeAsBinary_intern(DRString name, DRString zahlBuffer)
+        {
+            DRString final = DRString("<tr><td><font size=\"2\" color=\"#0000f0\">");
+            final += name;
+            final += DRString("</font>");
+            final += zahlBuffer;
+            final += DRString("</td></tr>");
+            return writeToLogDirect(final.data());
+        }
     }
 }

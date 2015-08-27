@@ -8,8 +8,10 @@ std::list<Test*> gTests;
 void fillTests()
 {
 	gTests.push_back(new UnitTest());
+    gTests.push_back(new LoggerTest());
 	gTests.push_back(new TimerTest());
 	gTests.push_back(new LoginTest());
+    
 }
 
 DRReturn load() {
@@ -17,7 +19,7 @@ DRReturn load() {
 	fillTests();
 	for(std::list<Test*>::iterator it = gTests.begin(); it != gTests.end(); it++)
 	{
-		if((*it)->init()) LOG_ERROR("Fehler bei Init test", DR_ERROR);
+		if((*it)->init()) LOG_WARNING("Fehler bei Init test");
 	}
 	return DR_OK;
 }

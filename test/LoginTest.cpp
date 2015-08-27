@@ -24,6 +24,7 @@ namespace UniversumLibTest {
 		DRFileManager::Instance().addOrdner("cfg");
 		//std::string value = UniLib::readFileAsString("LoginServer.json");
 		mRSA = DRINetwork::getSingleton().createCrypto();
+        if(!mRSA) return DR_ERROR; 
 		mRSA->generateClientKeys();
 		DRNetServerConfig cfg;
 		cfg.readFromJson(UniLib::convertStringToJson(UniLib::readFileAsString("LoginServer.json")));
@@ -35,6 +36,7 @@ namespace UniversumLibTest {
 
 	DRReturn LoginTest::test()
 	{
+        if(!mRSA) return DR_ERROR; 
 		Uint32 startTicks = SDL_GetTicks();
 		
 		//Json::Value getKeyRequest(Json::objectValue);
@@ -55,6 +57,8 @@ namespace UniversumLibTest {
 		
 		//printf("publickey: %s, privateKey: %s\n", pubKey.data(), privateKey.data());
 		unsigned int state = 0;
+        return DR_ERROR;
+        /*
 		while(SDL_GetTicks() - startTicks < 10000) 
 		{
 			std::string recv;
@@ -154,5 +158,6 @@ namespace UniversumLibTest {
 		DRINetwork::Instance()->disconnect(mConnectionNumber);
 
 		return DR_ERROR;
+        */
 	}
 }
