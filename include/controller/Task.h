@@ -33,6 +33,7 @@
 
 #include "UniversumLib.h"
 
+
 namespace UniLib {
     namespace controller {
 
@@ -55,11 +56,11 @@ namespace UniLib {
 
             __inline__ void setParentTaskPtrInArray(TaskPtr task, size_t index)
             {
-                if(index >= mParentTaskPtrArraySize) return;
+                assert(index < mParentTaskPtrArraySize);
                 mParentTaskPtrArray[index] = task;
             }
             __inline__ void setParentTaskPtrInArray(DRResourcePtrHolder* resourceHolder, size_t index) {
-                if(index >= mParentTaskPtrArraySize) return;
+                assert(index < mParentTaskPtrArraySize);
                 mParentTaskPtrArray[index] = resourceHolder;
             }
         protected:

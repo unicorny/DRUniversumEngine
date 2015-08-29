@@ -52,6 +52,7 @@
 #include "../../thirdparty/include/json/json.h"
 
 #include <queue>
+#include <cassert>
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
