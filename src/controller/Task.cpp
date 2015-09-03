@@ -1,14 +1,17 @@
 #include "controller/Task.h"
 
+
 namespace UniLib {
 	namespace controller {
 		Task::Task() 
-		: mTaskScheduled(false), mParentTaskPtrArray(NULL), mParentTaskPtrArraySize(0)
+		: mTaskScheduled(false), mParentTaskPtrArray(NULL), mParentTaskPtrArraySize(0), mWorkingMutex(SDL_CreateMutex()),
+          mDeleted(false)
 		{
 		}
 
         Task::Task(size_t taskPointerArraySize)
-            : mTaskScheduled(false), mParentTaskPtrArray(new TaskPtr[taskPointerArraySize]), mParentTaskPtrArraySize(taskPointerArraySize)
+            : mTaskScheduled(false), mParentTaskPtrArray(new TaskPtr[taskPointerArraySize]), mParentTaskPtrArraySize(taskPointerArraySize),
+            mWorkingMutex(SDL_CreateMutex()), mDeleted(false)
         {
         }
 		
@@ -16,14 +19,24 @@ namespace UniLib {
 		{
             DR_SAVE_DELETE_ARRAY(mParentTaskPtrArray);
             mParentTaskPtrArraySize = NULL;
+            SDL_LockMutex(mWorkingMutex);
+            mDeleted = true;
+            SDL_UnlockMutex(mWorkingMutex);
+            SDL_DestroyMutex(mWorkingMutex);
 		}
 
         bool Task::isAllParentsReady()
         {
+            bool allFinished = true;
             for(size_t i = 0; i < mParentTaskPtrArraySize; i++) {
-
+                TaskPtr task = mParentTaskPtrArray[i];
+                if(!task->isTaskFinished()) {
+                    allFinished = false;
+                    if(!task->isTaskSheduled()) 
+                        mParentTaskPtrArray[i]->scheduleTask();
+                }
             }
-            return true;
+            return allFinished;
         }
 	}
 }

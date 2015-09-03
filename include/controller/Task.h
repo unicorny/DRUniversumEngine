@@ -53,6 +53,8 @@ namespace UniLib {
             //! \brief return true if task has finished, else false
             //! automatic scheduling of task if he isn't finished and sheduled yet
             virtual bool isTaskFinished() = 0;
+            //! \brief called from task scheduler, maybe from another thread
+            virtual DRReturn run() = 0;
 
             __inline__ void setParentTaskPtrInArray(TaskPtr task, size_t index)
             {
@@ -65,10 +67,13 @@ namespace UniLib {
             }
         protected:
             __inline__ bool isTaskSheduled() {return mTaskScheduled;}
+            virtual void scheduleTask() = 0;
         private:
             bool mTaskScheduled;
             TaskPtr* mParentTaskPtrArray;
             size_t   mParentTaskPtrArraySize; 
+            SDL_mutex* mWorkingMutex;
+            bool     mDeleted;
         };
     }
 }
