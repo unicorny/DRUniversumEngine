@@ -43,8 +43,13 @@ namespace UniversumLibTest {
         DRNetServerConfig cfg;
         std::string cfgString = UniLib::readFileAsString("LoginServer.json");
         if(cfgString.size() <= 1) LOG_ERROR("cannot open LoginServer.json", DR_ERROR);
-        cfg.readFromJson(UniLib::convertStringToJson(cfgString));
-        UniLib::server::SektorConnectionManager::getInstance()->login("dariofrodo", "h7JD83l29DK", &cfg);
+        cfg.readFromJson(UniLib::convertStringToJson(cfgString)["login"]);
+		UniLib::server::SektorConnectionManager* sectorConnectionManager = UniLib::server::SektorConnectionManager::getInstance();
+        sectorConnectionManager->login("dariofrodo", "h7JD83l29DK", &cfg);
+		while(true){//SDL_GetTicks() - startTicks < 10000){
+			SDL_Delay(16);
+			sectorConnectionManager->condSignal();
+		}
         return DR_ERROR;
         /*
 		

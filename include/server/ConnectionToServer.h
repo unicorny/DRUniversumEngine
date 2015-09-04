@@ -51,8 +51,7 @@ namespace UniLib {
 		class GetPublicKeyNetworkTask : public controller::NetworkTask
 		{
 		public:
-			GetPublicKeyNetworkTask(ConnectionToServer* parent, DRNetRequest& request, int connectionNumber)
-				: NetworkTask(request, connectionNumber), mParent(parent) {}
+			GetPublicKeyNetworkTask(ConnectionToServer* parent, int connectionNumber);
 			virtual ~GetPublicKeyNetworkTask() {}
 
 			virtual void execute(DRNet_Status status, std::string& data);
@@ -92,6 +91,7 @@ namespace UniLib {
 			__inline__ u16 getConnectionNumber() {return mConnectionNumber;}
 			__inline__ GetPublicKeyNetworkTask* getPublickKeyTask() { return mPublicKeyRequestTask;}
 			__inline__ lib::Crypto* getRSAModule() {return mRSAModule;}
+			__inline__ DRNetServerConfig getServerConfig() {return mServerConfig;}
 			
         protected:
 			// member structures

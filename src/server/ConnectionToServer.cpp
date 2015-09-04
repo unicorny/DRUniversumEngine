@@ -17,6 +17,7 @@ namespace UniLib {
 			// copy server config
             mServerConfig.port = config->port;
 			mServerConfig.url = config->url;
+			mServerConfig.route = config->route;
 			mServerConfig.serverType = config->serverType;                  
         }
 
@@ -33,10 +34,8 @@ namespace UniLib {
 			if(mConnectionNumber <= 0) {
 				LOG_ERROR("Error by establish connection to server", DR_ERROR);
 			}
-			DRNetRequest request;
-			request.url = "/spacecraft/serverKeys/get";
-			request.method = NET_REQUEST_METHOD_GET;
-			mPublicKeyRequestTask = new GetPublicKeyNetworkTask(this, request, mConnectionNumber);
+			
+			mPublicKeyRequestTask = new GetPublicKeyNetworkTask(this, mConnectionNumber);
 			mPublicKeyRequestTask->run();
             mInitalized = true;
             return DR_OK;
@@ -91,15 +90,28 @@ namespace UniLib {
 		// ***************************************************************************************************************
 		// commands
 		// ***************************************************************************************************************
+		GetPublicKeyNetworkTask::GetPublicKeyNetworkTask(ConnectionToServer* parent, int connectionNumber)
+			: NetworkTask(0, connectionNumber), mParent(parent) 
+		{
+			mRequest.url = parent->getServerConfig().route + "/serverKeys/get";
+			mRequest.method = NET_REQUEST_METHOD_GET;
+		}
+		
 		void GetPublicKeyNetworkTask::execute(DRNet_Status status, std::string& data)
 		{
 			lock();
 			if(status == NET_COMPLETE) {
-				if(mParent->getRSAModule()->setServerPublicKey(data)) {
-                    DRLog.writeToLog("setting server public key failed with data: %s", data.data());
-					LOG_WARNING("failed with setting server key");
+				Json::Value response = convertStringToJson(data)["public_key"];
+				if(response["state"] == DRString("succeed")) {
+					if(mParent->getRSAModule()->setServerPublicKey(data)) {
+						DRLog.writeToLog("setting server public key failed with data: %s", data.data());
+						LOG_WARNING("failed with setting server key");
+					} else {
+						mResult = data;
+					}
 				} else {
-					mResult = data;
+					EngineLog.writeToLog("request: %s failed with message: %s", mRequest.url.data(), response["message"]);
+					LOG_WARNING("request failed");
 				}
 			} else {
 				DRLog.writeToLog("setting server public key failed with status: %d", status);

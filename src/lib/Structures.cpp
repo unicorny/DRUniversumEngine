@@ -8,6 +8,7 @@ void DRNetServerConfig::readFromJson(Json::Value value)
 {
 	url = value.get("url", "localhost").asString();
 	port = value.get("port", 80).asInt();
+	route = value.get("route", "").asString();
 	serverType = getServerTypeFromString(value.get("type", "none").asString());
 }
 

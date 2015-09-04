@@ -36,6 +36,7 @@ namespace UniLib {
 			 if(mAccountServer && mAccountServer->isLogin()) return;
 			 if(!mAccountServer) {
 				mAccountServer = new ConnectionToAccountServer(accountServerConfig);
+				mAccountServer->init();
 				mAccountServer->login(username, password, callback);
 			 }
 			 

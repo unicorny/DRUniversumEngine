@@ -75,7 +75,9 @@ DRReturn HTTPConnection::run()
 		std::ostringstream ostr;	
 		StreamCopier::copyStream(is, ostr);	
 		if(command) {
-			command->execute(NET_COMPLETE, ostr.str());
+			std::string outStr = ostr.str(); 
+			//printf(outStr.data());
+			command->execute(NET_COMPLETE, outStr);
 		} else {
 			mRecvMutex.lock();
 			mReciveDatas.push(ostr.str());

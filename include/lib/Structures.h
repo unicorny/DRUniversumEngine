@@ -78,6 +78,7 @@ struct UNIVERSUM_LIB_API DRNetServerConfig
 {
 	std::string url;//or ip
 	int port;
+	std::string route;
 	DRNet_Server_Type serverType;
 
 	// methods
