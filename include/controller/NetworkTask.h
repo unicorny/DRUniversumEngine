@@ -33,7 +33,8 @@
 #define __DR_UNIVERSUM_LIB_CONTROLLER_NETWORK_TASK_H__
 
 #include "Task.h"
-
+#include "lib/Structures.h"
+#include "server/Callbacks.h"
 
 namespace UniLib {
     namespace controller {
@@ -41,13 +42,30 @@ namespace UniLib {
         class UNIVERSUM_LIB_API NetworkTask;
         typedef DRResourcePtr<NetworkTask> NetworkTaskPtr;
 
-        class UNIVERSUM_LIB_API NetworkTask : public Task
+        class UNIVERSUM_LIB_API NetworkTask : public Task, public server::CallbackCommand
         {
         public: 
-            NetworkTask();
-            ~NetworkTask();
+            NetworkTask(DRNetRequest& request, u16 connectionNumber);
+			NetworkTask(size_t taskDependenceCount, u16 connectionNumber);
+            virtual ~NetworkTask();
+
+			//! \brief return true if task has finished, else false
+			//! automatic scheduling of task if he isn't finished and sheduled yet
+			virtual bool isTaskFinished();
+			//! \brief called from task scheduler, maybe from another thread
+			virtual DRReturn run();
+			//! \brief called when net request receive data
+			virtual void execute(DRNet_Status status, std::string& data);
+
+			virtual const char* getResourceType() const {return "NetworkTask";};
         protected:
 
+			virtual void scheduleTask() {run();};
+			// result string
+			std::string mResult;
+			// request
+			DRNetRequest mRequest;
+			u16			mConnectionNumber;
         };
     }
 }

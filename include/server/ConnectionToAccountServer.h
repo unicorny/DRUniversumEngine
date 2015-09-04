@@ -32,9 +32,21 @@
 #define __UNIVERSUM_LIB_SERVER_CONNECTION_TO_ACCOUNT_SERVER_H
 
 #include "ConnectionToServer.h"
+#include "controller/NetworkTask.h"
 
 namespace UniLib {
+	namespace controller {
+		//class UNIVERSUM_LIB_API NetworkTask;
+
+	}
     namespace server {
+		class LoginNetworkTask;
+		/*! 
+		 * \author: Dario Rekowski
+		 *
+		 * \date: 04.09.2015
+		 * \brief Connection to account server, login, stats and getting addresses for other server
+		 */
         class UNIVERSUM_LIB_API ConnectionToAccountServer: public ConnectionToServer
         {
         public:
@@ -45,6 +57,9 @@ namespace UniLib {
 			virtual DRReturn init();
 			virtual DRReturn update();
 
+			// login
+			void login(const char* username, const char* password, CallbackCommand* command);
+
 
             __inline__ bool isLogin() {return mSuccesfullyLoggedIn;}
         protected:
@@ -53,8 +68,29 @@ namespace UniLib {
 
             bool mSuccesfullyLoggedIn;
 			// getting from server after login, needed for all requests
-			std::string mRequestKey;
+			LoginNetworkTask* mLogin;
+
         };
+		/*! 
+		 * \author: Dario Rekowski
+		 *
+		 * \date: 04.09.2015
+		 * \brief Network Task for logging in
+		 */
+		class UNIVERSUM_LIB_API LoginNetworkTask : public controller::NetworkTask
+		{
+		public:
+			LoginNetworkTask(ConnectionToAccountServer* parent, const char* username, const char* password);
+			virtual ~LoginNetworkTask() {};
+
+			virtual DRReturn run();
+			virtual const char* getResourceType() const {return "LoginNetworkTask";};
+		protected:
+			__inline__ virtual void scheduleTask() {mParent->scheduleNetworkTask(this);};
+			DRString mUsername;
+			DRString mPassword;
+			ConnectionToAccountServer* mParent;
+		};
     }
 }
 

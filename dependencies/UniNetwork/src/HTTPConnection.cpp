@@ -26,13 +26,20 @@ DRReturn HTTPConnection::run()
 {
 	// get send request from queue
 	mRequestMutex.lock();
-	if(mSendRequests.size() == 0) {
+	if(mSendRequests.size() == 0 && mSendCommandRequests.size() == 0) {
 		mRequestMutex.unlock();
 		return DR_OK;
 	}
-//	assert(mSendRequests.size());
-	DRNetRequest requestCfg = mSendRequests.front();
-	mSendRequests.pop();
+	DRNetRequest requestCfg;
+	UniLib::server::CallbackCommand* command = NULL;
+	if(mSendRequests.size()) {
+		requestCfg = mSendRequests.front();
+		mSendRequests.pop();
+	} else {
+		requestCfg = mSendCommandRequests.front().request;
+		command = mSendCommandRequests.front().command;
+		mSendCommandRequests.pop();
+	}
 	mRequestMutex.unlock();
 
 	try {
@@ -67,9 +74,13 @@ DRReturn HTTPConnection::run()
 		std::istream& is = mClientSession.receiveResponse(response);// >> responseString;
 		std::ostringstream ostr;	
 		StreamCopier::copyStream(is, ostr);	
-		mRecvMutex.lock();
-		mReciveDatas.push(ostr.str());
-		mRecvMutex.unlock();
+		if(command) {
+			command->execute(NET_COMPLETE, ostr.str());
+		} else {
+			mRecvMutex.lock();
+			mReciveDatas.push(ostr.str());
+			mRecvMutex.unlock();
+		}
 	} catch (Poco::Exception what) {
 		POCO_LOG_FATAL(std::string("error by reciving: ") + std::string(what.displayText()));
 		return DR_ERROR;
@@ -82,6 +93,14 @@ DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest)
 {
 	mRequestMutex.lock();
 	mSendRequests.push(sendRequest);
+	mRequestMutex.unlock();
+	return NET_OK;
+}
+
+DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest, UniLib::server::CallbackCommand* command)
+{
+	mRequestMutex.lock();
+	mSendCommandRequests.push(RequestWithReturnCommand(sendRequest, command));
 	mRequestMutex.unlock();
 	return NET_OK;
 }

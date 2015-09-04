@@ -31,6 +31,7 @@
 
 #include <UniversumLib.h> 
 #include <lib/DRINetwork.h>
+#include <server/Callbacks.h>
 /*
 #include "Poco/FileChannel.h"
 #include "Poco/Message.h"

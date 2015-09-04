@@ -69,6 +69,12 @@ DRNet_Status DRINetwork::send(const DRNetRequest& sendRequest, u16 connectionNum
     return NET_ERROR;
 }
 
+DRNet_Status DRINetwork::send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::CallbackCommand* command)
+{
+	LOG_WARNING("not implemented");
+	return NET_ERROR;
+}
+
 DRNet_Status DRINetwork::recv(std::string& dataJson, u16 connectionNumber)
 {
 	LOG_WARNING("not implemented");

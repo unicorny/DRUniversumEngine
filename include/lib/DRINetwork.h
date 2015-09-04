@@ -38,6 +38,7 @@ Datum: 16.09.09
 #include <map>
 #include "Structures.h"
 
+
 enum DRNet_Status
 {
 	NET_OK = 0,
@@ -59,6 +60,9 @@ enum UNIVERSUM_LIB_API DRNet_Status;
 namespace UniLib {
 	namespace lib {
 		class Crypto;
+	}
+	namespace server {
+		class CallbackCommand;
 	}
 }
 
@@ -91,8 +95,14 @@ public:
 	// \brief send data 
 	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber);
 
-	// \breif recv data
+	// \brief recv data
 	virtual DRNet_Status recv(std::string& data, u16 connectionNumber);
+
+	//! \brief send data with return command
+	//! \param request request data
+	//! \param connectionNumber 
+	//! \param command which will be called after answers was received
+	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::CallbackCommand* command);
 
 	// helper
 	virtual UniLib::lib::Crypto* createCrypto();

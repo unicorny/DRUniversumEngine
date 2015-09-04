@@ -33,6 +33,7 @@
 
 #include "Callbacks.h"
 #include "UniversumLib.h"
+#include "controller/NetworkTask.h"
 
 struct DRNetServerConfig;
 
@@ -43,9 +44,22 @@ namespace UniLib {
     namespace model {
         class SektorID;
     }
+
     namespace server {
 
-		
+		class UNIVERSUM_LIB_API ConnectionToServer;
+		class GetPublicKeyNetworkTask : public controller::NetworkTask
+		{
+		public:
+			GetPublicKeyNetworkTask(ConnectionToServer* parent, DRNetRequest& request, int connectionNumber)
+				: NetworkTask(request, connectionNumber), mParent(parent) {}
+			virtual ~GetPublicKeyNetworkTask() {}
+
+			virtual void execute(DRNet_Status status, std::string& data);
+			virtual const char* getResourceType() const {return "GetPublicKeyNetworkTask";};
+		protected:
+			ConnectionToServer* mParent;
+		};
 
 		/*!
 		 * \author Dario Rekowski
@@ -63,12 +77,8 @@ namespace UniLib {
 
             virtual DRReturn init();
 
-			//! \brief store request in queue, Thread safe
-			//! \param request the net request
-			//! \param sektorID the sektor to which the requested data belong
-			//! \param callback called after receiving answer is complete
-            void sendRequest(DRNetRequest* request, model::SektorID* sektorID, CallbackCommand* callback = NULL);
 
+			virtual void scheduleNetworkTask(controller::NetworkTask* networkTask);
             //! \brief called every time a new packet came from network hardware
 			//! check if request in queue, if then call additionalFieldsAndCryptRequest and sendRequestDirect
 			//! check if request answers existing, if then call callbackCommand and remove request and command afterwards
@@ -77,6 +87,11 @@ namespace UniLib {
 			// inline check state
             __inline__ bool isConnectionValid()  {return mConnectionNumber >= 0;}
             __inline__ bool isInitalized() {return mInitalized;}
+
+			// getter and setter for network tasks
+			__inline__ u16 getConnectionNumber() {return mConnectionNumber;}
+			__inline__ GetPublicKeyNetworkTask* getPublickKeyTask() { return mPublicKeyRequestTask;}
+			__inline__ lib::Crypto* getRSAModule() {return mRSAModule;}
 			
         protected:
 			// member structures
@@ -88,41 +103,28 @@ namespace UniLib {
 				CallbackCommand* command;
 			};
 
-			class GetPublicKeyCommand : public CallbackCommand
-			{
-			public: 
-				GetPublicKeyCommand(ConnectionToServer* parent) : mParent(parent) {};
-			protected: 
-				virtual void execute(DRNet_Status status, std::string& data);
-				ConnectionToServer* mParent;
-			};
-
 			// member function
 			//! \brief remove all request command from queue and call them with NET_CONNECTION_CLOSED
 			//! called on exit
-			void cleanUpRequestCommandQueue(std::queue<RequestCommand>& requestCommandQueue);
 
 			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest) = 0;
-
 			void sendRequestDirect(DRNetRequest* request, CallbackCommand* callback = NULL);
 
             // crypto modul
-           lib::Crypto* mRSAModule;
-           // connection number
-           int          mConnectionNumber;
-		   // connection config
-		   DRNetServerConfig mServerConfig;
-           // mutex
-           SDL_mutex*   mWorkMutex;
-		   SDL_mutex*   mPendingWorkMutex;
+			lib::Crypto* mRSAModule;
+			// connection number
+			u16          mConnectionNumber;
+			// connection config
+			DRNetServerConfig mServerConfig;
+			// mutex
+			SDL_mutex*   mWorkMutex;
 
-           // initalized
-           bool         mInitalized;
+			// initalized
+			bool         mInitalized;
 
-           // Request answear stacks
-           
-           std::queue<RequestCommand> mRequestCommands;
-		   std::queue<RequestCommand> mPendingRequestCommands;
+			std::list<controller::NetworkTask*> mNetworkTasks;
+			// public key
+			GetPublicKeyNetworkTask* mPublicKeyRequestTask;
         };
     }
 }

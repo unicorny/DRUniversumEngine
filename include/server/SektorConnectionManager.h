@@ -65,7 +65,7 @@ namespace UniLib {
             __inline__ bool isLogin() {return mLoginSuccessfully;}
 
             // default request
-            DRReturn sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback = NULL);
+            //DRReturn sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback = NULL);
 
             // memory management
             DRNetRequest* getFreeNetRequest();

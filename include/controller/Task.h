@@ -40,7 +40,7 @@ namespace UniLib {
         class UNIVERSUM_LIB_API Task;
         typedef DRResourcePtr<Task> TaskPtr;
 
-        class UNIVERSUM_LIB_API Task 
+        class UNIVERSUM_LIB_API Task : public DRIResource
         {
         public:
             Task();
@@ -56,6 +56,9 @@ namespace UniLib {
             //! \brief called from task scheduler, maybe from another thread
             virtual DRReturn run() = 0;
 
+			__inline__ void lock() {SDL_LockMutex(mWorkingMutex);}
+			__inline__ void unlock() {SDL_UnlockMutex(mWorkingMutex);}
+
             __inline__ void setParentTaskPtrInArray(TaskPtr task, size_t index)
             {
                 assert(index < mParentTaskPtrArraySize);
@@ -65,6 +68,10 @@ namespace UniLib {
                 assert(index < mParentTaskPtrArraySize);
                 mParentTaskPtrArray[index] = resourceHolder;
             }
+
+			// from parent
+			virtual const char* getResourceType() const {return "Task";};
+			virtual bool less_than(DRIResource& b) const {return false;};
         protected:
             __inline__ bool isTaskSheduled() {return mTaskScheduled;}
             virtual void scheduleTask() = 0;

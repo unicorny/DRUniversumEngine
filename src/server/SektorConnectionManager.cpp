@@ -36,13 +36,13 @@ namespace UniLib {
 			 if(mAccountServer && mAccountServer->isLogin()) return;
 			 if(!mAccountServer) {
 				mAccountServer = new ConnectionToAccountServer(accountServerConfig);
+				mAccountServer->login(username, password, callback);
 			 }
 			 
-			 
-             DRNetRequest* request = getFreeNetRequest();
+             //DRNetRequest* request = getFreeNetRequest();
              //request->method         
          }
-         DRReturn SektorConnectionManager::sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback/* = NULL*/)
+       /*  DRReturn SektorConnectionManager::sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback)
          {
              lock();
              switch(type) {
@@ -51,7 +51,7 @@ namespace UniLib {
              unlock();
              return DR_OK;
          }
-
+	   */
          // memory management
          DRNetRequest* SektorConnectionManager::getFreeNetRequest()
          {
