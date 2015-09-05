@@ -62,7 +62,7 @@ namespace UniLib {
 		class Crypto;
 	}
 	namespace server {
-		class CallbackCommand;
+		class RequestCommand;
 	}
 }
 
@@ -102,7 +102,7 @@ public:
 	//! \param request request data
 	//! \param connectionNumber 
 	//! \param command which will be called after answers was received
-	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::CallbackCommand* command);
+	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::RequestCommand* command);
 
 	// helper
 	virtual UniLib::lib::Crypto* createCrypto();

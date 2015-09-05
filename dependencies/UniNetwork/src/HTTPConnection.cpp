@@ -31,7 +31,7 @@ DRReturn HTTPConnection::run()
 		return DR_OK;
 	}
 	DRNetRequest requestCfg;
-	UniLib::server::CallbackCommand* command = NULL;
+	UniLib::server::RequestCommand* command = NULL;
 	if(mSendRequests.size()) {
 		requestCfg = mSendRequests.front();
 		mSendRequests.pop();
@@ -100,7 +100,7 @@ DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest)
 	return NET_OK;
 }
 
-DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest, UniLib::server::CallbackCommand* command)
+DRNet_Status HTTPConnection::send(const DRNetRequest& sendRequest, UniLib::server::RequestCommand* command)
 {
 	mRequestMutex.lock();
 	mSendCommandRequests.push(RequestWithReturnCommand(sendRequest, command));

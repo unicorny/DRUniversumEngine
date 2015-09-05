@@ -43,9 +43,12 @@ namespace UniLib {
     namespace model {
         class SektorID;
     }
+	namespace lib {
+		class CommandEventManager;
+	}
 	namespace server {
         class ConnectionToAccountServer;
-        class CallbackCommand;
+        class RequestCommand;
 
         enum RequestType {
              REQUEST_TYPE_NONE = 0,
@@ -60,9 +63,12 @@ namespace UniLib {
 		public:
 			static SektorConnectionManager* const getInstance();
 
+			DRReturn init();
+
             // login
-            void login(const char* username, const char* password, DRNetServerConfig* accountServerConfig, CallbackCommand* callback = NULL);
+            void login(const char* username, const char* password, DRNetServerConfig* accountServerConfig);
             __inline__ bool isLogin() {return mLoginSuccessfully;}
+			__inline__ lib::CommandEventManager* getEventManager() {return mEventManager;}
 
             // default request
             //DRReturn sendRequest(DRNetRequest* request, RequestType type, model::SektorID* sektorID, CallbackCommand* callback = NULL);
@@ -90,7 +96,7 @@ namespace UniLib {
             DRMemoryList<DRNetRequest> mNetRequestsMemoryList;
 
 			// request waiting to getting startet
-			//struct 
+			lib::CommandEventManager* mEventManager;
 		};
 	};
 };

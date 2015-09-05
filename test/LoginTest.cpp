@@ -3,6 +3,8 @@
 #include "lib/DRINetwork.h"
 #include "lib/Crypto.h"
 #include "server/SektorConnectionManager.h"
+#include "controller/Task.h"
+#include "lib/CommandEventManager.h"
 //#include "UniversumLib.h"
 
 namespace UniversumLibTest {
@@ -22,6 +24,8 @@ namespace UniversumLibTest {
 	{
 		if(DRINetwork::Instance()->init()) LOG_ERROR("error by init Network Interface", DR_ERROR);
 		DRFileManager::Instance().addOrdner("data");
+		mCondition = SDL_CreateCond();
+		mMutex = SDL_CreateMutex();
         return DR_OK;
         /*UniLib::server::SektorConnectionManager::getInstance()->login();
 		//std::string value = UniLib::readFileAsString("LoginServer.json");
@@ -45,11 +49,16 @@ namespace UniversumLibTest {
         if(cfgString.size() <= 1) LOG_ERROR("cannot open LoginServer.json", DR_ERROR);
         cfg.readFromJson(UniLib::convertStringToJson(cfgString)["login"]);
 		UniLib::server::SektorConnectionManager* sectorConnectionManager = UniLib::server::SektorConnectionManager::getInstance();
-        sectorConnectionManager->login("dariofrodo", "h7JD83l29DK", &cfg);
-		while(true){//SDL_GetTicks() - startTicks < 10000){
-			SDL_Delay(16);
+		sectorConnectionManager->init();
+		SDL_LockMutex(mMutex);
+        sectorConnectionManager->login("admin", "h7JD83l29DK", &cfg);
+		sectorConnectionManager->getEventManager()->addCommandForEvent("login", new LoginCommandFinish(mCondition, mMutex));
+
+		while(SDL_CondWaitTimeout(mCondition, mMutex, 16)){//SDL_GetTicks() - startTicks < 10000){
+			//SDL_Delay(16);
 			sectorConnectionManager->condSignal();
 		}
+		SDL_UnlockMutex(mMutex);
         return DR_ERROR;
         /*
 		
@@ -172,5 +181,19 @@ namespace UniversumLibTest {
 
 		return DR_ERROR;
         */
+	}
+
+	LoginCommandFinish::LoginCommandFinish(SDL_cond* cond, SDL_mutex* mutex)
+		: mCond(cond), mMutex(mutex)
+	{
+
+	}
+	DRReturn LoginCommandFinish::taskFinished(UniLib::controller::Task* task)
+	{
+		UniLib::EngineLog.writeToLog("Login finished: %s", task->getResourceType());
+		SDL_LockMutex(mMutex);
+		SDL_CondSignal(mCond);
+		SDL_UnlockMutex(mMutex);
+		return DR_OK;
 	}
 }

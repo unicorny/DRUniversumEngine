@@ -40,7 +40,7 @@ public:
 	virtual DRReturn run();
 
 	virtual DRNet_Status send(const DRNetRequest&  sendRequest);
-	virtual DRNet_Status send(const DRNetRequest& sendRequest, UniLib::server::CallbackCommand* command);
+	virtual DRNet_Status send(const DRNetRequest& sendRequest, UniLib::server::RequestCommand* command);
 	virtual DRNet_Status recv(std::string& recvDatas);
 
 protected:
@@ -49,10 +49,10 @@ protected:
 	Poco::Net::HTTPClientSession mClientSession;
 
 	struct RequestWithReturnCommand {
-		RequestWithReturnCommand(const DRNetRequest& sendRequest, UniLib::server::CallbackCommand* command)
+		RequestWithReturnCommand(const DRNetRequest& sendRequest, UniLib::server::RequestCommand* command)
 			: request(sendRequest), command(command) {}
 		DRNetRequest request;
-		UniLib::server::CallbackCommand* command;
+		UniLib::server::RequestCommand* command;
 	};
 
 	std::queue<DRNetRequest> mSendRequests;

@@ -65,7 +65,7 @@ DRNet_Status UniNetwork::send(const DRNetRequest& sendRequest, u16 connectionNum
 	return mConnections[connectionNumber]->send(sendRequest);
 }
 
-DRNet_Status UniNetwork::send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::CallbackCommand* command)
+DRNet_Status UniNetwork::send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::RequestCommand* command)
 {
 	if(!mConnections[connectionNumber]) return NET_NOT_FOUND;
 	return mConnections[connectionNumber]->send(request, command);

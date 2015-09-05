@@ -50,7 +50,7 @@ namespace UniLib {
         class UNIVERSUM_LIB_API ConnectionToAccountServer: public ConnectionToServer
         {
         public:
-            ConnectionToAccountServer(const DRNetServerConfig* serveConfig);
+            ConnectionToAccountServer(const DRNetServerConfig* serveConfig, lib::CommandEventManager* eventManager);
             virtual ~ConnectionToAccountServer();
 
 			// derived from parent
@@ -58,13 +58,11 @@ namespace UniLib {
 			virtual DRReturn update();
 
 			// login
-			void login(const char* username, const char* password, CallbackCommand* command);
+			void login(const char* username, const char* password);
 
 
             __inline__ bool isLogin() {return mSuccesfullyLoggedIn;}
         protected:
-			// member functions, derived from parent
-			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest);
 
             bool mSuccesfullyLoggedIn;
 			// getting from server after login, needed for all requests

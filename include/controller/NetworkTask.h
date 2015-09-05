@@ -34,7 +34,7 @@
 
 #include "Task.h"
 #include "lib/Structures.h"
-#include "server/Callbacks.h"
+#include "server/RequestCommand.h"
 
 namespace UniLib {
     namespace controller {
@@ -42,7 +42,7 @@ namespace UniLib {
         class UNIVERSUM_LIB_API NetworkTask;
         typedef DRResourcePtr<NetworkTask> NetworkTaskPtr;
 
-        class UNIVERSUM_LIB_API NetworkTask : public Task, public server::CallbackCommand
+        class UNIVERSUM_LIB_API NetworkTask : public Task, public server::RequestCommand
         {
         public: 
             NetworkTask(DRNetRequest& request, u16 connectionNumber);

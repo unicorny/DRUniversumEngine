@@ -1,10 +1,12 @@
 #include "server/SektorConnectionManager.h"
 #include "server/ConnectionToAccountServer.h"
+#include "lib/CommandEventManager.h"
 
 namespace UniLib {
 	namespace server {
 		SektorConnectionManager::SektorConnectionManager()
-            : mAccountServer(NULL), mLoginSuccessfully(false), mInitalized(false), mNetRequestsMemoryList(NET_REQUEST_MEMORY_LIST_OBJECT_COUNT)
+            : mAccountServer(NULL), mLoginSuccessfully(false), mInitalized(false), 
+			mNetRequestsMemoryList(NET_REQUEST_MEMORY_LIST_OBJECT_COUNT), mEventManager(NULL)
 		{
             
 		}
@@ -12,6 +14,8 @@ namespace UniLib {
 		SektorConnectionManager::~SektorConnectionManager() 
 		{
             DR_SAVE_DELETE(mAccountServer); 
+			if(mEventManager) mEventManager->exit();
+			DR_SAVE_DELETE(mEventManager);
 		}
 
 		SektorConnectionManager* const SektorConnectionManager::getInstance()
@@ -31,13 +35,19 @@ namespace UniLib {
              // return good
              return 0;
          }
-         void SektorConnectionManager::login(const char* username, const char* password, DRNetServerConfig* accountServerConfig, CallbackCommand* callback/* = NULL*/)
+		 DRReturn SektorConnectionManager::init()
+		 {
+			 mEventManager = new lib::CommandEventManager;
+			 mEventManager->init();
+			 return DR_OK;
+		 }
+         void SektorConnectionManager::login(const char* username, const char* password, DRNetServerConfig* accountServerConfig)
          {
 			 if(mAccountServer && mAccountServer->isLogin()) return;
 			 if(!mAccountServer) {
-				mAccountServer = new ConnectionToAccountServer(accountServerConfig);
+				mAccountServer = new ConnectionToAccountServer(accountServerConfig, mEventManager);
 				mAccountServer->init();
-				mAccountServer->login(username, password, callback);
+				mAccountServer->login(username, password);
 			 }
 			 
              //DRNetRequest* request = getFreeNetRequest();

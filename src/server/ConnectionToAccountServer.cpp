@@ -2,6 +2,7 @@
 #include "server/SektorConnectionManager.h"
 #include "controller/NetworkTask.h"
 #include "lib/Crypto.h"
+#include "lib/CommandEventManager.h"
 
 namespace UniLib {
     namespace server {
@@ -39,15 +40,23 @@ namespace UniLib {
 			if(json["state"].asString() == std::string("failed")) {
 				EngineLog.writeToLog("request failed with message: %s", json["message"].asCString());
 				LOG_WARNING("login failed");
+			} else {
+				
 			}
+			if(mFinishCommand) {
+				mFinishCommand->taskFinished(this);
+				DR_SAVE_DELETE(mFinishCommand);
+			}
+
 		}
+
 
 
 		// ****************************************************************************************************************************************
 		// Connection To Account Server
 		// ****************************************************************************************************************************************
-        ConnectionToAccountServer::ConnectionToAccountServer(const DRNetServerConfig* serveConfig)
-            : ConnectionToServer(serveConfig), mSuccesfullyLoggedIn(false)
+        ConnectionToAccountServer::ConnectionToAccountServer(const DRNetServerConfig* serveConfig, lib::CommandEventManager* eventManager)
+            : ConnectionToServer(serveConfig, eventManager), mSuccesfullyLoggedIn(false)
         {
         }
 
@@ -63,9 +72,10 @@ namespace UniLib {
 			//DRNetRequest* netRequest = SektorConnectionManager::getInstance()->getFreeNetRequest();
 			return DR_OK;
 		}
-		void ConnectionToAccountServer::login(const char* username, const char* password, CallbackCommand* command)
+		void ConnectionToAccountServer::login(const char* username, const char* password)
 		{
 			mLogin = new LoginNetworkTask(this, username, password);
+			mLogin->setFinishCommand(new lib::CallEventManagerCommand("login", mLogin, mEventManager));
 			scheduleNetworkTask(mLogin);
 		}
 		DRReturn ConnectionToAccountServer::update()
@@ -76,9 +86,6 @@ namespace UniLib {
 		// ********************************************************************
 		// protected Member functions 
 		// ********************************************************************
-	    void  ConnectionToAccountServer::additionalFieldsAndCryptRequest(DRNetRequest* netRequest)
-		{
 
-		}
-    }
+	}
 }

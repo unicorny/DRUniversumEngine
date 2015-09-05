@@ -31,7 +31,6 @@
 #ifndef __UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
 #define __UNIVERSUM_LIB_SERVER_CONNECTION_TO_SERVER__H
 
-#include "Callbacks.h"
 #include "UniversumLib.h"
 #include "controller/NetworkTask.h"
 
@@ -40,6 +39,7 @@ struct DRNetServerConfig;
 namespace UniLib {
     namespace lib {
         class Crypto;
+		class CommandEventManager;
     }
     namespace model {
         class SektorID;
@@ -71,7 +71,7 @@ namespace UniLib {
         class UNIVERSUM_LIB_API ConnectionToServer
         {
         public:
-            ConnectionToServer(const DRNetServerConfig* config);
+            ConnectionToServer(const DRNetServerConfig* config, lib::CommandEventManager* eventManager);
             virtual ~ConnectionToServer();
 
             virtual DRReturn init();
@@ -94,21 +94,6 @@ namespace UniLib {
 			__inline__ DRNetServerConfig getServerConfig() {return mServerConfig;}
 			
         protected:
-			// member structures
-			// request command structure
-			struct RequestCommand {
-				RequestCommand(DRNetRequest* request, CallbackCommand* callback)
-					: request(request), command(callback) {}
-				DRNetRequest* request;
-				CallbackCommand* command;
-			};
-
-			// member function
-			//! \brief remove all request command from queue and call them with NET_CONNECTION_CLOSED
-			//! called on exit
-
-			virtual void additionalFieldsAndCryptRequest(DRNetRequest* netRequest) = 0;
-			void sendRequestDirect(DRNetRequest* request, CallbackCommand* callback = NULL);
 
             // crypto modul
 			lib::Crypto* mRSAModule;
@@ -125,6 +110,8 @@ namespace UniLib {
 			std::list<controller::NetworkTask*> mNetworkTasks;
 			// public key
 			GetPublicKeyNetworkTask* mPublicKeyRequestTask;
+			// event manager
+			lib::CommandEventManager* mEventManager;
         };
     }
 }

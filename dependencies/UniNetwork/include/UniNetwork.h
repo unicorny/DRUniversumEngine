@@ -26,7 +26,7 @@
 #include "UniNetworkHeader.h"
 #include "Poco/Mutex.h"
 #include "lib/DRINetwork.h"
-#include "server/Callbacks.h"
+#include "server/RequestCommand.h"
 #include "ConnectionFactory.h"
 
 class Connection;
@@ -64,7 +64,7 @@ public:
 	virtual DRNet_Status recv(std::string& dataJson, u16 connectionNumber);
 
 	// \brief send data and getting command called if reciving has finished
-	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::CallbackCommand* command);
+	virtual DRNet_Status send(const DRNetRequest& request, u16 connectionNumber, UniLib::server::RequestCommand* command);
 
 	// helper
 	virtual UniLib::lib::Crypto* createCrypto();

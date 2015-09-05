@@ -25,24 +25,25 @@
  * 
  * \date 18.03.15
  * 
- * \desc Callback Commands for communication with server
+ * \desc Callback Commands for communication callback, event system
  */
 
-#ifndef __UNIVERSUM_LIB_SERVER_CALLBACKS_H
-#define __UNIVERSUM_LIB_SERVER_CALLBACKS_H
+#ifndef __UNIVERSUM_LIB_CONTROLLER_CALLBACKS_H
+#define __UNIVERSUM_LIB_CONTROLLER_CALLBACKS_H
 
-#include "../lib/DRINetwork.h"
-
+#include "UniversumLib.h"
 
 namespace UniLib {
-    namespace server {
-        class CallbackCommand 
+	namespace controller {
+		class Task;
+
+		class UNIVERSUM_LIB_API Command 
         {
         public:
-            virtual void execute(DRNet_Status status, std::string& data) = 0;
+            virtual DRReturn taskFinished(Task* task) = 0;
                 
         };
     }
 }
 
-#endif //__UNIVERSUM_LIB_SERVER_CALLBACKS_H
+#endif //__UNIVERSUM_LIB_CONTROLLER_CALLBACKS_H

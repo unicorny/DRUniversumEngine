@@ -4,13 +4,13 @@
 namespace UniLib {
 	namespace controller {
 		Task::Task() 
-		: mTaskScheduled(false), mParentTaskPtrArray(NULL), mParentTaskPtrArraySize(0), mWorkingMutex(SDL_CreateMutex()),
-          mDeleted(false)
+		: mTaskScheduled(false), mFinishCommand(NULL), mParentTaskPtrArray(NULL),
+		  mParentTaskPtrArraySize(0), mWorkingMutex(SDL_CreateMutex()), mDeleted(false)
 		{
 		}
 
         Task::Task(size_t taskPointerArraySize)
-            : mTaskScheduled(false), mParentTaskPtrArray(new TaskPtr[taskPointerArraySize]), mParentTaskPtrArraySize(taskPointerArraySize),
+            : mTaskScheduled(false), mFinishCommand(NULL), mParentTaskPtrArray(new TaskPtr[taskPointerArraySize]), mParentTaskPtrArraySize(taskPointerArraySize),
             mWorkingMutex(SDL_CreateMutex()), mDeleted(false)
         {
         }

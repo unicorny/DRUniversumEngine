@@ -3,12 +3,14 @@
 #include "lib/Crypto.h"
 #include "lib/DRINetwork.h"
 #include "model/SektorID.h"
+#include "lib/CommandEventManager.h"
 
 namespace UniLib {
     namespace server {
 
-        ConnectionToServer::ConnectionToServer(const DRNetServerConfig* config)
-            : mRSAModule(NULL), mConnectionNumber(-1), mWorkMutex(SDL_CreateMutex()), mInitalized(false)
+        ConnectionToServer::ConnectionToServer(const DRNetServerConfig* config, lib::CommandEventManager* eventManager)
+            : mRSAModule(NULL), mConnectionNumber(-1), mWorkMutex(SDL_CreateMutex()), mInitalized(false),
+			mEventManager(eventManager)
         {       
             DRINetwork* network = DRINetwork::getSingletonPtr();
             // create crypto module

@@ -36,7 +36,7 @@
 
 namespace UniLib {
     namespace controller {
-
+		class Command;
         class UNIVERSUM_LIB_API Task;
         typedef DRResourcePtr<Task> TaskPtr;
 
@@ -69,18 +69,23 @@ namespace UniLib {
                 mParentTaskPtrArray[index] = resourceHolder;
             }
 
+			__inline__ void setFinishCommand(Command* command) {mFinishCommand = command;}
+
 			// from parent
 			virtual const char* getResourceType() const {return "Task";};
 			virtual bool less_than(DRIResource& b) const {return false;};
+
         protected:
             __inline__ bool isTaskSheduled() {return mTaskScheduled;}
             virtual void scheduleTask() = 0;
 			bool mTaskScheduled;
+			Command*	mFinishCommand;
         private:
             TaskPtr* mParentTaskPtrArray;
             size_t   mParentTaskPtrArraySize; 
             SDL_mutex* mWorkingMutex;
             bool     mDeleted;
+			
         };
     }
 }
