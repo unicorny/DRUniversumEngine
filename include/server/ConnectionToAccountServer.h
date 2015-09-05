@@ -84,9 +84,10 @@ namespace UniLib {
 			virtual ~LoginNetworkTask() {};
 
 			virtual DRReturn run();
+			virtual void execute(DRNet_Status status, std::string& data);
 			virtual const char* getResourceType() const {return "LoginNetworkTask";};
 		protected:
-			__inline__ virtual void scheduleTask() {mParent->scheduleNetworkTask(this);};
+			__inline__ virtual void scheduleTask() {mParent->scheduleNetworkTask(this); mTaskScheduled = true;};
 			DRString mUsername;
 			DRString mPassword;
 			ConnectionToAccountServer* mParent;

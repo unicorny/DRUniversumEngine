@@ -59,13 +59,15 @@ namespace UniLib {
 
 			virtual const char* getResourceType() const {return "NetworkTask";};
         protected:
-
-			virtual void scheduleTask() {run();};
+			__inline__ bool isRequestSend() {return mRequestSent;}
+			virtual void scheduleTask() {run(); mTaskScheduled = true;};
 			// result string
 			std::string mResult;
 			// request
 			DRNetRequest mRequest;
 			u16			mConnectionNumber;
+		private: 
+			bool mRequestSent;
         };
     }
 }

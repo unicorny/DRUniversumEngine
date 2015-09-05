@@ -103,11 +103,11 @@ namespace UniLib {
 			if(status == NET_COMPLETE) {
 				Json::Value response = convertStringToJson(data)["public_key"];
 				if(response["state"] == DRString("succeed")) {
-					if(mParent->getRSAModule()->setServerPublicKey(data)) {
+					if(mParent->getRSAModule()->setServerPublicKey(response["key"].asString())) {
 						DRLog.writeToLog("setting server public key failed with data: %s", data.data());
 						LOG_WARNING("failed with setting server key");
 					} else {
-						mResult = data;
+						mResult = response["key"].asString();
 					}
 				} else {
 					EngineLog.writeToLog("request: %s failed with message: %s", mRequest.url.data(), response["message"]);

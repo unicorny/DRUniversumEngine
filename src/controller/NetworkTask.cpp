@@ -6,12 +6,12 @@ namespace UniLib {
 
         // constructor
         NetworkTask::NetworkTask(DRNetRequest& request, u16 connectionNumber)
-			: mRequest(request), mConnectionNumber(connectionNumber)
+			: mRequest(request), mConnectionNumber(connectionNumber), mRequestSent(false)
         {
 
         }
 		NetworkTask::NetworkTask(size_t taskDependenceCount, u16 connectionNumber)
-			: Task(taskDependenceCount), mConnectionNumber(connectionNumber) 
+			: Task(taskDependenceCount), mConnectionNumber(connectionNumber), mRequestSent(false)
 		{
 		}
         // deconstructor
@@ -21,8 +21,10 @@ namespace UniLib {
 
 		DRReturn NetworkTask::run()
 		{
+			if(mRequestSent) return DR_OK;
 			DRINetwork* p = DRINetwork::Instance();
 			p->send(mRequest, mConnectionNumber, this);
+			mRequestSent = true;
 			return DR_OK;
 		}
 		void NetworkTask::execute(DRNet_Status status, std::string& data)

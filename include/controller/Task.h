@@ -75,8 +75,8 @@ namespace UniLib {
         protected:
             __inline__ bool isTaskSheduled() {return mTaskScheduled;}
             virtual void scheduleTask() = 0;
+			bool mTaskScheduled;
         private:
-            bool mTaskScheduled;
             TaskPtr* mParentTaskPtrArray;
             size_t   mParentTaskPtrArraySize; 
             SDL_mutex* mWorkingMutex;

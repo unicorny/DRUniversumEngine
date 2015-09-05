@@ -52,7 +52,8 @@ DRReturn HTTPConnection::run()
 		//POCO_LOG_WARNING(std::string("user agent: ") + sendRequest.get("userAgent", "UniLib").asString());
 		if(requestCfg.contentType != NET_REQUEST_CONTENT_TYPE_NONE) {
 			request.setContentType(DRNetRequest::getRequestContentTypeAsString(requestCfg.contentType));
-			std::string body = "json=" + requestCfg.content.asString();
+			Json::FastWriter writer;
+			std::string body = "json=" + writer.write(requestCfg.content); //requestCfg.content.asString();
 			//body.append("\r\n0\r\n");
 			request.setChunkedTransferEncoding(false);
 			request.setContentLength((int)body.length());
