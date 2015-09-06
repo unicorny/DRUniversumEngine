@@ -73,10 +73,11 @@ namespace UniLib {
 				if(result) LOG_ERROR("error by init Connection To Server", result);
 			}
 			SDL_LockMutex(mWorkMutex);
-			for(std::list<controller::NetworkTask*>::iterator it = mNetworkTasks.begin(); it != mNetworkTasks.end(); it++) {
+			for(std::list<controller::NetworkTask*>::iterator it = mNetworkTasks.begin(); it != mNetworkTasks.end(); ++it) {
 				controller::NetworkTask* task = *it;
 				if(task->isTaskFinished()) {
 					it = mNetworkTasks.erase(it);
+					if(it == mNetworkTasks.end()) break;
 				} else if(task->isAllParentsReady()) {
 					task->run();
 				}

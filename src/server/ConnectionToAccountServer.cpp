@@ -23,6 +23,7 @@ namespace UniLib {
 		DRReturn LoginNetworkTask::run()
 		{
 			if(isRequestSend()) return DR_OK;
+			Uint32 start_ticks = SDL_GetTicks();
 			Json::FastWriter writer;
 			Json::Value contentJson(Json::objectValue);
 			lib::Crypto* rsa = mParent->getRSAModule();
@@ -31,23 +32,46 @@ namespace UniLib {
 			contentJson["password"] = encrypted;
 			contentJson["publicKey"] = rsa->getClientPublicKey(lib::Crypto::HEX);
 			mRequest.content = contentJson;
+			EngineLog.writeToLog("[LoginNetworkTask::run] %d ms", (SDL_GetTicks()-start_ticks));
 			return NetworkTask::run();
 		}
 
 		void LoginNetworkTask::execute(DRNet_Status status, std::string& data)
 		{
+			Uint32 start_ticks = SDL_GetTicks();
 			Json::Value json = convertStringToJson(data);
+			EngineLog.writeToLog("[LoginNetworkTask::execute] convert string to json %d ms", (SDL_GetTicks()-start_ticks));
+			start_ticks = SDL_GetTicks();
+			if(json.get("state", "failed").asString() == std::string("succeed")) {
+				lib::Crypto* rsa = mParent->getRSAModule();
+				std::string requestToken = rsa->crypt(json.get("requestToken", "").asString(), UniLib::lib::Crypto::UNCRYPT_WITH_CLIENT_PRIVATE);
+				EngineLog.writeToLog("[LoginNetworkTask::execute] uncrypt request token %d ms", (SDL_GetTicks()-start_ticks));
+				start_ticks = SDL_GetTicks();
+				std::string cryptetRequestToken = rsa->crypt(requestToken, UniLib::lib::Crypto::CRYPT_WITH_SERVER_PUBLIC);
+				EngineLog.writeToLog("[LoginNetworkTask::execute] crypt request token %d ms", (SDL_GetTicks()-start_ticks));
+				start_ticks = SDL_GetTicks();
+				std::string signature = json.get("signature", "").asString();
+				if(!rsa->checkSign(requestToken, signature)) {
+					LOG_WARNING("signature isn't valid");
+				} else {
+					LOG_INFO("signature from request token is valid");
+					mResult = requestToken;
+				}
+				EngineLog.writeToLog("[LoginNetworkTask::execute] check sign %d ms", (SDL_GetTicks()-start_ticks));
+				start_ticks = SDL_GetTicks();
+				
+			}
 			if(json["state"].asString() == std::string("failed")) {
 				EngineLog.writeToLog("request failed with message: %s", json["message"].asCString());
 				LOG_WARNING("login failed");
 			} else {
 				
 			}
+			EngineLog.writeToLog("[LoginNetworkTask::execute] %d ms", (SDL_GetTicks()-start_ticks));
 			if(mFinishCommand) {
 				mFinishCommand->taskFinished(this);
 				DR_SAVE_DELETE(mFinishCommand);
 			}
-
 		}
 
 

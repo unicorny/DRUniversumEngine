@@ -3,7 +3,7 @@
 #include "lib/DRINetwork.h"
 #include "lib/Crypto.h"
 #include "server/SektorConnectionManager.h"
-#include "controller/Task.h"
+#include "controller/NetworkTask.h"
 #include "lib/CommandEventManager.h"
 //#include "UniversumLib.h"
 
@@ -16,6 +16,10 @@ namespace UniversumLibTest {
 	LoginTest::~LoginTest()
 	{
 		DRINetwork::Instance()->exit();
+		SDL_LockMutex(mMutex);
+		SDL_DestroyCond(mCondition);
+		SDL_UnlockMutex(mMutex);
+		SDL_DestroyMutex(mMutex);
 	}
 
 	// ------------------------------------------------------------------
@@ -50,15 +54,22 @@ namespace UniversumLibTest {
         cfg.readFromJson(UniLib::convertStringToJson(cfgString)["login"]);
 		UniLib::server::SektorConnectionManager* sectorConnectionManager = UniLib::server::SektorConnectionManager::getInstance();
 		sectorConnectionManager->init();
-		SDL_LockMutex(mMutex);
+		
         sectorConnectionManager->login("admin", "h7JD83l29DK", &cfg);
-		sectorConnectionManager->getEventManager()->addCommandForEvent("login", new LoginCommandFinish(mCondition, mMutex));
-
-		while(SDL_CondWaitTimeout(mCondition, mMutex, 16)){//SDL_GetTicks() - startTicks < 10000){
-			//SDL_Delay(16);
+		bool exit = false;
+		LoginCommandFinish* loginCommand = new LoginCommandFinish(&exit, mMutex);
+		sectorConnectionManager->getEventManager()->addCommandForEvent("login", loginCommand);
+		
+		while(true){//SDL_GetTicks() - startTicks < 10000){
+			SDL_Delay(16);
 			sectorConnectionManager->condSignal();
+			SDL_LockMutex(mMutex);
+			if(exit) break;
+			SDL_UnlockMutex(mMutex);
 		}
-		SDL_UnlockMutex(mMutex);
+		
+		sectorConnectionManager->getEventManager()->removeCommandForEvent("login", loginCommand);
+		//SDL_Delay(5000);
         return DR_ERROR;
         /*
 		
@@ -183,17 +194,22 @@ namespace UniversumLibTest {
         */
 	}
 
-	LoginCommandFinish::LoginCommandFinish(SDL_cond* cond, SDL_mutex* mutex)
-		: mCond(cond), mMutex(mutex)
+	LoginCommandFinish::LoginCommandFinish(bool* exit, SDL_mutex* mutex)
+		: mExit(exit), mMutex(mutex)
 	{
 
 	}
 	DRReturn LoginCommandFinish::taskFinished(UniLib::controller::Task* task)
 	{
-		UniLib::EngineLog.writeToLog("Login finished: %s", task->getResourceType());
+		UniLib::EngineLog.writeToLog("[LoginCommandFinish::taskFinished] Login finished: %s", task->getResourceType());
+		if(task->getResourceType() == std::string("LoginNetworkTask")) {
+			UniLib::controller::NetworkTask* login =  dynamic_cast<UniLib::controller::NetworkTask*>(task);
+			UniLib::EngineLog.writeToLog("[LoginCommandFinish::taskFinished] request key get: %s", login->getResult().data());
+		}
 		SDL_LockMutex(mMutex);
-		SDL_CondSignal(mCond);
+		*mExit = true;
 		SDL_UnlockMutex(mMutex);
+
 		return DR_OK;
 	}
 }

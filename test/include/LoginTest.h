@@ -33,10 +33,10 @@ namespace UniversumLibTest {
 	class LoginCommandFinish : public UniLib::controller::Command
 	{
 	public:
-		LoginCommandFinish(SDL_cond* cond, SDL_mutex* mutex);
+		LoginCommandFinish(bool* exit, SDL_mutex* mutex);
 		virtual DRReturn taskFinished(UniLib::controller::Task* task);
 	protected:
-		SDL_cond* mCond;
+		bool*	mExit;
 		SDL_mutex* mMutex;
 	};
 

@@ -4,6 +4,7 @@
 namespace UniLib {
 	namespace lib {
 		CommandEventManager::CommandEventManager()
+			: mWorkingMutex(NULL)
 		{
 
 		}
@@ -95,7 +96,7 @@ namespace UniLib {
 			CommandMapIterator it = mCommandsMap.find(eventHash);
 			DRReturn ret = DR_OK;
 			if(it != mCommandsMap.end()) {
-				for(CommandList::iterator commandIt = it->second.begin(); commandIt != it->second.end(); it++) {
+				for(CommandList::iterator commandIt = it->second.begin(); commandIt != it->second.end(); commandIt++) {
 					if((*commandIt)->taskFinished(task)) {
 						ret = DR_ERROR;
 					}
