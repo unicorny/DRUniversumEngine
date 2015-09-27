@@ -28,14 +28,16 @@ namespace UniLib {
         bool Task::isAllParentsReady()
         {
             bool allFinished = true;
+			lock();
             for(size_t i = 0; i < mParentTaskPtrArraySize; i++) {
                 TaskPtr task = mParentTaskPtrArray[i];
                 if(!task->isTaskFinished()) {
                     allFinished = false;
                     if(!task->isTaskSheduled()) 
-                        mParentTaskPtrArray[i]->scheduleTask();
+                        mParentTaskPtrArray[i]->scheduleTask(mParentTaskPtrArray[i]);
                 }
             }
+			unlock();
             return allFinished;
         }
 

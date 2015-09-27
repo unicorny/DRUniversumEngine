@@ -26,39 +26,41 @@
  * 
  * \date: 27.09.15
  *
- * \desc: One Task for the CPU, only calculation
+ * \desc: CPU Scheduler Thread, one of multiple threads of CPU Scheduler
  */
 
-#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_CPU_TASK_H__
-#define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_TASK_H__
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_THREAD_H__
+#define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_THREAD_H__
 
-#include "Task.h"
-#include "CPUSheduler.h"
+#include "lib/Thread.h"
 
 namespace UniLib {
     namespace controller {
 
-        class UNIVERSUM_LIB_API CPUTask;
-        typedef DRResourcePtr<CPUTask> CPUTaskPtr;
-
-		class CPUSheduler;
-
-        class UNIVERSUM_LIB_API CPUTask : public Task
+        class UNIVERSUM_LIB_API CPUShedulerThread : public lib::Thread
         {
         public: 
-            CPUTask(CPUSheduler* cpuSheduler, size_t taskDependenceCount);			
-			CPUTask(CPUSheduler* cpuScheduler);			
-            virtual ~CPUTask();
+            CPUShedulerThread(const char* name);			
+            virtual ~CPUShedulerThread();
+			
+			//! \brief will be called every time from thread, when condSignal was called
+			//! will be called from thread with locked working mutex,<br>
+			//! mutex will be unlock after calling this function
+			//! \return if return isn't 0, thread will exit
+			virtual int ThreadFunction();
 
-			virtual const char* getResourceType() const {return "CPUTask";};
-			virtual bool const isCPUTask() const {return true;}
+#ifdef _UNI_LIB_DEBUG
+			std::string getName() {return mName;}
+#endif
         protected:
-			virtual void scheduleTask(TaskPtr own);
+#ifdef _UNI_LIB_DEBUG
+			std::string mName;
+#endif
+			
 		private: 
-			CPUSheduler* mScheduler;
         };
     }
 }
 
-#endif //__DR_UNIVERSUM_LIB_CONTROLLER_CPU_TASK_H__
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_THREAD_H__
         

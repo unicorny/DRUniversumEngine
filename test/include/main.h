@@ -4,6 +4,7 @@
 #include "UniversumLib.h"
 #include "UnitTest.h"
 #include "TimerTest.h"
+#include "CPUTaskTest.h"
 #include "LoginTest.h"
 #include "LoggerTest.h"
 

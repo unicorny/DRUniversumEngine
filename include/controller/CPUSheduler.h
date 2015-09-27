@@ -19,3 +19,50 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
+
+/*!
+ *
+ * \author: Dario Rekowski
+ * 
+ * \date: 27.09.15
+ *
+ * \desc: Scheduler for CPU Tasks, multiple threads
+ */
+
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_H__
+#define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_H__
+
+#include "UniversumLib.h"
+
+namespace UniLib {
+    namespace controller {
+
+		class UNIVERSUM_LIB_API Task;
+		typedef DRResourcePtr<Task> TaskPtr;
+
+		class CPUShedulerThread;
+
+        class UNIVERSUM_LIB_API CPUSheduler 
+        {
+        public: 
+			// \param threadCount how many threads should be used
+			// \param name name for threads (only first 7 chars are used for thread name)
+            CPUSheduler(u8 threadCount, const char* name);			
+            virtual ~CPUSheduler();
+			
+			DRReturn sheduleTask(TaskPtr task); 
+#ifdef _UNI_LIB_DEBUG
+			CPUShedulerThread** getThreads(u8& count) {count = mThreadCount; return mThreads;};
+#endif
+        protected:
+			
+		private: 
+			CPUShedulerThread** mThreads;
+			u8			 mThreadCount;
+			std::string	 mName;
+        };
+    }
+}
+
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_H__
+        

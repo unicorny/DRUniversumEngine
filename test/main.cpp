@@ -10,8 +10,8 @@ void fillTests()
 	gTests.push_back(new UnitTest());
     gTests.push_back(new LoggerTest());
 	gTests.push_back(new TimerTest());
+	gTests.push_back(new CPUTaskTest());
 	gTests.push_back(new LoginTest());
-    
 }
 
 DRReturn load() {

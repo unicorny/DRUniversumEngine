@@ -3,8 +3,6 @@
 namespace UniLib {
     namespace lib {
 
-
-
         Thread::Thread(const char* threadName/* = NULL*/)
             : mutex(NULL), thread(NULL), condition(NULL), semaphore(NULL), exitCalled(false)
         {

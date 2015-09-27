@@ -82,12 +82,13 @@ namespace UniLib {
 			virtual ~LoginNetworkTask() {};
 
 			virtual DRReturn run();
-			virtual void execute(DRNet_Status status, std::string& data);
 			virtual const char* getResourceType() const {return "LoginNetworkTask";};
+			virtual bool isTaskFinished();
 		protected:
 			__inline__ virtual void scheduleTask() {mParent->scheduleNetworkTask(this); mTaskScheduled = true;};
 			DRString mUsername;
 			DRString mPassword;
+			DRString mRequestKey;
 			ConnectionToAccountServer* mParent;
 		};
     }

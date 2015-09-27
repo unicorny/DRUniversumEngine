@@ -16,7 +16,8 @@ source_group("include" FILES ${HEADER})
 endif(MSVC)
 
 #ENABLE_EXPORTS()
-#DEFINE_SYMBOL(BUILD_DLL)
+#DEFINE_SYMBOL(__TEST)
+
 
 if(WIN32)
 SET(LIBS DRCore2 DRUniversumLib)

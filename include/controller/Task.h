@@ -75,9 +75,18 @@ namespace UniLib {
 			virtual const char* getResourceType() const {return "Task";};
 			virtual bool less_than(DRIResource& b) const {return false;};
 
+			// type check
+			virtual bool const isNetworkTask() const {return false;}
+			virtual bool const isGPUTask() const {return false;}
+			virtual bool const isCPUTask() const {return false;}
+
+			
         protected:
-            __inline__ bool isTaskSheduled() {return mTaskScheduled;}
-            virtual void scheduleTask() = 0;
+			// scheduling only once
+			__inline__ bool isTaskSheduled() {return mTaskScheduled;}
+			__inline__ void taskScheduled() {mTaskScheduled = true;}
+			virtual void scheduleTask(TaskPtr own) = 0;
+            
 			bool mTaskScheduled;
 			Command*	mFinishCommand;
         private:

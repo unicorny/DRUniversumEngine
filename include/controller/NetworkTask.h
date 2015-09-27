@@ -58,11 +58,14 @@ namespace UniLib {
 			virtual void execute(DRNet_Status status, std::string& data);
 
 			virtual const char* getResourceType() const {return "NetworkTask";};
+			virtual bool const isNetworkTask() const {return true;}
 
 			__inline__ std::string getResult() {return mResult;}
+
+
         protected:
 			__inline__ bool isRequestSend() {return mRequestSent;}
-			virtual void scheduleTask() {run(); mTaskScheduled = true;};
+			virtual void scheduleTask(TaskPtr own) {run(); taskScheduled();};
 			// result string
 			std::string mResult;
 			// request
