@@ -26,14 +26,11 @@ namespace UniLib {
         {
             if(thread)
             {
-                //Post Exit to Stream Thread
+                //Post Exit to Thread
                 exitCalled = true;
                 if(SDL_SemPost(semaphore)) LOG_WARNING_SDL();
                 condSignal();
-                //kill TextureLoad Thread after 1/2 second
-
                 SDL_Delay(500);
-                //        SDL_KillThread(thread);
                 SDL_WaitThread(thread, NULL);
                 //LOG_WARNING_SDL();
 

@@ -22,7 +22,7 @@ namespace UniLib {
 
 		void CPUTask::scheduleTask(TaskPtr own)
 		{
-			assert(mTaskScheduled);
+			assert(mScheduler);
 			if(!isTaskSheduled()) {
 				mScheduler->sheduleTask(own);
 				taskScheduled();

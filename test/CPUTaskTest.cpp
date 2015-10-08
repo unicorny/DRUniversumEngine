@@ -1,12 +1,13 @@
 
 #include "include/CPUTaskTest.h"
+//#include "controller/CPUTask.h"
 #include "controller/CPUSheduler.h"
 #include "controller/CPUShedulerThread.h"
 
 using namespace UniLib;
 
 namespace UniversumLibTest {
-	CPUTaskTest::CPUTaskTest()
+	CPUTaskTest::CPUTaskTest(): mWorkMutex(SDL_CreateMutex()), mFinishedTasks(0), mFinishedCountNotNumber(false)
 	{
 
 	}
@@ -14,6 +15,7 @@ namespace UniversumLibTest {
 	CPUTaskTest::~CPUTaskTest()
 	{
 		DR_SAVE_DELETE(mScheduler);
+		DR_SAVE_DELETE(mWorkMutex);
 	}
 
 	DRReturn CPUTaskTest::init()
@@ -40,7 +42,29 @@ namespace UniversumLibTest {
 	}
 	DRReturn CPUTaskTest::test()
 	{
-		return DR_OK;
+		for(int i = 0; i < 48; i++) {
+			controller::CPUTask* cpuTask = new HeavyWorkTask(mScheduler, i);
+			controller::TaskPtr task(cpuTask);
+			cpuTask->setFinishCommand(new CPUThreadFinishCommand(this));
+			cpuTask->start(task);
+		}
+		Uint32 startTicks = SDL_GetTicks();
+		while(SDL_GetTicks() - startTicks < 1000) {
+			SDL_Delay(1);
+			SDL_LockMutex(mWorkMutex);
+			if(mFinishedTasks == 48) break;
+			SDL_UnlockMutex(mWorkMutex);
+		}
+		if(mFinishedCountNotNumber) return DR_OK;
+		LOG_ERROR("tasks runned after one another, no threading or only one thread?", DR_ERROR);
+	}
+	void CPUTaskTest::finishTask(int number, Uint32 startTicks)
+	{
+		SDL_LockMutex(mWorkMutex);
+		if(number != mFinishedTasks) mFinishedCountNotNumber = true;
+		mFinishedTasks++;
+		EngineLog.writeToLog("finish task %d with %d ms", number, SDL_GetTicks() - startTicks);
+		SDL_UnlockMutex(mWorkMutex);
 	}
 	//
 

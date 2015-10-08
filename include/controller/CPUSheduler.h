@@ -33,6 +33,7 @@
 #define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_H__
 
 #include "UniversumLib.h"
+#include "lib/MultithreadQueue.h"
 
 namespace UniLib {
     namespace controller {
@@ -54,12 +55,23 @@ namespace UniLib {
 #ifdef _UNI_LIB_DEBUG
 			CPUShedulerThread** getThreads(u8& count) {count = mThreadCount; return mThreads;};
 #endif
+			// called from scheduler thread if he wants a new task to do
+			// return null if no task pending, putting thread in wait queue,
+			// to inform him if a new task is ready for him
+			TaskPtr ImReadyForTheNextTask(CPUShedulerThread* Me);
         protected:
 			
+			
 		private: 
+			// worker threads
 			CPUShedulerThread** mThreads;
 			u8			 mThreadCount;
 			std::string	 mName;
+			// free worker
+			lib::MultithreadQueue<CPUShedulerThread*> mFreeWorkerThreads;
+			// work to do
+			lib::MultithreadQueue<TaskPtr> mPendingTasks;
+
         };
     }
 }

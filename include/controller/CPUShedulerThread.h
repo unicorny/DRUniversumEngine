@@ -37,10 +37,14 @@
 namespace UniLib {
     namespace controller {
 
+		class UNIVERSUM_LIB_API Task;
+		typedef DRResourcePtr<Task> TaskPtr;
+		class CPUSheduler;
+
         class UNIVERSUM_LIB_API CPUShedulerThread : public lib::Thread
         {
         public: 
-            CPUShedulerThread(const char* name);			
+            CPUShedulerThread(CPUSheduler* parent, const char* name);			
             virtual ~CPUShedulerThread();
 			
 			//! \brief will be called every time from thread, when condSignal was called
@@ -48,6 +52,8 @@ namespace UniLib {
 			//! mutex will be unlock after calling this function
 			//! \return if return isn't 0, thread will exit
 			virtual int ThreadFunction();
+
+			void setNewTask(TaskPtr cpuTask);
 
 #ifdef _UNI_LIB_DEBUG
 			std::string getName() {return mName;}
@@ -58,6 +64,9 @@ namespace UniLib {
 #endif
 			
 		private: 
+			TaskPtr mWaitingTask;
+			CPUSheduler* mParent;
+
         };
     }
 }

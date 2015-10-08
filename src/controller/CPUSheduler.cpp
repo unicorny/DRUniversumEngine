@@ -13,7 +13,7 @@ namespace UniLib {
 			memcpy(nameBuffer, name, len);
 			for(int i = 0; i < threadCount; i++) {
 				sprintf(&nameBuffer[len], "%.2d", i); 
-				mThreads[i] = new CPUShedulerThread(nameBuffer);
+				mThreads[i] = new CPUShedulerThread(this, nameBuffer);
 			}
 		}
 
@@ -28,9 +28,31 @@ namespace UniLib {
 
 		DRReturn CPUSheduler::sheduleTask(TaskPtr task)
 		{
+			CPUShedulerThread* t = NULL;
+			// look at free worker threads
+			if(mFreeWorkerThreads.pop(t)) {
+				// gave him the new task
+				t->setNewTask(task);
+			} else {
+				// else put task to pending queue
+				mPendingTasks.push(task);
+			}
 			return DR_OK;
 		}
-
+		TaskPtr CPUSheduler::ImReadyForTheNextTask(CPUShedulerThread* Me)
+		{
+			
+			// look at pending tasks
+			TaskPtr task;
+			if(mPendingTasks.pop(task)) {
+				// return task
+				return task;
+			} else {
+				// push thread to worker queue
+				mFreeWorkerThreads.push(Me);
+			}
+			return TaskPtr();
+		}
 
 	}
 }
