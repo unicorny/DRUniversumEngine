@@ -19,3 +19,82 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
+
+/*!
+ * 
+ * \author: Dario Rekowski
+ *
+ * \date: 17.10.2015
+ * 
+ * \desc: GPU Scheduler control all gpu processing, inclusive the main game loop (GPU part)
+ *        Maybe whole OSG code must run in GPU Thread
+ *
+ */
+
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_GPU_SCHEDULER_H
+#define __DR_UNIVERSUM_LIB_CONTROLLER_GPU_SCHEDULER_H
+
+#include "lib/Singleton.h"
+#include "lib/Thread.h"
+
+namespace UniLib {
+	namespace controller {
+
+	class Task;
+	typedef DRResourcePtr<Task> TaskPtr;
+#define GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT 20
+		
+		class UNIVERSUM_LIB_API GPURenderCall 
+		{
+		public: 
+			virtual DRReturn render(float timeSinceLastFrame) = 0;
+			// if render return DR_ERROR, Call will be removed from List and kicked will be called
+			virtual void kicked() = 0;  
+			// will be called if render call need to much time
+			// \param percent used up percent time of render main loop
+			virtual void youNeedToLong(float percent) = 0;
+		};
+
+		enum GPUSchedulerCommandType {
+			GPU_SCHEDULER_COMMAND_BEFORE_PREPARE_RENDERING = 0,
+			GPU_SCHEDULER_COMMAND_PREPARE_RENDERING = 1,
+			GPU_SCHEDULER_COMMAND_RENDERING = 2,
+			GPU_SCHEDULER_COMMAND_AFTER_RENDERING = 3,
+			GPU_SCHEDULER_COMMAND_AFTER_AFTER_RENDERING = 4,
+			GPU_SCHEDULER_COMMAND_MAX = 5
+		};
+
+		class UNIVERSUM_LIB_API GPUScheduler: public lib::Singleton {
+		public:
+			static GPUScheduler* const getInstance();
+
+			void registerGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type);
+			void unregisterGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type);
+			
+			void addGPUTask(TaskPtr task, bool slow = true);
+
+			void stopThread();
+
+			__inline__ void lock() {SDL_LockMutex(mMutex);}
+			__inline__ void unlock() {SDL_UnlockMutex(mMutex);}
+
+			// call frame buffer activities, call main gpu game loop, variable frame rate
+			static int run(void* data);
+			DRReturn updateEveryRendering();
+		protected:
+			std::list<GPURenderCall*> mGPURenderCommands[GPU_SCHEDULER_COMMAND_MAX];
+			std::queue<TaskPtr>     mFastGPUTasks;
+			std::queue<TaskPtr>     mSlowGPUTasks;
+			//std::queue<>
+			bool	mThreadRunning;
+			SDL_mutex* mMutex;
+			SDL_Thread* mThread;
+			Uint32    mLastUpdateTicks;
+			Uint32    mLastFrameDurations[GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT];
+			Uint32    mLastFrameDurationCursor;
+		};
+	}
+}
+
+
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_GPU_SCHEDULER_H

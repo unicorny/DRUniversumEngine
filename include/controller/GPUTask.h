@@ -19,3 +19,41 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
+
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 18.10.2015
+ *
+ * \desc: GPUTask represent one GPU Task which will be running on the gpu
+ */
+
+#ifndef __UNIVERSUM_LIB_CONTROLLER_GPU_TASK_H
+#define __UNIVERSUM_LIB_CONTROLLER_GPU_TASK_H
+#include "Task.h"
+
+namespace UniLib {
+	namespace controller {
+
+		class UNIVERSUM_LIB_API GPUTask : public Task 
+		{
+		public: 
+			GPUTask(bool slowGPUTask = false);
+			GPUTask(size_t childCount, bool slowGPUTask = false);
+			virtual ~GPUTask();
+
+			virtual bool const isGPUTask() const {return true;}
+			virtual const char* getResourceType() const {return "GPUTask";};
+
+			virtual bool isSlowGPUTask() {return mSlowTask;}
+		protected:
+			virtual void scheduleTask(TaskPtr own);
+
+			bool mSlowTask;
+			
+		};
+
+	}
+}
+#endif
