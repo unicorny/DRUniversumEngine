@@ -1,4 +1,5 @@
 #include "controller/InputControls.h"
+#include "controller/InputCommand.h"
 
 namespace UniLib {
 	namespace controller {
@@ -27,84 +28,67 @@ namespace UniLib {
 			assert(whichKey > 0 && whichKey < keyCount);
 			return keys[whichKey] == 1;
 		}
-		bool InputControls::isKeyPressed(InputBinaryCommandEnum whichKey) 
+		bool InputControls::isKeyPressed(InputCommandEnum whichKey) 
 		{
 			return isKeyPressed(getKeyCodeForCommand(whichKey));
 		}
 		
-		void InputControls::setMapping(SDL_Keycode sdlKeycode, InputBinaryCommandEnum command)
+		void InputControls::setMapping(SDL_Keycode sdlKeycode, InputCommandEnum command)
 		{
-			CommandBinaryMappingIterator it = mCommandBinaryMapping.find(command);
-			if(it != mCommandBinaryMapping.end()) {
+			CommandMappingIterator it = mCommandMapping.find(command);
+			if(it != mCommandMapping.end()) {
 				it->second = sdlKeycode;
 			} else {
-				mCommandBinaryMapping.insert(CommandBinaryMappingPair(command, sdlKeycode));
+				mCommandMapping.insert(CommandMappingPair(command, sdlKeycode));
 			}
-			KeycodeBinaryMappingIterator it2 = mKeycodeBinaryMapping.find(sdlKeycode);
-			if(it2 != mKeycodeBinaryMapping.end()) {
+			KeycodeMappingIterator it2 = mKeycodeMapping.find(sdlKeycode);
+			if(it2 != mKeycodeMapping.end()) {
 				it2->second = command;
 			} else {
-				mKeycodeBinaryMapping.insert(KeycodeBinaryMappingPair(sdlKeycode, command));
+				mKeycodeMapping.insert(KeycodeMappingPair(sdlKeycode, command));
 			}
 		}
-		void InputControls::setMapping(SDL_Keycode sdlKeycode, InputNumberCommandEnum command)
+		
+		SDL_Keycode InputControls::getKeyCodeForCommand(InputCommandEnum command)
 		{
-			CommandNumberMappingIterator it = mCommandNumberMapping.find(command);
-			if(it != mCommandNumberMapping.end()) {
-				it->second = sdlKeycode;
-			} else {
-				mCommandNumberMapping.insert(CommandNumberMappingPair(command, sdlKeycode));
-			}
-			KeycodeNumberMappingIterator it2 = mKeycodeNumberMapping.find(command);
-			if(it2 != mKeycodeNumberMapping.end()) {
-				it2->second = command;
-			} else {
-				mKeycodeNumberMapping.insert(KeycodeNumberMappingPair(sdlKeycode, command));
-			}
-		}
-
-		SDL_Keycode InputControls::getKeyCodeForCommand(InputBinaryCommandEnum command)
-		{
-			CommandBinaryMappingIterator it = mCommandBinaryMapping.find(command);
-			if(it != mCommandBinaryMapping.end()) {
+			CommandMappingIterator it = mCommandMapping.find(command);
+			if(it != mCommandMapping.end()) {
 				return it->second;
 			} 
 			return SDLK_UNKNOWN;
 		}
-		SDL_Keycode InputControls::getKeyCodeForCommand(InputNumberCommandEnum command)
-		{
-			CommandNumberMappingIterator it = mCommandNumberMapping.find(command);
-			if(it != mCommandNumberMapping.end()) {
-				return it->second;
-			}
-			return SDLK_UNKNOWN;
-		}
+		
 
-		InputBinaryCommandEnum InputControls::getBinaryCommandForKeycode(SDL_Keycode sdlKeycode)
+		InputCommandEnum InputControls::getCommandForKeycode(SDL_Keycode sdlKeycode)
 		{
-			KeycodeBinaryMappingIterator it = mKeycodeBinaryMapping.find(sdlKeycode);
-			if(it != mKeycodeBinaryMapping.end()) {
+			KeycodeMappingIterator it = mKeycodeMapping.find(sdlKeycode);
+			if(it != mKeycodeMapping.end()) {
 				return it->second;
 			} 
 			return INPUT_UNKNOWN;
 		}
-		InputNumberCommandEnum InputControls::getNumberCommandForKeycode(SDL_Keycode sdlKeycode)
+		
+		void InputControls::addingInputCommand(InputCommand* cmd)
 		{
-			KeycodeNumberMappingIterator it = mKeycodeNumberMapping.find(sdlKeycode);
-			if(it != mKeycodeNumberMapping.end()) {
-				return it->second;
-			}
-			return MOUSE_UNKNOWN;
+			mInputCommands.push_back(cmd);
 		}
-
+		void InputControls::removeInputCommand(InputCommand* cmd)
+		{
+			for(std::list<InputCommand*>::iterator it = mInputCommands.begin(); it != mInputCommands.end(); it++) {
+				if(cmd == *it) it = mInputCommands.erase(it);
+			}
+		}
 		DRReturn InputControls::inputLoop()
 		{
 			SDL_Event event;
 			/* Poll for events */
 			while( SDL_PollEvent( &event ) ){
-				InputBinaryCommandEnum in = getBinaryCommandForKeycode(event.type);
-				if(in == INPUT_UNKNOWN) {
-
+				InputCommandEnum in = getCommandForKeycode(event.type);
+				if(in != INPUT_UNKNOWN) {
+					for(std::list<InputCommand*>::iterator it = mInputCommands.begin(); it != mInputCommands.end(); it++) 
+					{
+						if((*it)->input(in)) it = mInputCommands.erase(it);
+					}
 				}				
 			}
 			return DR_OK;

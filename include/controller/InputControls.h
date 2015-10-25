@@ -37,7 +37,7 @@ namespace UniLib {
 	namespace controller {
 
 		// Binary Commands 
-		enum UNIVERSUM_LIB_API InputBinaryCommandEnum
+		enum UNIVERSUM_LIB_API InputCommandEnum
 		{
 			INPUT_UNKNOWN = 0,
 			INPUT_ROTATE_LEFT = 1,
@@ -64,14 +64,7 @@ namespace UniLib {
 			INPUT_MIDDLE_MOUSE_CLICK = 22
 		};
 
-		// Input with number (mouse and joystick movement)
-		enum UNIVERSUM_LIB_API InputNumberCommandEnum
-		{
-			MOUSE_UNKNOWN = 0,
-			MOUSE_AXIS_X = 1,
-			MOUSE_AXIS_Y = 2,
-			MOUSE_AXIS_Z = 3
-		};
+		class InputCommand;
 
 		class UNIVERSUM_LIB_API InputControls: public lib::Singleton
 		{
@@ -82,16 +75,16 @@ namespace UniLib {
 			// \return true if key is currently pressed
 			bool isKeyPressed(SDL_Keycode whichKey);
 			// \return true if key is currently pressed
-			bool isKeyPressed(InputBinaryCommandEnum whichKey);
+			bool isKeyPressed(InputCommandEnum whichKey);
+
+			void addingInputCommand(InputCommand* cmd);
+			void removeInputCommand(InputCommand* cmd);
 
 			// set key command mapping
-			void setMapping(SDL_Keycode sdlKeycode, InputBinaryCommandEnum command);
-			void setMapping(SDL_Keycode sdlKeycode, InputNumberCommandEnum command);
+			void setMapping(SDL_Keycode sdlKeycode, InputCommandEnum command);
 
-			SDL_Keycode getKeyCodeForCommand(InputBinaryCommandEnum command);
-			SDL_Keycode getKeyCodeForCommand(InputNumberCommandEnum command);
-			InputBinaryCommandEnum getBinaryCommandForKeycode(SDL_Keycode sdlKeycode);
-			InputNumberCommandEnum getNumberCommandForKeycode(SDL_Keycode sdlKeycode);
+			SDL_Keycode getKeyCodeForCommand(InputCommandEnum command);
+			InputCommandEnum getCommandForKeycode(SDL_Keycode sdlKeycode);
 
 			// update event queue
 			DRReturn inputLoop();
@@ -101,20 +94,16 @@ namespace UniLib {
 			virtual ~InputControls();
 
 			// command type key code mapping
-			typedef std::pair<InputBinaryCommandEnum, SDL_Keycode> CommandBinaryMappingPair;
-			typedef std::map<InputBinaryCommandEnum, SDL_Keycode>::iterator CommandBinaryMappingIterator;
-			std::map<InputBinaryCommandEnum, SDL_Keycode> mCommandBinaryMapping;
-			typedef std::pair<InputNumberCommandEnum, SDL_Keycode> CommandNumberMappingPair;
-			typedef std::map<InputNumberCommandEnum, SDL_Keycode>::iterator CommandNumberMappingIterator;
-			std::map<InputNumberCommandEnum, SDL_Keycode> mCommandNumberMapping;
+			typedef std::pair<InputCommandEnum, SDL_Keycode> CommandMappingPair;
+			typedef std::map<InputCommandEnum, SDL_Keycode>::iterator CommandMappingIterator;
+			std::map<InputCommandEnum, SDL_Keycode> mCommandMapping;
 
 			// key code command mapping
-			typedef std::pair<SDL_Keycode, InputBinaryCommandEnum> KeycodeBinaryMappingPair;
-			typedef std::map<SDL_Keycode, InputBinaryCommandEnum>::iterator KeycodeBinaryMappingIterator;
-			std::map<SDL_Keycode, InputBinaryCommandEnum> mKeycodeBinaryMapping;
-			typedef std::pair<SDL_Keycode, InputNumberCommandEnum> KeycodeNumberMappingPair;
-			typedef std::map<SDL_Keycode, InputNumberCommandEnum>::iterator KeycodeNumberMappingIterator;
-			std::map<SDL_Keycode, InputNumberCommandEnum> mKeycodeNumberMapping;
+			typedef std::pair<SDL_Keycode, InputCommandEnum> KeycodeMappingPair;
+			typedef std::map<SDL_Keycode, InputCommandEnum>::iterator KeycodeMappingIterator;
+			std::map<SDL_Keycode, InputCommandEnum> mKeycodeMapping;
+
+			std::list<InputCommand*> mInputCommands;
 		};
 	}
 }

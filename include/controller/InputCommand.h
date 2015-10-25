@@ -35,21 +35,15 @@
 
 namespace UniLib {
 	namespace controller {
-		enum InputBinaryCommandEnum;
-		enum InputNumberCommandEnum;
+		enum InputCommandEnum;
 	
-		class UNIVERSUM_LIB_API BinaryInputCommand 
+		class UNIVERSUM_LIB_API InputCommand 
         {
         public:
-            virtual DRReturn input(InputBinaryCommandEnum in) = 0;
-                
+			// \return not DR_OK means deleting from InputControls list
+            virtual DRReturn input(InputCommandEnum in) = 0;
+		protected:
         };
-
-
-		class UNIVERSUM_LIB_API NumberInputCommand
-		{
-		public:
-			virtual DRReturn input(InputNumberCommandEnum in, float value) = 0;
     }
 }
 
