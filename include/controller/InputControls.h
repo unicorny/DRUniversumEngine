@@ -86,12 +86,20 @@ namespace UniLib {
 			SDL_Keycode getKeyCodeForCommand(InputCommandEnum command);
 			InputCommandEnum getCommandForKeycode(SDL_Keycode sdlKeycode);
 
-			// update event queue
+			// update event queue, must be called every frame from main thread (SDL init thread)
 			DRReturn inputLoop();
+
+			// \return return mouse move since last frame
+			__inline__ DRVector2i getRelativeMousePos() {return mMouseMoveBuffer;}
+
+
 
 		protected:
 			InputControls();
 			virtual ~InputControls();
+
+			__inline__ void lock() {SDL_LockMutex(mSDLWorkMutex);}
+			__inline__ void unlock() {SDL_UnlockMutex(mSDLWorkMutex);}
 
 			// command type key code mapping
 			typedef std::pair<InputCommandEnum, SDL_Keycode> CommandMappingPair;
@@ -104,6 +112,12 @@ namespace UniLib {
 			std::map<SDL_Keycode, InputCommandEnum> mKeycodeMapping;
 
 			std::list<InputCommand*> mInputCommands;
+			DRVector2i mMouseMoveBuffer;
+
+			// thread save
+			SDL_mutex* mSDLWorkMutex;
+			Uint8*     mLastKeyStates;
+			int		   mLastKeyStatesSize;
 		};
 	}
 }

@@ -4,13 +4,17 @@
 namespace UniLib {
 	namespace controller {
 		InputControls::InputControls()
+			: mMouseMoveBuffer(0), mSDLWorkMutex(SDL_CreateMutex()), mLastKeyStates(NULL), mLastKeyStatesSize(0)
 		{
-
+			if(!mSDLWorkMutex) LOG_WARNING_SDL();
 		}
 
 		InputControls::~InputControls()
 		{
-
+			lock();
+			unlock();
+			SDL_DestroyMutex(mSDLWorkMutex);
+			mSDLWorkMutex = NULL;
 		}
 
 		InputControls* InputControls::getInstance()
@@ -24,9 +28,11 @@ namespace UniLib {
 		bool InputControls::isKeyPressed(SDL_Keycode whichKey) 
 		{
 			int keyCount = 0;
-			const Uint8 *keys = SDL_GetKeyboardState(&keyCount);
-			assert(whichKey > 0 && whichKey < keyCount);
-			return keys[whichKey] == 1;
+			lock();
+			assert(whichKey > 0 && whichKey < mLastKeyStatesSize);
+			bool result = mLastKeyStates[whichKey] == 1;
+			unlock();
+			return result;
 		}
 		bool InputControls::isKeyPressed(InputCommandEnum whichKey) 
 		{
@@ -81,6 +87,8 @@ namespace UniLib {
 		DRReturn InputControls::inputLoop()
 		{
 			SDL_Event event;
+			SDL_GetRelativeMouseState(&mMouseMoveBuffer.x, &mMouseMoveBuffer.y);
+
 			/* Poll for events */
 			while( SDL_PollEvent( &event ) ){
 				InputCommandEnum in = getCommandForKeycode(event.type);
@@ -91,6 +99,17 @@ namespace UniLib {
 					}
 				}				
 			}
+			// copy current keyboard key state for access from other threads
+			int keyCount = 0;
+			const Uint8 *keys = SDL_GetKeyboardState(&keyCount);
+			lock();
+			if(keyCount != mLastKeyStatesSize) {
+				mLastKeyStatesSize = keyCount;
+				DR_SAVE_DELETE_ARRAY(mLastKeyStates);
+				mLastKeyStates = new Uint8[mLastKeyStatesSize];
+			}
+			memcpy(mLastKeyStates, keys, sizeof(Uint8)* keyCount);
+			unlock();
 			return DR_OK;
 		}
 	}
