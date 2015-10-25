@@ -25,30 +25,32 @@
  * 
  * \date 25.10.2015
  * 
- * \desc Camera Class for Game Cameras
+ * \desc Input Commands for Input System, Events
  */
 
-#ifndef __UNIVESUM_LIB_CONTROLLE_CAMERA_H
-#define __UNIVESUM_LIB_CONTROLLE_CAMERA_H
+#ifndef __UNIVERSUM_LIB_CONTROLLER_INPUT_COMMAND_H
+#define __UNIVERSUM_LIB_CONTROLLER_INPUT_COMMAND_H
 
 #include "UniversumLib.h"
 
 namespace UniLib {
 	namespace controller {
-		class UNIVERSUM_LIB_API Camera
+		enum InputBinaryCommandEnum;
+		enum InputNumberCommandEnum;
+	
+		class UNIVERSUM_LIB_API BinaryInputCommand 
+        {
+        public:
+            virtual DRReturn input(InputBinaryCommandEnum in) = 0;
+                
+        };
+
+
+		class UNIVERSUM_LIB_API NumberInputCommand
 		{
 		public:
-			Camera();
-			virtual ~Camera();
-		protected:
-			DRVector3 mLocalPosition;
-			DRMatrix  mViewMatrix;
-			DRVector3 mXAxis;
-			DRVector3 mYAxis;
-			DRVector3 mZAxis;
-		private:
-		};
-	}
+			virtual DRReturn input(InputNumberCommandEnum in, float value) = 0;
+    }
 }
 
-#endif //__UNIVESUM_LIB_CONTROLLE_CAMERA_H
+#endif //__UNIVERSUM_LIB_CONTROLLER_INPUT_COMMAND_H
