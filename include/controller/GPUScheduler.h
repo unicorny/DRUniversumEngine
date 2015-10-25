@@ -83,6 +83,13 @@ namespace UniLib {
 			static int run(void* data);
 			// main render function, called from thread or from game
 			DRReturn updateEveryRendering();
+
+			// debugging/profiling
+#ifdef _UNI_LIB_DEBUG
+			__inline__ size_t getFastGPUTaskCount() {return mFastGPUTasks.size();}
+			__inline__ size_t getSlowGPUTaskCount() {return mSlowGPUTasks.size();}
+			__inline__ size_t getGPURenderCommandCount(GPUSchedulerCommandType type) {return mGPURenderCommands[(int)type].size();}
+#endif 
 		protected:
 
 			GPUScheduler();
