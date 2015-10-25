@@ -48,7 +48,7 @@ namespace UniLib {
 		{
 		public: 
 			virtual DRReturn render(float timeSinceLastFrame) = 0;
-			// if render return DR_ERROR, Call will be removed from List and kicked will be called
+			// if render return not DR_OK, Call will be removed from List and kicked will be called
 			virtual void kicked() = 0;  
 			// will be called if render call need to much time
 			// \param percent used up percent time of render main loop
@@ -73,6 +73,7 @@ namespace UniLib {
 			
 			void addGPUTask(TaskPtr task, bool slow = true);
 
+			void startThread(const char* name = "UniGPUSch");
 			void stopThread();
 
 			__inline__ void lock() {SDL_LockMutex(mMutex);}
@@ -80,8 +81,13 @@ namespace UniLib {
 
 			// call frame buffer activities, call main gpu game loop, variable frame rate
 			static int run(void* data);
+			// main render function, called from thread or from game
 			DRReturn updateEveryRendering();
 		protected:
+
+			GPUScheduler();
+			virtual ~GPUScheduler();
+
 			std::list<GPURenderCall*> mGPURenderCommands[GPU_SCHEDULER_COMMAND_MAX];
 			std::queue<TaskPtr>     mFastGPUTasks;
 			std::queue<TaskPtr>     mSlowGPUTasks;
