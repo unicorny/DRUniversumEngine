@@ -80,18 +80,18 @@ namespace UniLib {
 				sumFrames += mLastFrameDurations[i];
 			secondsSinceLastFrame = (float)(sumFrames/GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT)/1000.0f;
 
-			Uint32 ticks = SDL_GetTicks();
+			Uint32 startTicks = SDL_GetTicks();
 			// update fast GPU Tasks
 			while(mFastGPUTasks.size()) {
 				TaskPtr task = mFastGPUTasks.front();
 				mFastGPUTasks.pop();
 				task->run();
-				if(SDL_GetTicks() - ticks > 1) {
+				if(SDL_GetTicks() - startTicks > 2) {
 					LOG_WARNING("break fast GPU Tasks loop");
 					break;
 				}
 			}
-			ticks = SDL_GetTicks();
+			Uint32 ticks = SDL_GetTicks();
 			// update one slow GPU Task
 			if(mSlowGPUTasks.size()) {
 				TaskPtr task = mSlowGPUTasks.front();
@@ -118,6 +118,18 @@ namespace UniLib {
 						}
 					}
 				}
+			}
+
+			// if we have time left, let's run some more slow gpu tasks
+			while(SDL_GetTicks() - startTicks < 15 && mSlowGPUTasks.size()) {
+				TaskPtr task = mSlowGPUTasks.front();
+				mSlowGPUTasks.pop();
+				task->run();
+			}
+
+			// if we have still time left, we wait
+			if(SDL_GetTicks() - startTicks < 16) {
+				SDL_Delay(16 -  SDL_GetTicks() - startTicks);
 			}
 
 			mLastFrameDurations[mLastFrameDurationCursor] = SDL_GetTicks()- mLastUpdateTicks;

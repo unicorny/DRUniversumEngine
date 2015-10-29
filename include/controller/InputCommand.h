@@ -40,6 +40,7 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API InputCommand 
         {
         public:
+			// \brief important!: called from main thread, return as fast as possible
 			// \return not DR_OK means deleting from InputControls list
             virtual DRReturn input(InputCommandEnum in) = 0;
 		protected:
