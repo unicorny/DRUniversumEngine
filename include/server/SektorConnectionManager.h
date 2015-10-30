@@ -84,6 +84,8 @@ namespace UniLib {
 			SektorConnectionManager();
 			virtual ~SektorConnectionManager();
 
+			static SektorConnectionManager* mpInstanz;
+
 			// member variables
             // Connections
             ConnectionToAccountServer* mAccountServer;
@@ -97,6 +99,7 @@ namespace UniLib {
 
 			// request waiting to getting startet
 			lib::CommandEventManager* mEventManager;
+
 		};
 	};
 };

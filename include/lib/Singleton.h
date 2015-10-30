@@ -57,7 +57,7 @@ namespace UniLib {
 			Singleton(const Singleton&) {};
 
 			// Ein Zeiger auf die einzige Instanz
-			static Singleton* mpInstanz;
+		//	static Singleton* mpInstanz;
 
 			// Der private Destruktor verhindert, dass ein Anwender
 			// delete Singleton::GetInstanz() aufrufen kann.
@@ -65,7 +65,7 @@ namespace UniLib {
 
 			// Es gibt nur eine Instanz. Jede Zuweisung wäre eine Selbstzuweisung.
 			// Da Selbstzuweisungen selten Sinn machen, ist der op= privat
-			Singleton& operator=(const Singleton&) {return* mpInstanz;}
+			//Singleton& operator=(const Singleton&) {return* mpInstanz;}
 		};
     }
 }

@@ -2,7 +2,7 @@
 
 namespace UniLib {
 	namespace lib {
-		Singleton* Singleton::mpInstanz = NULL;
+//		Singleton* Singleton::mpInstanz = NULL;
 
 	}
 }

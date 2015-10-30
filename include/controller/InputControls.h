@@ -118,6 +118,9 @@ namespace UniLib {
 			SDL_mutex* mSDLWorkMutex;
 			Uint8*     mLastKeyStates;
 			int		   mLastKeyStatesSize;
+
+		private:
+			static InputControls* mpInstanz;
 		};
 	}
 }

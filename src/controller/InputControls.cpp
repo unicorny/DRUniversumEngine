@@ -3,6 +3,9 @@
 
 namespace UniLib {
 	namespace controller {
+
+		InputControls* InputControls::mpInstanz = NULL;
+
 		InputControls::InputControls()
 			: mMouseMoveBuffer(0), mSDLWorkMutex(SDL_CreateMutex()), mLastKeyStates(NULL), mLastKeyStatesSize(0)
 		{

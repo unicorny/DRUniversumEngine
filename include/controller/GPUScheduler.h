@@ -105,6 +105,9 @@ namespace UniLib {
 			Uint32    mLastUpdateTicks;
 			Uint32    mLastFrameDurations[GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT];
 			Uint32    mLastFrameDurationCursor;
+
+		private:
+			static GPUScheduler* mpInstanz;
 		};
 	}
 }

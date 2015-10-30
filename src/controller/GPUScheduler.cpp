@@ -3,6 +3,9 @@
 
 namespace UniLib {
 	namespace controller {
+
+		GPUScheduler* GPUScheduler::mpInstanz = NULL;
+
 		GPUScheduler::GPUScheduler()
 			: mThreadRunning(false), mMutex(SDL_CreateMutex()), mLastFrameDurationCursor(0)
 		{
@@ -129,7 +132,7 @@ namespace UniLib {
 
 			// if we have still time left, we wait
 			if(SDL_GetTicks() - startTicks < 16) {
-				SDL_Delay(16 -  SDL_GetTicks() - startTicks);
+				SDL_Delay(16 -  SDL_GetTicks() + startTicks);
 			}
 
 			mLastFrameDurations[mLastFrameDurationCursor] = SDL_GetTicks()- mLastUpdateTicks;

@@ -4,6 +4,9 @@
 
 namespace UniLib {
 	namespace server {
+
+		SektorConnectionManager* SektorConnectionManager::mpInstanz = NULL;
+
 		SektorConnectionManager::SektorConnectionManager()
             : Thread("UniSecCon"), mAccountServer(NULL), mLoginSuccessfully(false), mInitalized(false), 
 			mNetRequestsMemoryList(NET_REQUEST_MEMORY_LIST_OBJECT_COUNT), mEventManager(NULL)
