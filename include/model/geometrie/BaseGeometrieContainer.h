@@ -66,6 +66,7 @@ namespace UniLib {
 				DRReturn copyToFastAccess();
 				void deleteFillingStructures();
 				void deleteFastAccessStructures();
+				virtual void uploadToGPU() = 0;
 
 			protected:
 				

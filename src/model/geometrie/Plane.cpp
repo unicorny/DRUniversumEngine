@@ -28,6 +28,7 @@ namespace UniLib {
 					if(type & GEOMETRIE_TEX2D_1) {
 						mContainer->addVector(baseEdges[i], GEOMETRIE_TEX2D_1);
 					}
+					mContainer->addIndice(i);
 				}
 			}
 		}
