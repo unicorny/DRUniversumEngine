@@ -68,6 +68,8 @@ namespace UniLib {
 				void deleteFastAccessStructures();
 				virtual void uploadToGPU() = 0;
 
+				__inline__ GeometrieDataType getGeometrieDataFlags() {return mVertexFormatFlags;}
+
 			protected:
 				
 				class GeometriePartVector 
