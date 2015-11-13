@@ -24,7 +24,7 @@
 #ifndef __DR_UNIVERSUM_LIB_MODEL_UNIFORM_SET__H
 #define __DR_UNIVERSUM_LIB_MODEL_UNIFORM_SET__H
 
-#include "UniversumLib.h"
+#include "lib/MultithreadContainer.h"
 
 namespace UniLib {
     namespace model {
@@ -40,45 +40,56 @@ namespace UniLib {
          * simply said it is only a container for storing different data types in one list
          * can be easy implemented with templates
          */
-        class UNIVERSUM_LIB_API UniformSet
+        class UNIVERSUM_LIB_API UniformSet : public lib::MultithreadContainer
         {
         public:
             UniformSet();
             ~UniformSet();
 
-            DRReturn setUniform(std::string name, int value);
-            DRReturn setUniform(std::string name, float value);
-            DRReturn setUniform(std::string name, DRVector2 value);
-            DRReturn setUniform(std::string name, DRVector3 value);
-            DRReturn setUniform(std::string name, DRColor value);
-            DRReturn setUniform(std::string name, DRVector3i value);
-            DRReturn setUniform(std::string name, DRVector2i value);
+            DRReturn setUniform(std::string& name, int value);
+            DRReturn setUniform(std::string& name, float value);
+            DRReturn setUniform(std::string& name, DRVector2 value);
+            DRReturn setUniform(std::string& name, DRVector3 value);
+            DRReturn setUniform(std::string& name, DRColor value);
+            DRReturn setUniform(std::string& name, DRVector3i value);
+            DRReturn setUniform(std::string& name, DRVector2i value);
+			DRReturn setUniform(std::string& name, DRMatrix value);
 
+			DRMatrix getUniformMatrix(std::string& name);
+
+			__inline__ bool isDirty() {return mDirtyFlag;}
+			__inline__ void unsetDirty() {mDirtyFlag = false;}
         protected:
             struct UniformEntry
             {
                 UniformEntry(): type(0),intArray(NULL) {}
-                UniformEntry(int* data, size_t arrayEntryCount, std::string name);
-                UniformEntry(float* data, size_t arrayEntryCount, std::string name);
+                UniformEntry(int* data, size_t arrayEntryCount, std::string& name);
+                UniformEntry(float* data, size_t arrayEntryCount, std::string& name);
                 ~UniformEntry();
 
-                DRReturn update(UniformEntry* entry);
+                DRReturn update(void* data, size_t arrayEntryCount, std::string& name);
+				__inline__ bool isDirty() {return (type & 64) == 64;}
+				__inline__ bool isFloat() {return (type & 128) == 128;}
+				__inline__ size_t getArraySize() {return type & 63;}
                 // ---------------------------------------------
+				//! first 6 bit tell the array size
+				//! 7 bit is dirty flag
+				//! if last bit set it is a float array
                 u8 type;
                 union {
                     int* intArray;
                     float* floatArray;
                 };
-                //! first 6 bit tell the array size
-                //! 7 bit is dirty flag
-                //! if last bit set it is a float array
-                
                 std::string name;
+				void* location;
             };
             std::map<int, UniformEntry*> mUniformEntrys;
-            typedef std::pair<int, UniformEntry*> UNIFORM_ENTRY_PAIR;
+            typedef std::pair<int, UniformEntry*> UNIFORM_ENTRY_PAIR; 
+			bool			mDirtyFlag;
 
-            DRReturn setUniform(UniformEntry* newUniform);
+            //DRReturn setUniform(UniformEntry* newUniform);
+			DRReturn setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat = false);
+			void* getUniform(std::string& name, size_t arrayEntryCount);
         };
 
         // *****************************************************************
