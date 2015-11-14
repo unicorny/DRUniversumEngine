@@ -11,7 +11,7 @@ namespace UniLib
         // -------------------------------------------------------------------
         UniformSet::~UniformSet()
         {
-            for(std::map<int, UniformEntry*>::iterator it = mUniformEntrys.begin(); it != mUniformEntrys.end(); it++) {
+            for(std::map<HASH, UniformEntry*>::iterator it = mUniformEntrys.begin(); it != mUniformEntrys.end(); it++) {
                 delete it->second;
             }
             mUniformEntrys.clear();
@@ -52,21 +52,48 @@ namespace UniLib
 
 		DRMatrix UniformSet::getUniformMatrix(std::string& name)
 		{
-			return DRMatrix((float*)getUniform(name, 16));
+			lock();
+			DRMatrix matrix((float*)getUniform(name, 16));
+			unlock();
+			return matrix;
 		}
 
+		DRReturn UniformSet::addUniformMapping(std::string& name, void* location)
+		{
+			lock();
+			UniformEntry* entry = getUniformEntry(name);
+			if(entry) {
+				entry->addLocation(location);
+				unlock();
+				return DR_OK;
+			}
+			unlock();
+			return DR_ERROR;
+		}
+		DRReturn UniformSet::removeUniformMapping(std::string& name, void* location)
+		{
+			lock();
+			UniformEntry* entry = getUniformEntry(name);
+			if(entry) {
+				entry->removeLocation(location);
+				unlock();
+				return DR_OK;
+			}
+			unlock();
+			return DR_ERROR;
+		}
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // PROTECTED AREA
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         UniformSet::UniformEntry::UniformEntry(int* data, size_t arrayEntryCount, std::string& name)
-            : type(arrayEntryCount), intArray(NULL), name(name), location(NULL)
+            : type(arrayEntryCount + 64), intArray(NULL), name(name)
         {
 			assert(arrayEntryCount < 64);
             intArray = new int[arrayEntryCount];
             memcpy(intArray, data, arrayEntryCount*sizeof(int));
         }
         UniformSet::UniformEntry::UniformEntry(float* data, size_t arrayEntryCount, std::string& name)
-            : type(arrayEntryCount), floatArray(NULL), name(name), location(NULL)
+            : type(arrayEntryCount + 64), floatArray(NULL), name(name)
         {
 			assert(arrayEntryCount < 64);
 			type |= 128;
@@ -87,24 +114,34 @@ namespace UniLib
 			} else {
 				memcpy(intArray, data, arrayEntryCount*sizeof(int));
 			}
-			type |= 64;
+			setDirty();
             return DR_OK;
         }
+		void UniformSet::UniformEntry::addLocation(void* location)
+		{
+			locations.push_back(location);
+		}
+		void UniformSet::UniformEntry::removeLocation(void* location)
+		{
+			for(std::list<void*>::iterator it = locations.begin(); it != locations.end(); it++)
+			{
+				if(*it == location) it = locations.erase(it);
+			}
+		}
         // ******************************************************************
 		DRReturn UniformSet::setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat/* = false*/)
         //DRReturn UniformSet::setUniform(UniformEntry* newUniform)
         {
             if(!data) return DR_ZERO_POINTER;
-			mDirtyFlag = true;
-            HASH hash = DRMakeStringHash(name.data());
 			lock();
-            std::map<int, UniformEntry*>::iterator it = mUniformEntrys.find(hash);
-            if(it != mUniformEntrys.end()) {
-                DRReturn result = it->second->update(data, arrayEntryCount, name);
+			mDirtyFlag = true;
+			UniformEntry* entry = getUniformEntry(name);
+            if(entry) {
+                DRReturn result = entry->update(data, arrayEntryCount, name);
 				unlock();
                 return result;
             } else {
-				UniformEntry* entry = NULL;
+				HASH hash = DRMakeStringHash(name.data());
 				if(typeFloat) entry = new UniformEntry((float*)data, arrayEntryCount, name);
 				else entry = new UniformEntry((int*)data, arrayEntryCount, name);
                 mUniformEntrys.insert(UNIFORM_ENTRY_PAIR(hash, entry));
@@ -115,18 +152,23 @@ namespace UniLib
 
 		void* UniformSet::getUniform(std::string& name, size_t arrayEntryCount)
 		{
-			HASH hash = DRMakeStringHash(name.data());
-			lock();
-			std::map<int, UniformEntry*>::iterator it = mUniformEntrys.find(hash);
-			if(it != mUniformEntrys.end()) {
-				unlock();
-				assert(it->second->getArraySize() == arrayEntryCount);
-				return it->second->intArray;
+			UniformEntry* entry = getUniformEntry(name);
+			if(entry) {
+				assert(entry->getArraySize() == arrayEntryCount);
+				return entry->intArray;
 			} 
-			unlock();
 			return NULL;
 		}
 
+		UniformSet::UniformEntry* UniformSet::getUniformEntry(std::string& name)
+		{
+			HASH hash = DRMakeStringHash(name.data());
+			std::map<HASH, UniformEntry*>::iterator it = mUniformEntrys.find(hash);
+			if(it != mUniformEntrys.end()) {
+				return it->second;
+			}
+			return NULL;
+		}
 
 	};
 };

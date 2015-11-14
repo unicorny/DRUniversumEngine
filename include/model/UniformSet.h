@@ -29,6 +29,9 @@
 namespace UniLib {
     namespace model {
         
+		class ShaderProgram;
+		typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
+
         /*!
          * \author Dario Rekowski
          * 
@@ -55,11 +58,16 @@ namespace UniLib {
             DRReturn setUniform(std::string& name, DRVector2i value);
 			DRReturn setUniform(std::string& name, DRMatrix value);
 
+			DRReturn addUniformMapping(std::string& name, void* location);
+			DRReturn removeUniformMapping(std::string& name, void* location);
+
 			DRMatrix getUniformMatrix(std::string& name);
 
-			__inline__ bool isDirty() {return mDirtyFlag;}
-			__inline__ void unsetDirty() {mDirtyFlag = false;}
+			__inline__ bool isDirty() {lock(); bool d = mDirtyFlag; unlock(); return d;}
+			__inline__ void unsetDirty() {lock(); mDirtyFlag = false; unlock();}
+
         protected:
+
             struct UniformEntry
             {
                 UniformEntry(): type(0),intArray(NULL) {}
@@ -68,7 +76,11 @@ namespace UniLib {
                 ~UniformEntry();
 
                 DRReturn update(void* data, size_t arrayEntryCount, std::string& name);
+				void addLocation(void* location);
+				void removeLocation(void* location);
 				__inline__ bool isDirty() {return (type & 64) == 64;}
+				__inline__ void unsetDirty() {type &= 191;}
+				__inline__ void setDirty() { type |= 64;}
 				__inline__ bool isFloat() {return (type & 128) == 128;}
 				__inline__ size_t getArraySize() {return type & 63;}
                 // ---------------------------------------------
@@ -81,15 +93,18 @@ namespace UniLib {
                     float* floatArray;
                 };
                 std::string name;
-				void* location;
+				std::list<void*> locations;
             };
-            std::map<int, UniformEntry*> mUniformEntrys;
-            typedef std::pair<int, UniformEntry*> UNIFORM_ENTRY_PAIR; 
+            std::map<HASH, UniformEntry*> mUniformEntrys;
+            typedef std::pair<HASH, UniformEntry*> UNIFORM_ENTRY_PAIR; 
+
 			bool			mDirtyFlag;
 
             //DRReturn setUniform(UniformEntry* newUniform);
 			DRReturn setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat = false);
 			void* getUniform(std::string& name, size_t arrayEntryCount);
+
+			UniformEntry* getUniformEntry(std::string& name);
         };
 
         // *****************************************************************
