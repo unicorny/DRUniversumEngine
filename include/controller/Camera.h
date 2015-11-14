@@ -35,17 +35,13 @@
 
 namespace UniLib {
 	namespace controller {
-		class UNIVERSUM_LIB_API Camera
+		class UNIVERSUM_LIB_API Camera : public DRObjekt
 		{
 		public:
 			Camera();
 			virtual ~Camera();
 		protected:
-			DRVector3 mLocalPosition;
-			DRMatrix  mViewMatrix;
-			DRVector3 mXAxis;
-			DRVector3 mYAxis;
-			DRVector3 mZAxis;
+
 		private:
 		};
 	}
