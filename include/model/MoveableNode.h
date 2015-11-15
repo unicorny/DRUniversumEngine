@@ -20,53 +20,44 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __UNI_LIB_MODEL_ROTATION_MODEL_OBJECT_H
-#define __UNI_LIB_MODEL_ROTATION_MODEL_OBJECT_H
+#ifndef __UNI_LIB_MODEL_MOVEABLE_NODE_H
+#define __UNI_LIB_MODEL_MOVEABLE_NODE_H
 
-#include "Object.h"
+#include "Node.h"
+#include "Position.h"
+#include "Rotation.h"
 
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 15.11.2015
+ *
+ * \brief: base class for moveable scene nodes
+ *
+ */
 namespace UniLib {
 	namespace model {
 
-		class UNIVERSUM_LIB_API RotationObject : public Object
+		class UNIVERSUM_LIB_API MoveableNode : public Node
 		{
 		public:
-			RotationObject(Object* parent = NULL, DRVector3 pos = DRVector3(0.0f), DRVector3 scale = DRVector3(1.0f));
-			virtual ~RotationObject();
+			MoveableNode(Node* parent = NULL, const DRVector3& position = DRVector3(0.0f));
+			virtual ~MoveableNode() {};
 
-			//! in Verh&auml;ltniss zum Objekteigenem Koordinatensystem
-			//! \brief rotiert das DRObjekt relativ
-			//! \param rotate die Rotation in Grad um die 3 Achsen
-			void rotateRel(const DRVector3& rotate);
-			//! in Verh&auml;ltniss zum Zentralem Koordinatensystem
-			//! \brief rotiert das DRObjekt absolut
-			//! \param rotate die Rotation in Grad um die 3 Achsen
-			void rotateAbs(const DRVector3& rotate);
+			__inline__ Position* getPosition() {return &mPosition;}
+			__inline__ Rotation* getRotation() {return &mRotation;}
 
-			void lookAt(DRVector3 targetPosition, DRVector3 upVector = DRVector3(0.0f, 1.0f, 0.0f));
-
-			__inline__ DRVector3 getYAxis() {lock(); DRVector3 axis = mYAxis; unlock(); return axis;}
-			__inline__ DRVector3 getXAxis() {lock(); DRVector3 axis = mXAxis; unlock(); return axis;}
-			__inline__ DRVector3 getZAxis() {lock(); DRVector3 axis = mZAxis; unlock(); return axis;}
-
-			void setAxis(DRVector3 XAxis, DRVector3 YAxis, DRVector3 ZAxis)
-			{
-				lock();
-				mXAxis = XAxis;
-				mYAxis = YAxis;
-				mZAxis = ZAxis;
-				unlock();
-			}
-
+			void calculateMatrix();
+			__inline__ const DRMatrix& getMatrix() const {return mMatrix;}
+			
 		protected:
-			DRVector3 mXAxis;
-			DRVector3 mYAxis;
-			DRVector3 mZAxis;
+			Position mPosition;
+			Rotation mRotation;
+			DRMatrix mMatrix;
 		};
-		
+
 	}
 }
 
-
-
-#endif //__UNI_LIB_MODEL_ROTATION_MODEL_OBJECT_H
+#endif //__UNI_LIB_MODEL_MOVEABLE_NODE_H

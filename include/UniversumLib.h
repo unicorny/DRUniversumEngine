@@ -86,8 +86,17 @@ namespace UniLib {
 #endif
 
 
+
 // engine functions
 namespace UniLib {	
+	// node types
+	enum UNIVERSUM_LIB_API NodeTypes {
+		NONE = 0,
+		NODE = 1,
+		MOVEABLE_NODE = 2,
+		VISIBLE_NODE = 4
+	};
+
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
 

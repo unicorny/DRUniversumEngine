@@ -40,14 +40,15 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API Node
 		{
 		public:
-			Node(Node* parent = NULL): mParent(parent) {mClassID = DRMakeStringHash("Node");}
+			Node(Node* parent = NULL): mType(NODE), mParent(parent) {}
 			virtual ~Node() {};
 
 			__inline__ Node* getParent() {return mParent;}
 			__inline__ void addChild(Node* child) {mChilds.push_back(child);}
 			__inline__ void removeChild(Node* child) {mChilds.remove(child);}
+			__inline__ HASH getType() {return mType;}
 		protected:
-			HASH mClassID;
+			int  mType;
 			Node* mParent;
 			std::list<Node*> mChilds;
 		};

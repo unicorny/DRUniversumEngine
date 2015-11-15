@@ -1,22 +1,21 @@
-#include "model/RotationObject.h"
+#include "model/Rotation.h"
 
 namespace UniLib {
 	namespace model {
-		RotationObject::RotationObject(Object* parent /* = NULL */, DRVector3 pos /* = DRVector3(0.0f) */, DRVector3 scale /* = DRVector3(1.0f) */)
-			: Object(parent, pos, scale), 
-			mXAxis(1.0f, 0.0f, 0.0f), mYAxis(0.0f, 1.0f, 0.0f), mZAxis(0.0f, 0.0f, 1.0f)
-		{
-		}
-
-		RotationObject::~RotationObject()
+		Rotation::Rotation(DRVector3 xAxis /* = DRVector3(1.0f, 0.0, 0.0f) */, DRVector3 yAxis /* = DRVector3(0.0f, 1.0f, 0.0f) */, DRVector3 zAxis /* = DRVector3(0.0, 0.0f, 1.0f) */)
+			: mXAxis(xAxis), mYAxis(yAxis), mZAxis(zAxis)
 		{
 
 		}
 
-		void RotationObject::rotateRel(const DRVector3& rotation)
+		Rotation::~Rotation()
+		{
+
+		}
+
+		void Rotation::rotateRel(const DRVector3& rotation)
 		{
 			DRMatrix mRot;
-			lock();
 			// Rotation um die z-Achse des Objekts
 			mRot = DRMatrix::rotationAxis(mZAxis, rotation.z);
 			mXAxis = mXAxis.transformNormal(mRot);
@@ -32,12 +31,9 @@ namespace UniLib {
 			mYAxis = mYAxis.transformNormal(mRot);
 			mZAxis = mXAxis.cross(mYAxis);
 
-			unlock();
 		}
-		
-		void RotationObject::rotateAbs(const DRVector3& rotation)
+		void Rotation::rotateAbs(const DRVector3& rotation)
 		{
-			lock();
 			// Rotation um die x-Achse
 			DRMatrix mRotation(DRMatrix::rotationX(rotation.x));
 			mYAxis = mYAxis.transformNormal(mRotation);
@@ -52,16 +48,11 @@ namespace UniLib {
 			mRotation = DRMatrix::rotationZ(rotation.z);
 			mXAxis = mXAxis.transformNormal(mRotation);
 			mYAxis = mYAxis.transformNormal(mRotation);
-			unlock();
 		}
 
-		void RotationObject::lookAt(DRVector3 targetPosition, DRVector3 upVector/* = DRVector3(0.0f, 1.0f, 0.0f)*/)
+		DRMatrix Rotation::calculateMatrix()
 		{
-			lock();
-			mZAxis = DRVector3(mPosition - targetPosition).normalizeEx();
-			mXAxis = upVector.cross(mZAxis).normalizeEx();
-			mYAxis = mZAxis.cross(mXAxis).normalizeEx();
-			unlock();
+			return DRMatrix::axis(mXAxis, mYAxis, mZAxis);
 		}
 	}
 }

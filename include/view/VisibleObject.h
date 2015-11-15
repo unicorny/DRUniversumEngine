@@ -20,14 +20,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __UNI_LIB_VIEW_ROTATION_OBJECT_H
-#define __UNI_LIB_VIEW_ROTATION_OBJECT_H
+#ifndef __UNI_LIB_VIEW_VISIBLE_NODE_H
+#define __UNI_LIB_VIEW_VISIBLE_NODE_H
 
-#include "model/Object.h"
+#include "model/MoveableNode.h"
 
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 15.11.2015
+ *
+ * \brief: base class for visible scene nodes
+ *
+ */
 namespace UniLib {
-	
 	namespace view {
+
 		namespace geometrie {
 			class BaseGeometrieContainer;
 			typedef DRResourcePtr<BaseGeometrieContainer> BaseGeometrieContainerPtr;
@@ -35,27 +44,24 @@ namespace UniLib {
 		class Material;
 		typedef DRResourcePtr<Material> MaterialPtr;
 
-		class UNIVERSUM_LIB_API Object: public model::Object
+		class UNIVERSUM_LIB_API VisibleNode : public model::MoveableNode
 		{
 		public:
-			Object(model::Object* parent = NULL, DRVector3 pos = DRVector3(0.0f), DRVector3 scale = DRVector3(1.0f));
-			virtual ~Object();
-
-			__inline__ virtual bool isViewObject() {return true;}
+			VisibleNode(Node* parent = NULL, const DRVector3& position = DRVector3(0.0f));
+			virtual ~VisibleNode() {};
 
 			__inline__ void setGeometrie(geometrie::BaseGeometrieContainerPtr geo) {mGeometrie = geo;}
 			__inline__ geometrie::BaseGeometrieContainerPtr getGeometrie() {return mGeometrie;}
 
 			__inline__ void setMaterial(MaterialPtr material) {mMaterial = material;}
 			__inline__ MaterialPtr getMaterial() {return mMaterial;}
-			
+
 		protected:
 			geometrie::BaseGeometrieContainerPtr mGeometrie;				 
 			MaterialPtr mMaterial;
 		};
+
 	}
 }
 
-
-
-#endif //__UNI_LIB_VIEW_ROTATION_OBJECT_H
+#endif //__UNI_LIB_VIEW_VISIBLE_NODE_H
