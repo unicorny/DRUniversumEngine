@@ -39,6 +39,7 @@ namespace UniLib {
 
 			__inline__ void setPosition(const DRVector3& pos) {lock(); mPosition = pos; unlock();}
 			__inline__ DRVector3 getPosition() {lock(); DRVector3 pos = mPosition; unlock(); return pos;}
+			__inline__ void move(const DRVector3& diff) {lock(); mPosition += diff; unlock();}
 
 			__inline__ void setScale(const DRVector3& scale) {lock(); mScale = scale; unlock();}
 			__inline__ DRVector3 getScale() {lock(); DRVector3 scale = mScale; unlock(); return scale;}

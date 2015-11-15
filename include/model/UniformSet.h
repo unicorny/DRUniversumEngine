@@ -58,13 +58,14 @@ namespace UniLib {
             DRReturn setUniform(std::string& name, DRVector2i value);
 			DRReturn setUniform(std::string& name, DRMatrix value);
 
-			DRReturn addUniformMapping(std::string& name, void* location);
-			DRReturn removeUniformMapping(std::string& name, void* location);
+			DRReturn addUniformMapping(std::string& name, void* location, HASH programID);
+			DRReturn removeUniformMapping(std::string& name, HASH programID);
 
 			DRMatrix getUniformMatrix(std::string& name);
 
 			__inline__ bool isDirty() {lock(); bool d = mDirtyFlag; unlock(); return d;}
 			__inline__ void unsetDirty() {lock(); mDirtyFlag = false; unlock();}
+			void updateDirtyFlags();
 
         protected:
 
@@ -76,11 +77,12 @@ namespace UniLib {
                 ~UniformEntry();
 
                 DRReturn update(void* data, size_t arrayEntryCount, std::string& name);
-				void addLocation(void* location);
-				void removeLocation(void* location);
+				void addLocation(void* location, HASH programID);
+				void removeLocation(HASH programID);
 				__inline__ bool isDirty() {return (type & 64) == 64;}
 				__inline__ void unsetDirty() {type &= 191;}
 				__inline__ void setDirty() { type |= 64;}
+				void checkDirty();
 				__inline__ bool isFloat() {return (type & 128) == 128;}
 				__inline__ size_t getArraySize() {return type & 63;}
                 // ---------------------------------------------
@@ -93,7 +95,15 @@ namespace UniLib {
                     float* floatArray;
                 };
                 std::string name;
-				std::list<void*> locations;
+				struct Location {
+					Location(void* location): location(location), dirty(true)
+					{}
+					Location() {}
+					void* location;
+					bool dirty;
+				};
+				std::map<HASH, Location> locations;
+				typedef std::pair<HASH, Location> LOCATION_PAIR;
             };
             std::map<HASH, UniformEntry*> mUniformEntrys;
             typedef std::pair<HASH, UniformEntry*> UNIFORM_ENTRY_PAIR; 

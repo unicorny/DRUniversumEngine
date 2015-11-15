@@ -58,29 +58,46 @@ namespace UniLib
 			return matrix;
 		}
 
-		DRReturn UniformSet::addUniformMapping(std::string& name, void* location)
+		DRReturn UniformSet::addUniformMapping(std::string& name, void* location, HASH programID)
 		{
 			lock();
 			UniformEntry* entry = getUniformEntry(name);
 			if(entry) {
-				entry->addLocation(location);
+				entry->addLocation(location, programID);
 				unlock();
 				return DR_OK;
 			}
 			unlock();
 			return DR_ERROR;
 		}
-		DRReturn UniformSet::removeUniformMapping(std::string& name, void* location)
+		DRReturn UniformSet::removeUniformMapping(std::string& name, HASH programID)
 		{
 			lock();
 			UniformEntry* entry = getUniformEntry(name);
 			if(entry) {
-				entry->removeLocation(location);
+				entry->removeLocation(programID);
 				unlock();
 				return DR_OK;
 			}
 			unlock();
 			return DR_ERROR;
+		}
+		void UniformSet::updateDirtyFlags()
+		{
+			lock();
+			if(!mDirtyFlag) {
+				unlock();
+				return;
+			}
+			for(std::map<HASH, UniformEntry*>::iterator it = mUniformEntrys.begin(); it != mUniformEntrys.end(); it++) {
+				it->second->checkDirty();
+				if(it->second->isDirty()) {
+					unlock(); 
+					return;
+				}
+			}
+			mDirtyFlag = false;
+			unlock();
 		}
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // PROTECTED AREA
@@ -115,18 +132,27 @@ namespace UniLib
 				memcpy(intArray, data, arrayEntryCount*sizeof(int));
 			}
 			setDirty();
+			for(std::map<HASH, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+				it->second.dirty = true;
+			}
             return DR_OK;
         }
-		void UniformSet::UniformEntry::addLocation(void* location)
+		void UniformSet::UniformEntry::addLocation(void* location, HASH programID)
 		{
-			locations.push_back(location);
+			//locations.push_back(location);
+			locations.insert(LOCATION_PAIR(programID, Location(location)));
 		}
-		void UniformSet::UniformEntry::removeLocation(void* location)
+		void UniformSet::UniformEntry::removeLocation(HASH programID)
 		{
-			for(std::list<void*>::iterator it = locations.begin(); it != locations.end(); it++)
-			{
-				if(*it == location) it = locations.erase(it);
+			locations.erase(programID);
+		}
+		void UniformSet::UniformEntry::checkDirty()
+		{
+			if(!isDirty()) return;
+			for(std::map<HASH, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+				if(it->second.dirty) return;
 			}
+			unsetDirty();
 		}
         // ******************************************************************
 		DRReturn UniformSet::setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat/* = false*/)

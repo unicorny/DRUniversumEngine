@@ -31,7 +31,7 @@
 #ifndef __UNIVERSUM_LIB_CONTROLLER_INPUT_COMMAND_H
 #define __UNIVERSUM_LIB_CONTROLLER_INPUT_COMMAND_H
 
-#include "UniversumLib.h"
+#include "InputControls.h"
 
 namespace UniLib {
 	namespace controller {

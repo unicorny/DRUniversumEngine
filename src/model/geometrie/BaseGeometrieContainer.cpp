@@ -59,18 +59,25 @@ namespace UniLib {
 				mVertexCount = vertexCount;
 				mVertices = new float[vertexCount*mVertexSize];
 				for(int i = 0; i < vertexCount; i++) {
+					int offset = 0;
 					for(int y = 0; pow(2, y) < GEOMETRIE_MAX; y++) {
 					//for(int x = 0; x < GEOMETRIE_MAX; x*=x)  {
 						int x = pow(2, y);
 						if(x & mVertexFormatFlags) {
 							GeometrieDataMapIterator it = mGeometrieDataMap.find((GeometrieDataType)x);
 							assert(it != mGeometrieDataMap.end());
-							if(x & GEOMETRIE_2DVECTOR)
-								memcpy(&mVertices[i*mVertexSize], it->second->getVector2(i).c, sizeof(float)*2);
-							else if(x & GEOMETRIE_3DVECTOR)
-								memcpy(&mVertices[i*mVertexSize], it->second->getVector3(i).c, sizeof(float)*3);
-							else if(x & GEOMETRIE_4DVECTOR)
-								memcpy(&mVertices[i*mVertexSize], it->second->getColor(i).c, sizeof(float)*4);
+							if(x & GEOMETRIE_2DVECTOR) {
+								memcpy(&mVertices[i*mVertexSize+offset], it->second->getVector2(i).c, sizeof(float)*2);
+								offset+= 2;
+							}
+							else if(x & GEOMETRIE_3DVECTOR) {
+								memcpy(&mVertices[i*mVertexSize+offset], it->second->getVector3(i).c, sizeof(float)*3);
+								offset += 3;
+							}
+							else if(x & GEOMETRIE_4DVECTOR) {
+								memcpy(&mVertices[i*mVertexSize+offset], it->second->getColor(i).c, sizeof(float)*4);
+								offset += 4;
+							}
 						}
 					}
 					

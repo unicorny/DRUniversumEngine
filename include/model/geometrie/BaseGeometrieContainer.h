@@ -75,7 +75,7 @@ namespace UniLib {
 
 			protected:
 				
-				class GeometriePartVector 
+				class UNIVERSUM_LIB_API GeometriePartVector 
 				{
 				public:
 					GeometriePartVector(GeometrieDataType type):mType(type) {}
