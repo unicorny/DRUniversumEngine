@@ -57,12 +57,12 @@ public:
 
 		// Konstruktoren
 	DRColor(): r(0.0f), g(0.0f), b(0.0f), a(0.0f)																																																		{}
-	DRColor(const DRColor& c) : r(c.r), g(c.g), b(c.b), a(c.a)	{}
+	DRColor(const DRColor& _c) {memcpy(c, _c.c, sizeof(float)*4);}
 	DRColor(const DRVector2& a, const DRVector2& b) : r(a.x), g(a.y), b(b.x), a(b.y) {}
 	DRColor(const DRReal f) : r(f), g(f), b(f), a(1.0f)																																								{}
 	DRColor(const DRReal _r, const DRReal _g, const DRReal _b) : r(_r), g(_g), b(_b), a(1.0f)																															{}
 	DRColor(const DRReal _r, const DRReal _g, const DRReal _b, const DRReal _a) : r(_r), g(_g), b(_b), a(_a)																											{}
-	DRColor(const DRReal* pfComponent) : r(pfComponent[0]), g(pfComponent[1]), b(pfComponent[2]), a(pfComponent[3])																									{}
+	DRColor(const DRReal* pfComponent) {memcpy(c, pfComponent, sizeof(float)*4);}
 	DRColor(const u8 _r, const u8 _g, const u8 _b) : r((DRReal)(_r) * DR_COLOR_CONV), g((DRReal)(_g) * DR_COLOR_CONV), b((DRReal)(_b) * DR_COLOR_CONV), a(1.0f)													{}
 	DRColor(const u8 _r, const u8 _g, const u8 _b, const u8 _a) : r((DRReal)(_r) * DR_COLOR_CONV), g((DRReal)(_g) * DR_COLOR_CONV), b((DRReal)(_b) * DR_COLOR_CONV), a((DRReal)(_a) * DR_COLOR_CONV)			{}
 	DRColor(const u8* pComponent) : r((DRReal)(pComponent[0]) * DR_COLOR_CONV), g((DRReal)(pComponent[1]) * DR_COLOR_CONV), b((DRReal)(pComponent[2]) * DR_COLOR_CONV), a((DRReal)(pComponent[3]) * DR_COLOR_CONV)	{}

@@ -59,7 +59,9 @@ namespace UniLib {
 				mVertexCount = vertexCount;
 				mVertices = new float[vertexCount*mVertexSize];
 				for(int i = 0; i < vertexCount; i++) {
-					for(int x = 1; x < GEOMETRIE_MAX; x*=x)  {
+					for(int y = 0; pow(2, y) < GEOMETRIE_MAX; y++) {
+					//for(int x = 0; x < GEOMETRIE_MAX; x*=x)  {
+						int x = pow(2, y);
 						if(x & mVertexFormatFlags) {
 							GeometrieDataMapIterator it = mGeometrieDataMap.find((GeometrieDataType)x);
 							assert(it != mGeometrieDataMap.end());

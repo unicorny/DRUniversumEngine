@@ -28,6 +28,13 @@
 namespace UniLib {
 	
 	namespace view {
+		namespace geometrie {
+			class BaseGeometrieContainer;
+			typedef DRResourcePtr<BaseGeometrieContainer> BaseGeometrieContainerPtr;
+		}
+		class Material;
+		typedef DRResourcePtr<Material> MaterialPtr;
+
 		class UNIVERSUM_LIB_API Object: public model::Object
 		{
 		public:
@@ -35,7 +42,16 @@ namespace UniLib {
 			virtual ~Object();
 
 			__inline__ virtual bool isViewObject() {return true;}
+
+			__inline__ void setGeometrie(geometrie::BaseGeometrieContainerPtr geo) {mGeometrie = geo;}
+			__inline__ geometrie::BaseGeometrieContainerPtr getGeometrie() {return mGeometrie;}
+
+			__inline__ void setMaterial(MaterialPtr material) {mMaterial = material;}
+			__inline__ MaterialPtr getMaterial() {return mMaterial;}
+			
 		protected:
+			geometrie::BaseGeometrieContainerPtr mGeometrie;				 
+			MaterialPtr mMaterial;
 		};
 	}
 }

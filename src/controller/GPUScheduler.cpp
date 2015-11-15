@@ -114,6 +114,7 @@ namespace UniLib {
 					if(result) {
 						(*it)->kicked();
 						it = mGPURenderCommands[i].erase(it);
+						if(it == mGPURenderCommands[i].end()) break;
 					} else {
 						if((diff > 1 && i != GPU_SCHEDULER_COMMAND_RENDERING) ||
 							diff > 5 && i == GPU_SCHEDULER_COMMAND_RENDERING) {

@@ -20,40 +20,42 @@
  *                                                                         *
  ***************************************************************************/
 
-/*!
- * \author: Dario Rekowski
- *
- * \date: 30.10.2015
- *
- * \desc: Base interface for geometrie container, contains vertices and indices for rendering
- *        implementation will be done in application not in here
- */
+#ifndef __UNIVERSUM_LIB_VIEW_MATERIAL_H
+#define __UNIVERSUM_LIB_VIEW_MATERIAL_H
 
-#ifndef __UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
-#define __UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
-
-#include "model/geometrie/BaseGeometrieContainer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
+	namespace model {
+		class ShaderProgram;
+		typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
+
+		class UniformSet;
+	}
 	namespace view {
-		namespace geometrie {
 
-			class UNIVERSUM_LIB_API BaseGeometrieContainer : public model::geometrie::BaseGeometrieContainer
-			{
-			public:
-				BaseGeometrieContainer();
-				virtual ~BaseGeometrieContainer();
+		class UNIVERSUM_LIB_API Material : public DRIResource
+		{
+		public:
+			Material();
+			virtual ~Material();
 
-				virtual DRReturn uploadToGPU() = 0;
-				virtual DRReturn render() = 0;
-			protected:
-			};
+			virtual void bind() = 0;
+			__inline__ void setShaderProgram(model::ShaderProgramPtr shaderProgram) {mShaderProgram = shaderProgram;}
+			__inline__ model::ShaderProgramPtr getShaderProgram() {return mShaderProgram;}
 
-			typedef DRResourcePtr<BaseGeometrieContainer> BaseGeometrieContainerPtr;
-		}
+			virtual const char* getResourceType() const {return "Material";}
+			virtual bool less_than(DRIResource& b) const {return this < &b;}
+
+			__inline__ void setUniformSet(model::UniformSet* uniforms) {mUniformsSet = uniforms;}
+			__inline__ model::UniformSet* const getUniformSet() {return mUniformsSet;}
+		protected:
+			model::ShaderProgramPtr mShaderProgram;
+			model::UniformSet* mUniformsSet;
+		};
+
+		typedef DRResourcePtr<Material> MaterialPtr;
 	}
 }
 
-
-
-#endif //__UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
+#endif //__UNIVERSUM_LIB_VIEW_MATERIAL_H

@@ -51,11 +51,11 @@ public:
     //!  kopiert die Koordinaten eines anderen Vektors
     //! \brief Kopierkonstruktor
     //! \param v Vektor von dem die Koordinaten kopiert werden
-    DRVector3(const DRVector3& v) {memcpy(c, v.c, sizeof(float)*3);}
+    DRVector3(const DRVector3& v): x(v.x), y(v.y), z(v.z) {}
     //!  setzt alle werte auf die Werte des &uuml;bergebenden Arrays
     //! \brief Konstruktor
     //! \param ar ein Zeiger auf ein float array, mind. L&auml;nge 3
-    DRVector3(const float* ar) {memcpy(c, ar, sizeof(float)*3);}
+    DRVector3(const float* ar) : x(ar[0]), y(ar[1]), z(ar[2]) {}
 
     union
     {

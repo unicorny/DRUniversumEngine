@@ -33,7 +33,7 @@ namespace UniLib {
 		}
 		void Object::updateMatrixAsync()
 		{
-
+			LOG_WARNING("not implementet yet");
 		}
 	}
 }

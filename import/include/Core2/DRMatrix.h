@@ -139,13 +139,10 @@ public:
 	DRMatrix operator * (const DRMatrix& mm) const
 	{
 	    DRMatrix e(0.0f);
-
 	    for(int i = 0; i < 4; i++)
-            for(int j = 0; j < 4; j++)
-                e.m[i][j] = mm.m[0][j] * m[i][0] + 
-                	    mm.m[1][j] * m[i][1] + 
-                	    mm.m[2][j] * m[i][2] + 
-                            mm.m[3][j] * m[i][3];
+            for(int j = 0; j < 4; j++) 
+				for(int k = 0; k < 4; k++) 
+					e.m[i][j] += mm.m[k][j] * m[i][k];
         return e;
 	}
 	//! \brief Multiplikations Operator

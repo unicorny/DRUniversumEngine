@@ -52,7 +52,7 @@ namespace UniLib {
 				GEOMETRIE_MAX = 128
 			};
 
-			class UNIVERSUM_LIB_API BaseGeometrieContainer 
+			class UNIVERSUM_LIB_API BaseGeometrieContainer : public DRIResource
 			{
 			public: 
 				BaseGeometrieContainer();
@@ -66,7 +66,10 @@ namespace UniLib {
 				DRReturn copyToFastAccess();
 				void deleteFillingStructures();
 				void deleteFastAccessStructures();
-				virtual void uploadToGPU() = 0;
+				
+				virtual const char* getResourceType() const {return "model::BaseGeometrieContainer";}
+				// simple compare pointer adresses
+				virtual bool less_than(DRIResource& b) const {return this < &b;}
 
 				__inline__ GeometrieDataType getGeometrieDataFlags() {return mVertexFormatFlags;}
 
