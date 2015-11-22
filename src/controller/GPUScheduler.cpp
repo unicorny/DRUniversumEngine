@@ -7,16 +7,19 @@ namespace UniLib {
 		GPUScheduler* GPUScheduler::mpInstanz = NULL;
 
 		GPUScheduler::GPUScheduler()
-			: mThreadRunning(false), mMutex(SDL_CreateMutex()), mLastFrameDurationCursor(0)
+			: mThreadRunning(false), mMutex(SDL_CreateMutex()), mFrameTimeMutex(SDL_CreateMutex()), mLastFrameDurationCursor(0)
 		{
 			memset(mLastFrameDurations, 16, sizeof(int)*GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT);
 			if(!mMutex) LOG_WARNING_SDL();  
+			if(!mFrameTimeMutex) LOG_WARNING_SDL();
 		}
 		
 
 		GPUScheduler::~GPUScheduler() 
 		{
 			stopThread();
+			SDL_DestroyMutex(mMutex);
+			SDL_DestroyMutex(mFrameTimeMutex);
 		}
 
 		GPUScheduler* const GPUScheduler::getInstance()
@@ -42,20 +45,26 @@ namespace UniLib {
 
 		void GPUScheduler::registerGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type)
 		{
+			lock();
 			mGPURenderCommands[type].push_back(renderCall);
+			unlock();
 		}
 		void GPUScheduler::unregisterGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type)
 		{
+			lock();
 			mGPURenderCommands[type].remove(renderCall);	
+			unlock();
 		}
 		void GPUScheduler::addGPUTask(TaskPtr task, bool slow/* = true*/)
 		{
+			lock();
 			if(!task->isGPUTask()) LOG_ERROR_VOID("given task isn't a GPU Task");
 			if(slow == true) {
 				mSlowGPUTasks.push(task);
 			} else {
 				mFastGPUTasks.push(task);
 			}
+			unlock();
 		}
 		int GPUScheduler::run(void* data)
 		{
@@ -82,6 +91,9 @@ namespace UniLib {
 			for(int i = 0; i < GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT; i++)
 				sumFrames += mLastFrameDurations[i];
 			secondsSinceLastFrame = (float)(sumFrames/GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT)/1000.0f;
+			SDL_LockMutex(mFrameTimeMutex);
+			mSecondsSinceLastFrame = secondsSinceLastFrame;
+			SDL_UnlockMutex(mFrameTimeMutex);
 
 			Uint32 startTicks = SDL_GetTicks();
 			// update fast GPU Tasks
@@ -136,7 +148,7 @@ namespace UniLib {
 				SDL_Delay(16 -  SDL_GetTicks() + startTicks);
 			}
 
-			mLastFrameDurations[mLastFrameDurationCursor] = SDL_GetTicks()- mLastUpdateTicks;
+			mLastFrameDurations[mLastFrameDurationCursor++] = SDL_GetTicks()- mLastUpdateTicks;
 			if(mLastFrameDurationCursor >= GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT) mLastFrameDurationCursor = 0;
 			mLastUpdateTicks = SDL_GetTicks();
 			return DR_OK;

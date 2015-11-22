@@ -91,7 +91,7 @@ namespace UniLib {
 namespace UniLib {	
 	// node types
 	enum UNIVERSUM_LIB_API NodeTypes {
-		NONE = 0,
+		NODE_NONE = 0,
 		NODE = 1,
 		MOVEABLE_NODE = 2,
 		VISIBLE_NODE = 4

@@ -38,6 +38,7 @@
 #include "lib/Thread.h"
 
 namespace UniLib {
+	
 	namespace controller {
 
 	class Task;
@@ -84,6 +85,8 @@ namespace UniLib {
 			// main render function, called from thread or from game
 			DRReturn updateEveryRendering();
 
+			__inline__ float getSecondsSinceLastFrame() {float seconds = 0.0f; SDL_LockMutex(mFrameTimeMutex); seconds = mSecondsSinceLastFrame; SDL_UnlockMutex(mFrameTimeMutex); return seconds;}
+
 			// debugging/profiling
 #ifdef _UNI_LIB_DEBUG
 			__inline__ size_t getFastGPUTaskCount() {return mFastGPUTasks.size();}
@@ -101,10 +104,14 @@ namespace UniLib {
 			//std::queue<>
 			bool	mThreadRunning;
 			SDL_mutex* mMutex;
+			SDL_mutex* mFrameTimeMutex;
 			SDL_Thread* mThread;
 			Uint32    mLastUpdateTicks;
 			Uint32    mLastFrameDurations[GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT];
 			Uint32    mLastFrameDurationCursor;
+
+			float mSecondsSinceLastFrame;
+
 
 		private:
 			static GPUScheduler* mpInstanz;

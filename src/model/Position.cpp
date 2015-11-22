@@ -14,8 +14,10 @@ namespace UniLib {
 
 		}
 
-		DRMatrix Position::calculateMatrix()
+		DRMatrix Position::calculateMatrix(const DRMatrix& mat)
 		{
+			mPosition += mPositionAdd.transformNormal(mat);
+			mPositionAdd = DRVector3(0.0f);
 			return DRMatrix::translation(mPosition) * DRMatrix::scaling(mScale);
 		}
 

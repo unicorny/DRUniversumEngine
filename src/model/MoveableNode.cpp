@@ -11,13 +11,13 @@ namespace UniLib {
 
 		void MoveableNode::calculateMatrix()
 		{
-			mMatrix = mPosition.calculateMatrix() * mRotation.calculateMatrix();
-			if(mParent && (mParent->getType() & mType) != 0) {
+			mMatrix = mPosition.calculateMatrix(mMatrix) * mRotation.calculateMatrix();
+			if(mParent && (mParent->getType() & MOVEABLE_NODE) != 0) {
 				MoveableNode* parent = dynamic_cast<MoveableNode*>(mParent);
 				mMatrix *= parent->getMatrix();
 			}
 			for(std::list<Node*>::iterator it = mChilds.begin(); it != mChilds.end(); it++) {
-				if(((*it)->getType() & mType) != 0) {
+				if(((*it)->getType() & MOVEABLE_NODE) != 0) {
 					MoveableNode* child = dynamic_cast<MoveableNode*>(*it);
 					child->calculateMatrix();
 				}

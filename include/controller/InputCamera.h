@@ -31,17 +31,18 @@
 #ifndef __UNIVESUM_LIB_CONTROLLE_INPUT_CAMERA_H
 #define __UNIVESUM_LIB_CONTROLLE_INPUT_CAMERA_H
 
-#include "Camera.h"
+#include "view/Camera.h"
 #include "InputCommand.h"
 
 namespace UniLib {
 	namespace controller {
-		class UNIVERSUM_LIB_API InputCamera : public Camera, public InputCommand
+		class UNIVERSUM_LIB_API InputCamera : public view::Camera, public InputCommand
 		{
 		public: 
-			InputCamera(float mvSpeed, float rotateSpeed);
+			InputCamera(float mvSpeed, float rotateSpeed, float fov);
 			virtual ~InputCamera();
 
+			void updateDirectlyFromKeyboard();
 			virtual DRReturn input(InputCommandEnum in);
 		protected:
 			float mMoveSpeed;

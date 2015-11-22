@@ -49,19 +49,19 @@ namespace UniLib {
             UniformSet();
             ~UniformSet();
 
-            DRReturn setUniform(std::string& name, int value);
-            DRReturn setUniform(std::string& name, float value);
-            DRReturn setUniform(std::string& name, DRVector2 value);
-            DRReturn setUniform(std::string& name, DRVector3 value);
-            DRReturn setUniform(std::string& name, DRColor value);
-            DRReturn setUniform(std::string& name, DRVector3i value);
-            DRReturn setUniform(std::string& name, DRVector2i value);
-			DRReturn setUniform(std::string& name, DRMatrix value);
+            DRReturn setUniform(const char* name, int value);
+            DRReturn setUniform(const char* name, float value);
+            DRReturn setUniform(const char* name, DRVector2 value);
+            DRReturn setUniform(const char* name, DRVector3 value);
+            DRReturn setUniform(const char* name, DRColor value);
+            DRReturn setUniform(const char* name, DRVector3i value);
+            DRReturn setUniform(const char* name, DRVector2i value);
+			DRReturn setUniform(const char* name, DRMatrix value);
 
-			DRReturn addUniformMapping(std::string& name, void* location, HASH programID);
-			DRReturn removeUniformMapping(std::string& name, HASH programID);
+			DRReturn addUniformMapping(const char* name, void* location, HASH programID);
+			DRReturn removeUniformMapping(const char* name, HASH programID);
 
-			DRMatrix getUniformMatrix(std::string& name);
+			DRMatrix getUniformMatrix(const char* name);
 
 			__inline__ bool isDirty() {lock(); bool d = mDirtyFlag; unlock(); return d;}
 			__inline__ void unsetDirty() {lock(); mDirtyFlag = false; unlock();}
@@ -72,11 +72,11 @@ namespace UniLib {
             struct UniformEntry
             {
                 UniformEntry(): type(0),intArray(NULL) {}
-                UniformEntry(int* data, size_t arrayEntryCount, std::string& name);
-                UniformEntry(float* data, size_t arrayEntryCount, std::string& name);
+                UniformEntry(int* data, size_t arrayEntryCount, const char* name);
+                UniformEntry(float* data, size_t arrayEntryCount, const char* name);
                 ~UniformEntry();
 
-                DRReturn update(void* data, size_t arrayEntryCount, std::string& name);
+                DRReturn update(void* data, size_t arrayEntryCount, const char* name);
 				void addLocation(void* location, HASH programID);
 				void removeLocation(HASH programID);
 				__inline__ bool isDirty() {return (type & 64) == 64;}
@@ -111,10 +111,10 @@ namespace UniLib {
 			bool			mDirtyFlag;
 
             //DRReturn setUniform(UniformEntry* newUniform);
-			DRReturn setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat = false);
-			void* getUniform(std::string& name, size_t arrayEntryCount);
+			DRReturn setUniform(void* data, size_t arrayEntryCount, const char* name, bool typeFloat = false);
+			void* getUniform(const char* name, size_t arrayEntryCount);
 
-			UniformEntry* getUniformEntry(std::string& name);
+			UniformEntry* getUniformEntry(const char* name);
         };
 
         // *****************************************************************

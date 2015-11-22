@@ -17,40 +17,40 @@ namespace UniLib
             mUniformEntrys.clear();
         }
 
-        DRReturn UniformSet::setUniform(std::string& name, int value)
+        DRReturn UniformSet::setUniform(const char* name, int value)
         {
             return setUniform(&value, 1, name, false);
         }
-        DRReturn UniformSet::setUniform(std::string& name, float value)
+        DRReturn UniformSet::setUniform(const char* name, float value)
         {
             return setUniform(&value, 1, name, false);
         }
-        DRReturn UniformSet::setUniform(std::string& name, DRVector2 value)
+        DRReturn UniformSet::setUniform(const char* name, DRVector2 value)
         {
             return setUniform(value.c, 2, name, true);
         }
-        DRReturn UniformSet::setUniform(std::string& name, DRVector3 value)
+        DRReturn UniformSet::setUniform(const char* name, DRVector3 value)
         {
             return setUniform(value.c, 3, name, true);
         }
-        DRReturn UniformSet::setUniform(std::string& name, DRColor value)
+        DRReturn UniformSet::setUniform(const char* name, DRColor value)
         {
             return setUniform(value.c, 4, name, true);
         }
-        DRReturn UniformSet::setUniform(std::string& name, DRVector3i value)
+        DRReturn UniformSet::setUniform(const char* name, DRVector3i value)
         {
             return setUniform(value.c, 3, name, false);
         }
-        DRReturn UniformSet::setUniform(std::string& name, DRVector2i value)
+        DRReturn UniformSet::setUniform(const char* name, DRVector2i value)
         {
             return setUniform(value.c, 2, name, false);
         }
-		DRReturn UniformSet::setUniform(std::string& name, DRMatrix value)
+		DRReturn UniformSet::setUniform(const char* name, DRMatrix value)
 		{
 			return setUniform(value.n, 16, name, true);
 		}
 
-		DRMatrix UniformSet::getUniformMatrix(std::string& name)
+		DRMatrix UniformSet::getUniformMatrix(const char* name)
 		{
 			lock();
 			DRMatrix matrix((float*)getUniform(name, 16));
@@ -58,7 +58,7 @@ namespace UniLib
 			return matrix;
 		}
 
-		DRReturn UniformSet::addUniformMapping(std::string& name, void* location, HASH programID)
+		DRReturn UniformSet::addUniformMapping(const char* name, void* location, HASH programID)
 		{
 			lock();
 			UniformEntry* entry = getUniformEntry(name);
@@ -70,7 +70,7 @@ namespace UniLib
 			unlock();
 			return DR_ERROR;
 		}
-		DRReturn UniformSet::removeUniformMapping(std::string& name, HASH programID)
+		DRReturn UniformSet::removeUniformMapping(const char* name, HASH programID)
 		{
 			lock();
 			UniformEntry* entry = getUniformEntry(name);
@@ -102,14 +102,14 @@ namespace UniLib
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // PROTECTED AREA
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        UniformSet::UniformEntry::UniformEntry(int* data, size_t arrayEntryCount, std::string& name)
+        UniformSet::UniformEntry::UniformEntry(int* data, size_t arrayEntryCount, const char* name)
             : type(arrayEntryCount + 64), intArray(NULL), name(name)
         {
 			assert(arrayEntryCount < 64);
             intArray = new int[arrayEntryCount];
             memcpy(intArray, data, arrayEntryCount*sizeof(int));
         }
-        UniformSet::UniformEntry::UniformEntry(float* data, size_t arrayEntryCount, std::string& name)
+        UniformSet::UniformEntry::UniformEntry(float* data, size_t arrayEntryCount, const char* name)
             : type(arrayEntryCount + 64), floatArray(NULL), name(name)
         {
 			assert(arrayEntryCount < 64);
@@ -123,7 +123,7 @@ namespace UniLib
 		   type = 0;
         }
 
-        DRReturn UniformSet::UniformEntry::update(void* data, size_t arrayEntryCount, std::string& name)
+        DRReturn UniformSet::UniformEntry::update(void* data, size_t arrayEntryCount, const char* name)
         {
 			assert(arrayEntryCount == (type & 63));
 			if((type & 128) == 128) {
@@ -155,7 +155,7 @@ namespace UniLib
 			unsetDirty();
 		}
         // ******************************************************************
-		DRReturn UniformSet::setUniform(void* data, size_t arrayEntryCount, std::string& name, bool typeFloat/* = false*/)
+		DRReturn UniformSet::setUniform(void* data, size_t arrayEntryCount, const char* name, bool typeFloat/* = false*/)
         //DRReturn UniformSet::setUniform(UniformEntry* newUniform)
         {
             if(!data) return DR_ZERO_POINTER;
@@ -167,7 +167,7 @@ namespace UniLib
 				unlock();
                 return result;
             } else {
-				HASH hash = DRMakeStringHash(name.data());
+				HASH hash = DRMakeStringHash(name);
 				if(typeFloat) entry = new UniformEntry((float*)data, arrayEntryCount, name);
 				else entry = new UniformEntry((int*)data, arrayEntryCount, name);
                 mUniformEntrys.insert(UNIFORM_ENTRY_PAIR(hash, entry));
@@ -176,7 +176,7 @@ namespace UniLib
             return DR_OK;
         }
 
-		void* UniformSet::getUniform(std::string& name, size_t arrayEntryCount)
+		void* UniformSet::getUniform(const char* name, size_t arrayEntryCount)
 		{
 			UniformEntry* entry = getUniformEntry(name);
 			if(entry) {
@@ -186,9 +186,9 @@ namespace UniLib
 			return NULL;
 		}
 
-		UniformSet::UniformEntry* UniformSet::getUniformEntry(std::string& name)
+		UniformSet::UniformEntry* UniformSet::getUniformEntry(const char* name)
 		{
-			HASH hash = DRMakeStringHash(name.data());
+			HASH hash = DRMakeStringHash(name);
 			std::map<HASH, UniformEntry*>::iterator it = mUniformEntrys.find(hash);
 			if(it != mUniformEntrys.end()) {
 				return it->second;

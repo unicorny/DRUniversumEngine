@@ -23,15 +23,30 @@
 #ifndef __DR_UNIVERSUM_LIB_VIEW_CAMERA_GENERATOR_H__ 
 #define __DR_UNIVERSUM_LIB_VIEW_CAMERA_GENERATOR_H__
 
-#include "UniversumLib.h"
+#include "model/MoveableNode.h"
 
 namespace UniLib {
 	namespace view {
-		class UNIVERSUM_LIB_API Camera {
-		public:
-			Camera();
-			~Camera();
-		private:
+		class UNIVERSUM_LIB_API Camera : public model::MoveableNode {
+		public:		
+			Camera(float fov = 90.0f, float nearClipping = 0.1f, float farClipping = 100.0f);
+			virtual ~Camera();
+
+			__inline__ void setFov(float fov) {mFOV = fov;}
+			__inline__ void setNearClipping(float nearClipping) {mClipping.x= nearClipping;}
+			__inline__ void setFarClipping(float farClipping) {mClipping.y = farClipping;}
+			__inline__ void setAspectRatio(float aspectRatio) {mAspectRatio = aspectRatio;}
+
+			__inline__ const DRMatrix& getCameraMatrix() {return mCameraMatrix;}
+
+			void updateCameraMatrix();
+		protected:
+			// field of view
+			float mFOV;
+			float mAspectRatio;
+			DRVector2 mClipping;
+
+			DRMatrix mCameraMatrix;
 		};
 	};
 };

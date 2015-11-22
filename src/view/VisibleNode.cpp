@@ -1,4 +1,4 @@
-#include "view/VisibleObject.h"
+#include "view/VisibleNode.h"
 
 namespace UniLib {
 	namespace view {

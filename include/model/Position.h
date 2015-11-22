@@ -49,15 +49,16 @@ namespace UniLib {
 
 			__inline__ void setPosition(const DRVector3& pos) {mPosition = pos;}
 			__inline__ const DRVector3& getPosition() const {return mPosition;}
-			__inline__ void move(const DRVector3& diff) {mPosition += diff;}
+			__inline__ void move(const DRVector3& diff) {mPositionAdd += diff;}
 
 			__inline__ void setScale(const DRVector3& scale) {mScale = scale;}
 			__inline__ const DRVector3& getScale() const {return mScale;}
 
-			DRMatrix calculateMatrix();
+			DRMatrix calculateMatrix(const DRMatrix& mat);
 
 		protected:
 			DRVector3 mPosition;
+			DRVector3 mPositionAdd;
 			DRVector3 mScale;
 		};
 	}
