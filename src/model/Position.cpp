@@ -18,7 +18,7 @@ namespace UniLib {
 		{
 			mPosition += mPositionAdd.transformNormal(mat);
 			mPositionAdd = DRVector3(0.0f);
-			return DRMatrix::translation(mPosition) * DRMatrix::scaling(mScale);
+			return DRMatrix::scaling(mScale) * DRMatrix::translation(mPosition);
 		}
 
 	}

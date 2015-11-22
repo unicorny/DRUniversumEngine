@@ -23,7 +23,7 @@ namespace UniLib
         }
         DRReturn UniformSet::setUniform(const char* name, float value)
         {
-            return setUniform(&value, 1, name, false);
+            return setUniform(&value, 1, name, true);
         }
         DRReturn UniformSet::setUniform(const char* name, DRVector2 value)
         {

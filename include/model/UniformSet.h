@@ -98,7 +98,7 @@ namespace UniLib {
 				struct Location {
 					Location(void* location): location(location), dirty(true)
 					{}
-					Location() {}
+					Location():location(NULL), dirty(true) {}
 					void* location;
 					bool dirty;
 				};
