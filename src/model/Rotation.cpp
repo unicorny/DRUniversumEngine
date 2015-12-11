@@ -16,9 +16,6 @@ namespace UniLib {
 		void Rotation::rotateRel(const DRVector3& rotation)
 		{
 			DRMatrix mRot;
-			if(rotation.x != 0.0f) {
-				printf("miau\n");
-			}
 			// Rotation um die z-Achse des Objekts
 			mRot = DRMatrix::rotationAxis(mZAxis, rotation.z);
 			mXAxis = mXAxis.transformNormal(mRot);

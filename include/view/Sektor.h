@@ -29,6 +29,9 @@
 // renderSektor in old implemantation
 
 namespace UniLib {
+	namespace model {
+		class Sektor;
+	}
 	namespace view {
 
 		class Camera;
@@ -36,12 +39,14 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API Sektor
 		{
 		public:
-			Sektor();
+			Sektor(model::Sektor* sektorModel = NULL);
 			~Sektor();
 
 			// prototypes
 			// render sektor per camera (multiple calls pro frame possible)
 			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
+		protected:
+			model::Sektor* mSektorModel;
 		private:
 		};
 	};

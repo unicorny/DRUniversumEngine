@@ -5,7 +5,8 @@ namespace UniLib {
 
 
 		// constructor
-		Sektor::Sektor()
+		Sektor::Sektor(view::Sektor* sektorView /*= NULL*/)
+			: mSektorView(sektorView)
 		{
 		}
 

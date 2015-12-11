@@ -4,7 +4,8 @@ namespace UniLib {
 	namespace view {
 		
 		// constructor
-		Sektor::Sektor()
+		Sektor::Sektor(model::Sektor* sektorModel/* = NULL*/)
+			: mSektorModel(sektorModel)
 		{
 		}
 		// -------------------------------------------------------------

@@ -23,12 +23,12 @@
 #ifndef __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__ 
 #define __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
 
-#include "UniversumLib.h"
+#include "Node.h"
+#include "view/Sektor.h"
 
 namespace UniLib {
 	namespace view {
 		class Camera;
-		class Sektor;
 	}
 	namespace model {
 		/*!
@@ -36,10 +36,10 @@ namespace UniLib {
 		 * used for visible calculation
 		 * management other classes which work with sektor (like view or generator)
 		 */
-		class UNIVERSUM_LIB_API Sektor
+		class UNIVERSUM_LIB_API Sektor : public Node
 		{
 		public:
-			Sektor();
+			Sektor(view::Sektor* sektorView = NULL);
 			~Sektor();
 
 			// prototypes
@@ -51,7 +51,7 @@ namespace UniLib {
 			virtual DRReturn move(float timeSinceLastFrame) = 0;
 			// render sektor content on screen (using sektor view)
 			// render sektor per camera (multiple calls pro frame possibility)
-			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
+			__inline__ DRReturn render(view::Camera* camera, float timeSinceLastFrame) {mSektorView->render(camera, timeSinceLastFrame);}
 
 		private:
 			view::Sektor* mSektorView;
