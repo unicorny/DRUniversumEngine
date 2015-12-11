@@ -1,15 +1,16 @@
-#include "model/block/Block.h"
+#include "model/block/BlockType.h"
 
 namespace UniLib {
 	namespace model {
 		namespace block {
-			Block::Block(std::string name)
+
+			BlockType::BlockType(std::string name)
 				: mName(name)
 			{
 
 			}
 
-			Block::~Block()
+			BlockType::~BlockType()
 			{
 
 			}

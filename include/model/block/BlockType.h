@@ -20,44 +20,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__ 
-#define __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
 
-#include "Node.h"
-#include "view/Sektor.h"
+#ifndef __UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H
+#define __UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H
+
+#include "UniversumLib.h"
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 11.12.2015
+ *
+ * \brief: base class for block types
+ *
+ */
 
 namespace UniLib {
-	namespace view {
-		class Camera;
-	}
 	namespace model {
-		/*!
-		 * Sektor model prototyp, contains active and inactive objects in sector,
-		 * used for visible calculation
-		 * management other classes which work with sektor (like view or generator)
-		 */
-		class UNIVERSUM_LIB_API Sektor : public Node
-		{
-		public:
-			Sektor(view::Sektor* sektorView = NULL);
-			virtual ~Sektor();
+		namespace block {
 
-			// prototypes
-			// get name of sektor type
-			virtual const char* getSektorType() = 0;
-			// calculate current visibility mode for given camera, multiple calls per frame possible
-			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
-			// move/update objects in sektor
-			virtual DRReturn move(float timeSinceLastFrame) = 0;
-			// render sektor content on screen (using sektor view)
-			// render sektor per camera (multiple calls pro frame possibility)
-			__inline__ DRReturn render(view::Camera* camera, float timeSinceLastFrame) {return mSektorView->render(camera, timeSinceLastFrame);}
+			class UNIVERSUM_LIB_API BlockType : public DRIResource
+			{
+			public:
+				BlockType(std::string name);
+				virtual ~BlockType();
 
-		private:
-			view::Sektor* mSektorView;
-			
-		};
-	};
-};
+				virtual const char* getResourceType() const {return "BlockType";}
+				virtual bool less_than(DRIResource& b) const {
+					return mId <  dynamic_cast<BlockType&>(b).mId;
+				}
+			protected:
+				int mId;
+				std::string mName;
+			};
+		}
+	}
+}
 
-#endif //__DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
+#endif //__UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H

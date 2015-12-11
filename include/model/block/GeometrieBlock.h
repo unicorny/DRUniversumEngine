@@ -20,44 +20,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__ 
-#define __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
 
-#include "Node.h"
-#include "view/Sektor.h"
+#ifndef __UNI_LIB_MODEL_BLOCK_GEOMETRIE_BLOCK_H
+#define __UNI_LIB_MODEL_BLOCK_GEOMETRIE_BLOCK_H
+
+#include "BlockType.h"
+#include "model/Position.h"
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 11.12.2015
+ *
+ * \brief: base class for geometrie based block types
+ *  
+ * used for instancing 
+ *
+ */
 
 namespace UniLib {
-	namespace view {
-		class Camera;
-	}
 	namespace model {
-		/*!
-		 * Sektor model prototyp, contains active and inactive objects in sector,
-		 * used for visible calculation
-		 * management other classes which work with sektor (like view or generator)
-		 */
-		class UNIVERSUM_LIB_API Sektor : public Node
-		{
-		public:
-			Sektor(view::Sektor* sektorView = NULL);
-			virtual ~Sektor();
+		
+		namespace block {
 
-			// prototypes
-			// get name of sektor type
-			virtual const char* getSektorType() = 0;
-			// calculate current visibility mode for given camera, multiple calls per frame possible
-			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
-			// move/update objects in sektor
-			virtual DRReturn move(float timeSinceLastFrame) = 0;
-			// render sektor content on screen (using sektor view)
-			// render sektor per camera (multiple calls pro frame possibility)
-			__inline__ DRReturn render(view::Camera* camera, float timeSinceLastFrame) {return mSektorView->render(camera, timeSinceLastFrame);}
+			class UNIVERSUM_LIB_API GeometrieBlock : public BlockType
+			{
+			public:
+				GeometrieBlock(std::string name);
+				virtual ~GeometrieBlock();
 
-		private:
-			view::Sektor* mSektorView;
-			
-		};
-	};
-};
+				virtual const char* getResourceType() const {return "GeometrieBlock";}
 
-#endif //__DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
+				__inline__ Position* getPosition() {return &mPosition;}
+				// if current block is visible, maybe later with camera as parameter
+				virtual bool isVisible() const = 0;
+
+			protected:
+				Position mPosition;
+			};
+		}
+	}
+}
+
+#endif //__UNI_LIB_MODEL_BLOCK_GEOMETRIE_BLOCK_H

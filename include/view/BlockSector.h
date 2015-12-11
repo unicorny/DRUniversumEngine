@@ -20,44 +20,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__ 
-#define __DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
 
-#include "Node.h"
-#include "view/Sektor.h"
+#ifndef __UNI_LIB_VIEW_BLOCK_SEKTOR_H
+#define __UNI_LIB_VIEW_BLOCK_SEKTOR_H
 
+#include "Sektor.h"
+/*!
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 11.12.2015
+ *
+ * \brief: view class for sector containing blocks
+ *
+ */
 namespace UniLib {
-	namespace view {
-		class Camera;
-	}
 	namespace model {
-		/*!
-		 * Sektor model prototyp, contains active and inactive objects in sector,
-		 * used for visible calculation
-		 * management other classes which work with sektor (like view or generator)
-		 */
-		class UNIVERSUM_LIB_API Sektor : public Node
+		class BlockSektor;
+	}
+	namespace view {
+
+		class UNIVERSUM_LIB_API BlockSektor : public Sektor 
 		{
 		public:
-			Sektor(view::Sektor* sektorView = NULL);
-			virtual ~Sektor();
-
-			// prototypes
-			// get name of sektor type
-			virtual const char* getSektorType() = 0;
-			// calculate current visibility mode for given camera, multiple calls per frame possible
-			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
-			// move/update objects in sektor
-			virtual DRReturn move(float timeSinceLastFrame) = 0;
-			// render sektor content on screen (using sektor view)
-			// render sektor per camera (multiple calls pro frame possibility)
-			__inline__ DRReturn render(view::Camera* camera, float timeSinceLastFrame) {return mSektorView->render(camera, timeSinceLastFrame);}
-
-		private:
-			view::Sektor* mSektorView;
-			
+			BlockSektor(model::BlockSektor* sektorModel = NULL);
+			virtual ~BlockSektor();
+		protected:
 		};
-	};
-};
+	}
+}
 
-#endif //__DR_UNIVERSUM_LIB_MODEL_SEKTOR_H__
+#endif //__UNI_LIB_MODEL_BLOCK_SEKTOR_H
