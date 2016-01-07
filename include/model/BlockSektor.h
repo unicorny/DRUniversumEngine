@@ -32,6 +32,7 @@
  * \date: 11.12.2015
  *
  * \brief: class for sector containing blocks
+ * index only allowed in range 0-8
  *
  */
 namespace UniLib {
@@ -46,8 +47,9 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API BlockSektor : public Sektor 
 		{
 		public:
-			BlockSektor(view::BlockSektor* viewSektor = NULL);
+			BlockSektor(view::BlockSektor* viewSektor);
 			virtual ~BlockSektor();
+
 
 			
 			__inline__ block::BlockPtr operator[] (DRVector3i index) const
@@ -63,6 +65,15 @@ namespace UniLib {
 			// return DR_ERROR if place is already occupied
 			DRReturn addBlock(block::BlockPtr block, DRVector3i index);
 			block::BlockPtr deleteBlock(DRVector3i index);
+
+			// overrides
+			// get name of sektor type
+			virtual const char* getSektorType() {return "BlockSektor";}
+			// calculate current visibility mode for given camera, multiple calls per frame possible
+			virtual DRReturn updateVisibility(view::Camera* camera);
+			// move/update objects in sektor
+			virtual DRReturn move(float timeSinceLastFrame);
+			
 		protected:
 
 			bool isPlaceFree(HASH h) const {return mBlocks.find(h) == mBlocks.end();}

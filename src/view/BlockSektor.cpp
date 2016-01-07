@@ -14,5 +14,10 @@ namespace UniLib {
 		{
 
 		}
+
+		DRReturn BlockSektor::render(view::Camera* camera, float timeSinceLastFrame)
+		{
+			return DR_OK;
+		}
 	}
 }

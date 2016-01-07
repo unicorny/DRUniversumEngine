@@ -45,6 +45,8 @@ namespace UniLib {
 		public:
 			BlockSektor(model::BlockSektor* sektorModel = NULL);
 			virtual ~BlockSektor();
+
+			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame);
 		protected:
 		};
 	}

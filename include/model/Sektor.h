@@ -53,6 +53,9 @@ namespace UniLib {
 			// render sektor per camera (multiple calls pro frame possibility)
 			__inline__ DRReturn render(view::Camera* camera, float timeSinceLastFrame) {return mSektorView->render(camera, timeSinceLastFrame);}
 
+
+			__inline__ view::Sektor* getSektorView() {return mSektorView;}
+
 		private:
 			view::Sektor* mSektorView;
 			

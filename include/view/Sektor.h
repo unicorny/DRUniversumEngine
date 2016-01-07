@@ -42,6 +42,8 @@ namespace UniLib {
 			Sektor(model::Sektor* sektorModel = NULL);
 			~Sektor();
 
+			__inline void setSektorModel(model::Sektor* sektorModel) {mSektorModel = mSektorModel;}
+
 			// prototypes
 			// render sektor per camera (multiple calls pro frame possible)
 			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;

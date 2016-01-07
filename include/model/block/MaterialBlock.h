@@ -47,6 +47,7 @@ namespace UniLib {
 
 				virtual const char* getResourceType() const {return "MaterialBlock";}
 			protected:
+
 			};
 		}
 	}
