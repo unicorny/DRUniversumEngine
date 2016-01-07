@@ -31,7 +31,7 @@
  *
  * \date: 11.12.2015
  *
- * \brief: base class for blocks
+ * \brief: base class for blocks, class for the actuell instance
  *
  */
 
@@ -42,7 +42,7 @@ namespace UniLib {
 			class UNIVERSUM_LIB_API Block : public DRIResource
 			{
 			public:
-				Block(std::string name);
+				Block(std::string name, HASH blockTypeId);
 				virtual ~Block();
 
 				virtual const char* getResourceType() const {return "Block";}
@@ -50,8 +50,9 @@ namespace UniLib {
 					return mId <  dynamic_cast<Block&>(b).mId;
 				}
 			protected:
-				int mId;
+				HASH mId;
 				std::string mName;
+				HASH mBlockTypeID;
 			};
 		}
 	}

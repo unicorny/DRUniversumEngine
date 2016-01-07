@@ -31,7 +31,7 @@
  *
  * \date: 11.12.2015
  *
- * \brief: base class for block types
+ * \brief: base class for block types, class for type
  *
  */
 

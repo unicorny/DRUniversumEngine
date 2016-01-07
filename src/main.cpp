@@ -125,4 +125,15 @@ namespace UniLib {
         }
         return DRString(buffer);
     }
+
+	DRString getValueAsBinaryString(int zahl)
+	{
+		u8 z1 = zahl & 0x000000ff;
+		u8 z2 = (zahl & 0x0000ff00) >> 8;
+		u8 z3 = (zahl & 0x00ff0000) >> 16;
+		u8 z4 = (zahl & 0xff000000) >> 24;
+		//printf("%d %d %d %d\n", z1, z2, z3, z4);
+		return getValueAsBinaryString(z1) + getValueAsBinaryString(z2) + getValueAsBinaryString(z3) + getValueAsBinaryString(z4);
+
+	}
 }

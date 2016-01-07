@@ -58,7 +58,7 @@ namespace UniLib {
 			// called from scheduler thread if he wants a new task to do
 			// return null if no task pending, putting thread in wait queue,
 			// to inform him if a new task is ready for him
-			TaskPtr ImReadyForTheNextTask(CPUShedulerThread* Me);
+			TaskPtr getNextUndoneTask(CPUShedulerThread* Me);
         protected:
 			
 			

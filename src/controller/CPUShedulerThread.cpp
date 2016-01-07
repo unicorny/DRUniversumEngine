@@ -10,7 +10,7 @@ namespace UniLib {
 #ifdef _UNI_LIB_DEBUG
 			mName = name;
 #endif
-			mWaitingTask = mParent->ImReadyForTheNextTask(this);
+			mWaitingTask = mParent->getNextUndoneTask(this);
 
 		}
 
@@ -23,7 +23,7 @@ namespace UniLib {
 			while(mWaitingTask.getResourcePtrHolder()) 
 			{
 				mWaitingTask->run();
-				mWaitingTask = mParent->ImReadyForTheNextTask(this);
+				mWaitingTask = mParent->getNextUndoneTask(this);
 			}
 			return 0;
 		}

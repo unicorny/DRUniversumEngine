@@ -104,6 +104,7 @@ namespace UniLib {
 	UNIVERSUM_LIB_API std::string readFileAsString(std::string filename);
 	UNIVERSUM_LIB_API Json::Value convertStringToJson(std::string jsonString);
     UNIVERSUM_LIB_API DRString getValueAsBinaryString(u8 zahl);
+	UNIVERSUM_LIB_API DRString getValueAsBinaryString(int zahl);
 }
 
 

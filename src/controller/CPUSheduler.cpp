@@ -39,7 +39,7 @@ namespace UniLib {
 			}
 			return DR_OK;
 		}
-		TaskPtr CPUSheduler::ImReadyForTheNextTask(CPUShedulerThread* Me)
+		TaskPtr CPUSheduler::getNextUndoneTask(CPUShedulerThread* Me)
 		{
 			
 			// look at pending tasks

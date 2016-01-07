@@ -50,21 +50,34 @@ namespace UniLib {
 			virtual ~BlockSektor();
 
 			
-			__inline__ short operator[] (DRVector3i index) const {
+			__inline__ block::BlockPtr operator[] (DRVector3i index) const
+			{
 				assert(index.x >= 0 && index.x < 9);
 				assert(index.y >= 0 && index.y < 9);
 				assert(index.z >= 0 && index.z < 9);
-				return mBlockGrid[index.x][index.y][index.z];
+				return (*this)[DRMakeSmallVector3DHash(index)];
 			}
-			__inline__ bool isPlaceFree(DRVector3i index) {return (*this)[index] == 0;}
+			
+			__inline__ bool isPlaceFree(DRVector3i index) const {return isPlaceFree(DRMakeSmallVector3DHash(index));}
 
-			void addBlock(block::BlockPtr block, DRVector3i index);
+			// return DR_ERROR if place is already occupied
+			DRReturn addBlock(block::BlockPtr block, DRVector3i index);
+			block::BlockPtr deleteBlock(DRVector3i index);
 		protected:
-			//! \brief blocks
-			std::map<short, block::BlockPtr> mBlocks;
-			//! \brief position of blocks
-			short mBlockGrid[9][9][9];
+
+			bool isPlaceFree(HASH h) const {return mBlocks.find(h) == mBlocks.end();}
+			block::BlockPtr operator[] (HASH h) const;
+
+			// hash calculated from 3D block index
+			
+			typedef std::map<HASH, block::BlockPtr> BlockMap;
+			typedef std::pair<HASH, block::BlockPtr> BlockPair;
+			typedef BlockMap::const_iterator BlockIterator;
+			
+			BlockMap mBlocks;
 		};
+
+
 	}
 }
 

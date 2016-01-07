@@ -90,6 +90,11 @@ inline DHASH DRMakeThreeIntHash(int i1, int i2, int i3)
 	h1 = h1 | DRHashRotateLeft(i2, 16);
 	return h1 | i3;
 }
+
+// only work with values not greater than 255
+inline HASH DRMakeSmallVector3DHash(DRVector3i v) {
+	return v.x & 0x0000ff | (v.y & 0x0000ff) << 8 | (v.z & 0x0000ff) << 16;
+}
 /*
 //ein hash aus einem Vector2D
 inline CORE2_API DHASH DRMakeVector2Hash(DRVector2 vVector)

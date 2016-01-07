@@ -3,7 +3,7 @@
 namespace UniLib {
 	namespace model {
 		namespace block {
-			Block::Block(std::string name)
+			Block::Block(std::string name, HASH blockTypeId)
 				: mName(name)
 			{
 

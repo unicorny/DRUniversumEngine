@@ -7,5 +7,6 @@
 #include "CPUTaskTest.h"
 #include "LoginTest.h"
 #include "LoggerTest.h"
+#include "HashTest.h"
 
 #endif //__UNIVERSUM_LIB_TEST_MAIN__
