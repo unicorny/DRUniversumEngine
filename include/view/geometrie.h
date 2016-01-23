@@ -23,37 +23,46 @@
 /*!
  * \author: Dario Rekowski
  *
- * \date: 30.10.2015
+ * \date: 23.01.2016
  *
- * \desc: Base interface for geometrie container, contains vertices and indices for rendering
- *        implementation will be done in application not in here
+ * \desc: Base interface for geometrie view, get geometrie datat to gpu and rendered
  */
 
-#ifndef __UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
-#define __UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
+#ifndef __UNIVERSUM_LIB_VIEW_GEOMETRIE_H
+#define __UNIVERSUM_LIB_VIEW_GEOMETRIE_H
 
-#include "model/geometrie/BaseGeometrieContainer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
-	namespace view {
+	namespace model {
 		namespace geometrie {
-
-			class UNIVERSUM_LIB_API BaseGeometrieContainer : public model::geometrie::BaseGeometrieContainer
-			{
-			public:
-				BaseGeometrieContainer();
-				virtual ~BaseGeometrieContainer();
-
-				virtual DRReturn uploadToGPU() = 0;
-				virtual DRReturn render() = 0;
-			protected:
-			};
-
-			typedef DRResourcePtr<BaseGeometrieContainer> BaseGeometrieContainerPtr;
+			class BaseGeometrie;
 		}
+	}
+	namespace view {
+
+		class UNIVERSUM_LIB_API Geometrie : public DRIResource
+		{
+		public:
+			Geometrie(model::geometrie::BaseGeometrie* baseGeometrie);
+			virtual ~Geometrie();
+
+			virtual DRReturn uploadToGPU() = 0;
+			virtual DRReturn render() = 0;
+
+			virtual const char* getResourceType() const {return "view::Geometrie";}
+			// simple compare pointer adresses
+			virtual bool less_than(DRIResource& b) const {return this < &b;}
+		protected:
+			model::geometrie::BaseGeometrie* mGeometrieModel;
+
+		};
+
+		typedef DRResourcePtr<Geometrie> GeometriePtr;
+		
 	}
 }
 
 
 
-#endif //__UNIVERSUM_LIB_VIEW_GEOMETRIE_BASE_GEOMETRIE_CONTAINER_H
+#endif //__UNIVERSUM_LIB_VIEW_GEOMETRIE_H

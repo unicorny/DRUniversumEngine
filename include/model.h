@@ -21,40 +21,34 @@
  ***************************************************************************/
 
 
-#ifndef __UNI_LIB_MODEL_BLOCK_MATERIAL_BLOCK_H
-#define __UNI_LIB_MODEL_BLOCK_MATERIAL_BLOCK_H
+#ifndef __UNI_LIB_MODEL_H
+#define __UNI_LIB_MODEL_H
 
-#include "BlockType.h"
+#include "UniversumLib.h"
+
 /*!
  *
  * \author: Dario Rekowski
  *
- * \date: 11.12.2015
+ * \date: 23.01.2016
  *
- * \brief: base class for material block types
+ * \brief: base class for scene nodes, contains parent and child pointer
  *
  */
-
 namespace UniLib {
-	
 	namespace model {
-		namespace block {
 
-			class UNIVERSUM_LIB_API MaterialBlock : public BlockType
-			{
-			public:
-				MaterialBlock(std::string name);
-				virtual ~MaterialBlock();
+		class UNIVERSUM_LIB_API Model
+		{
+		public:
+			Model() {}
+			virtual ~Model() {};
 
-				DRReturn initFromJson(const Json::Value& jsonFileName);
+			
+		protected:
+		};
 
-				virtual const char* getResourceType() const {return "MaterialBlock";}
-			protected:
-				
-
-			};
-		}
 	}
 }
 
-#endif //__UNI_LIB_MODEL_BLOCK_MATERIAL_BLOCK_H
+#endif //__UNI_LIB_MODEL_H

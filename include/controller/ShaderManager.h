@@ -47,6 +47,8 @@ namespace UniLib {
 			inline static ShaderManager* getInstance() {return &Instance();};
 			static bool	isInitialized()	{return Instance().mInitalized;};
 			*/
+			static ShaderManager* const getInstance();
+			__inline__ static bool	isInitialized()	{return getInstance()->mInitalized;};
 
 			DRReturn init();
 
@@ -64,8 +66,6 @@ namespace UniLib {
 
 			DHASH makeShaderHash(const char* vertexShader, const char* fragmentShader);    
 
-			virtual model::Shader* createNewShader(DHASH id) = 0;
-			virtual model::ShaderProgram* createNewShaderProgram(DHASH id) = 0;
 
 			//DRHashList mShaderEntrys;
 			std::map<DHASH, model::ShaderProgramPtr>               mShaderProgramEntrys;

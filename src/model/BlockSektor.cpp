@@ -17,12 +17,13 @@ namespace UniLib {
 
 		DRReturn BlockSektor::addBlock(block::BlockPtr block, DRVector3i index)
 		{
-			assert(index.x >= 0 && index.x < 9);
-			assert(index.y >= 0 && index.y < 9);
-			assert(index.z >= 0 && index.z < 9);
+			assert(index.x >= 0 && index.x < 8);
+			assert(index.y >= 0 && index.y < 8);
+			assert(index.z >= 0 && index.z < 8);
 			HASH h = DRMakeSmallVector3DHash(index);
 			if(!isPlaceFree(h)) LOG_ERROR("cannot insert new block, position already occupied!", DR_ERROR);
 			mBlocks.insert(BlockPair(h, block));
+			//block->
 			return DR_OK;
 		}
 

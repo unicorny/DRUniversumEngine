@@ -21,18 +21,18 @@
  ***************************************************************************/
 
 
-#ifndef __UNI_LIB_MODEL_BLOCK_SEKTOR_H
-#define __UNI_LIB_MODEL_BLOCK_SEKTOR_H
+#ifndef __UNI_LIB_MODEL_SMALL_BLOCK_SEKTOR_H
+#define __UNI_LIB_MODEL_SMALL_BLOCK_SEKTOR_H
 
 #include "Sektor.h"
 /*!
  *
  * \author: Dario Rekowski
  *
- * \date: 11.12.2015
+ * \date: 17.01.2016
  *
  * \brief: class for sector containing blocks
- * index only allowed in range 0-7
+ * index only allowed in range 0-3
  *
  */
 namespace UniLib {
@@ -44,19 +44,19 @@ namespace UniLib {
 			class Block;
 			typedef DRResourcePtr<Block> BlockPtr;
 		}
-		class UNIVERSUM_LIB_API BlockSektor : public Sektor 
+		class BlockSektor;
+		class UNIVERSUM_LIB_API SmallBlockSektor : public Sektor 
 		{
 		public:
-			BlockSektor(view::BlockSektor* viewSektor);
-			virtual ~BlockSektor();
-
+			SmallBlockSektor(view::BlockSektor* viewSektor);
+			virtual ~SmallBlockSektor();
 
 			
 			__inline__ block::BlockPtr operator[] (DRVector3i index) const
 			{
-				assert(index.x >= 0 && index.x < 8);
-				assert(index.y >= 0 && index.y < 8);
-				assert(index.z >= 0 && index.z < 8);
+				assert(index.x >= 0 && index.x < 4);
+				assert(index.y >= 0 && index.y < 4);
+				assert(index.z >= 0 && index.z < 4);
 				return (*this)[DRMakeSmallVector3DHash(index)];
 			}
 			
@@ -68,7 +68,7 @@ namespace UniLib {
 
 			// overrides
 			// get name of sektor type
-			virtual const char* getSektorType() {return "BlockSektor";}
+			virtual const char* getSektorType() {return "SmallBlockSektor";}
 			// calculate current visibility mode for given camera, multiple calls per frame possible
 			virtual DRReturn updateVisibility(view::Camera* camera);
 			// move/update objects in sektor
@@ -76,24 +76,15 @@ namespace UniLib {
 			
 		protected:
 
-			bool isPlaceFree(HASH h) const {return mBlocks.find(h) == mBlocks.end();}
+			//bool isPlaceFree(HASH h) const {return mBlocks.find(h) == mBlocks.end();}
 			block::BlockPtr operator[] (HASH h) const;
 
-			// hash calculated from 3D block index
-			
-			typedef std::map<HASH, block::BlockPtr> BlockMap;
-			typedef std::pair<HASH, block::BlockPtr> BlockPair;
-			typedef BlockMap::const_iterator BlockIterator;
-			
-			BlockMap mBlocks;
-
 			// bit sets on every place with an solid block (not transparency)
-			u8 mGridSolid[8][8]; 
-
+			u8 mGridSolid[3][3]; 
 		};
 
 
 	}
 }
 
-#endif //__UNI_LIB_MODEL_BLOCK_SEKTOR_H
+#endif //__UNI_LIB_MODEL_SMALL_BLOCK_SEKTOR_H

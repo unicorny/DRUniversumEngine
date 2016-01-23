@@ -49,10 +49,12 @@ namespace UniLib {
 				virtual bool less_than(DRIResource& b) const {
 					return mId <  dynamic_cast<Block&>(b).mId;
 				}
+				__inline__ HASH getBlockTypId() {return mBlockTypID;}
+				
 			protected:
 				HASH mId;
 				std::string mName;
-				HASH mBlockTypeID;
+				HASH mBlockTypID;
 			};
 		}
 	}

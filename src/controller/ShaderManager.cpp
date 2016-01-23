@@ -1,9 +1,11 @@
 #include "controller/ShaderManager.h"
 #include "model/ShaderProgram.h"
+#include "controller/BindToRenderer.h"
 
 namespace UniLib {
 	namespace controller {
 	using namespace model;
+
 
 		ShaderManager::ShaderManager()
 			: mInitalized(false)
@@ -17,12 +19,12 @@ namespace UniLib {
 
 		}
 
-	/*	ShaderManager& ShaderManager::Instance()
+		ShaderManager* const ShaderManager::getInstance() 
 		{
 			static ShaderManager TheOneAndOnly;
-			return TheOneAndOnly;
+			return &TheOneAndOnly;
 		}
-		*/
+		
 		DRReturn ShaderManager::init()
 		{
 			mInitalized = true;
@@ -65,6 +67,7 @@ namespace UniLib {
 		ShaderProgramPtr ShaderManager::getShaderProgram(const char* vertexShader, const char* fragmentShader)
 		{
 			if(!mInitalized) return NULL;
+			if(!g_RenderBinder) LOG_ERROR("render binder is not set", NULL);
 
 			DHASH id = makeShaderHash(vertexShader, fragmentShader);
 
@@ -73,8 +76,8 @@ namespace UniLib {
 			{
 				return mShaderProgramEntrys[id];
 			}
-
-			ShaderProgramPtr shaderProgram(createNewShaderProgram(id));    
+			
+			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(id));    
 			if(shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT)))
 				LOG_ERROR("error loading shader program", NULL);
 			std::string shaderNames("Shader loaded: ");
@@ -95,6 +98,7 @@ namespace UniLib {
 		ShaderPtr ShaderManager::getShader(const char* shaderName, ShaderType shaderType)
 		{
 			if(!mInitalized) return NULL;
+			if(!g_RenderBinder) LOG_ERROR("render binder is not set", NULL);
 
 			DHASH id = DRMakeFilenameHash(shaderName);
 
@@ -106,7 +110,7 @@ namespace UniLib {
 
 			EngineLog.writeToLog("[ShaderManager::getShader] start loading shader (%s)!", shaderName);
 
-			ShaderPtr shader(createNewShader(id));
+			ShaderPtr shader(g_RenderBinder->newShader(id));
 
 			const char* path = DRFileManager::Instance().getWholePfad(shaderName);
 			DRString shaderString = shaderName;

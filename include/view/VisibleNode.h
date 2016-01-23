@@ -35,12 +35,15 @@
  *
  */
 namespace UniLib {
+
+	class Model;
+	typedef DRResourcePtr<Model> ModelPtr;
+
 	namespace view {
 
-		namespace geometrie {
-			class BaseGeometrieContainer;
-			typedef DRResourcePtr<BaseGeometrieContainer> BaseGeometrieContainerPtr;
-		}
+		class Geometrie;
+		typedef DRResourcePtr<Geometrie> GeometriePtr;
+
 		class Material;
 		typedef DRResourcePtr<Material> MaterialPtr;
 
@@ -50,15 +53,19 @@ namespace UniLib {
 			VisibleNode(Node* parent = NULL, const DRVector3& position = DRVector3(0.0f));
 			virtual ~VisibleNode() {};
 
-			__inline__ void setGeometrie(geometrie::BaseGeometrieContainerPtr geo) {mGeometrie = geo;}
-			__inline__ geometrie::BaseGeometrieContainerPtr getGeometrie() {return mGeometrie;}
+			__inline__ void setGeometrie(view::GeometriePtr geo) {mGeometrie = geo;}
+			__inline__ view::GeometriePtr getGeometrie() {return mGeometrie;}
 
 			__inline__ void setMaterial(MaterialPtr material) {mMaterial = material;}
 			__inline__ MaterialPtr getMaterial() {return mMaterial;}
 
+			__inline__ void setModel(ModelPtr model) {mModel = model;}
+			__inline__ ModelPtr getModel() {return mModel;}
+
 		protected:
-			geometrie::BaseGeometrieContainerPtr mGeometrie;				 
+			view::GeometriePtr mGeometrie;				 
 			MaterialPtr mMaterial;
+			ModelPtr mModel;
 		};
 
 	}

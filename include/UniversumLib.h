@@ -50,14 +50,15 @@
 #include "Core2/Core2Main.h"
 #include "sdl/SDL.h"
 #include "lib/Logging.h"
+#include "controller/BindToRenderer.h"
 #include "json/json.h"
 
 #include <queue>
 #include <cassert>
 
 namespace UniLib {
-    UNIVERSUM_LIB_API extern UniLib::lib::EngineLogger EngineLog;
-
+    UNIVERSUM_LIB_API extern lib::EngineLogger EngineLog;
+	extern controller::BindToRenderer* g_RenderBinder;
 }
 
 #undef WRITETOLOG
@@ -105,6 +106,8 @@ namespace UniLib {
 	UNIVERSUM_LIB_API Json::Value convertStringToJson(std::string jsonString);
     UNIVERSUM_LIB_API DRString getValueAsBinaryString(u8 zahl);
 	UNIVERSUM_LIB_API DRString getValueAsBinaryString(int zahl);
+
+	UNIVERSUM_LIB_API void setBindToRenderer(controller::BindToRenderer* bindToRender);
 }
 
 

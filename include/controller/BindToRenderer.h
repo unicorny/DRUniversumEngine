@@ -20,66 +20,45 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BLOCK_MATERIAL_MANAGER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BLOCK_MATERIAL_MANAGER_H
+#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
 /*!
  * \author Dario Rekowski
  * 
- * \date 07.01.16
+ * \date 14.01.16
  * 
- * \desc Manager for all Material Types in Game, import material template from json
+ * \desc Interface for render implemenattion callbacks
  * 
  */
 
-#include "lib/Singleton.h"
-#include "controller/CPUTask.h"
+#include "UniversumLib.h"
+
+
 
 namespace UniLib {
+	namespace view {
+		class Material;
+
+		
+
+	}
 	namespace model {
-		namespace block {
-			class MaterialBlock;	
-		}
+		class Shader;
+		class ShaderProgram;
 	}
+
 	namespace controller {
-		class CPUSheduler;
-
-		class MaterialsLoadingTask: public CPUTask
+		class UNIVERSUM_LIB_API BindToRenderer
 		{
-		public:
-			MaterialsLoadingTask(CPUSheduler* scheduler, const char* jsonFileName);
-			virtual ~MaterialsLoadingTask();
-
-			virtual DRReturn run();
-			virtual bool isTaskFinished() {return false;};
-		protected:
-			std::string mJsonFileName;
-
-		};
-
-		class UNIVERSUM_LIB_API BlockMaterialManager : public lib::Singleton
-		{
-			friend MaterialsLoadingTask;
-		public:
-			static BlockMaterialManager* getInstance();
-			DRReturn init(const char* jsonFileName);
-			DRReturn initAsyn(const char* jsonFileName, CPUSheduler* scheduler);
-			void exit();
-
-		protected:
-			BlockMaterialManager();
-			virtual ~BlockMaterialManager();
-
-			DRReturn _init(const char* jsonFilename);
-
-			// member variables
-			lib::MultithreadContainer mWorkMutex;
-			typedef std::map<HASH, model::block::MaterialBlock*> MaterialMap;
-			typedef std::pair<HASH, model::block::MaterialBlock*> MaterialPair;
-			typedef MaterialMap::iterator MaterialIter;
-			MaterialMap mMaterials;
+		public: 
+			virtual view::Material* newMaterial() = 0;
+			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
+			virtual model::Shader* newShader(HASH id) = 0;
+			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
+			//virtual 
 
 		};
 	}
-}
+} 
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BLOCK_MATERIAL_MANAGER_H
+#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H

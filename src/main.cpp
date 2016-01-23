@@ -1,9 +1,9 @@
 ﻿#include "UniversumLib.h"
 
-
 // some dll stuff for windows
 int         g_iProzess = 0;
 int			g_iProzessFunk = 0;
+UniLib::controller::BindToRenderer* UniLib::g_RenderBinder = NULL;
 
 
 #ifdef _WIN32
@@ -135,5 +135,9 @@ namespace UniLib {
 		//printf("%d %d %d %d\n", z1, z2, z3, z4);
 		return getValueAsBinaryString(z1) + getValueAsBinaryString(z2) + getValueAsBinaryString(z3) + getValueAsBinaryString(z4);
 
+	}
+	void setBindToRenderer(controller::BindToRenderer* bindToRender)
+	{
+		g_RenderBinder = bindToRender;
 	}
 }

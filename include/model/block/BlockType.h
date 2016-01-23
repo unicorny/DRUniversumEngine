@@ -24,7 +24,8 @@
 #ifndef __UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H
 #define __UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H
 
-#include "UniversumLib.h"
+//#include "UniversumLib.h"
+#include "lib/MultithreadContainer.h"
 /*!
  *
  * \author: Dario Rekowski
@@ -36,10 +37,30 @@
  */
 
 namespace UniLib {
+	
 	namespace model {
 		namespace block {
 
-			class UNIVERSUM_LIB_API BlockType : public DRIResource
+			enum BlockTypeLoadingState {
+				// empty structure
+				BLOCK_TYPE_EMPTY = 0,
+				// has every information needed to load
+				BLOCK_TYPE_HAS_INFORMATIONS = 1,
+				// work on loading resources
+				BLOCK_TYPE_PARTLY_LOADED = 2,
+				// fully loaded and ready for using
+				BLOCK_TYPE_FULLY_LOADED = 4
+			};
+
+			enum BlockBaseType {
+				BLOCK_BASE_TYPE_SOLID = 0,
+				BLOCK_BASE_TYPE_FLUENT = 1,
+				BLOCK_BASE_TYPE_GAS = 2
+			};
+
+			
+
+			class UNIVERSUM_LIB_API BlockType : public DRIResource, protected lib::MultithreadContainer
 			{
 			public:
 				BlockType(std::string name);
@@ -49,9 +70,32 @@ namespace UniLib {
 				virtual bool less_than(DRIResource& b) const {
 					return mId <  dynamic_cast<BlockType&>(b).mId;
 				}
+
+				// getter
+				__inline__ bool isTransparency() {return mTransparency;}
+				__inline__ const char* getName() {return mName.data();}
+				__inline__ float getDensity() {return mDensity;}
+				__inline__ float getMeltingPoint() {return mMeltingPoint;}
+				__inline__ int getHitPoints() {return mHitpoints;}
+
+				// setter 
+				__inline__ void setId(HASH id) {mId = id;}
 			protected:
+				// control
 				int mId;
+				BlockTypeLoadingState mLoadingState;
+
+				// block attributes
 				std::string mName;
+				BlockBaseType mBaseType;
+				bool mTransparency;
+				float mDensity;
+				float mMeltingPoint;
+				int mHitpoints;
+
+				// string to enum, enum to string functions
+				static BlockBaseType getBlockBaseTypeEnum(std::string blockBaseTypeString);
+
 			};
 		}
 	}

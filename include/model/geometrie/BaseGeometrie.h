@@ -36,24 +36,109 @@
 #include "UniversumLib.h" 
 
 namespace UniLib {
+	namespace view {
+		namespace geometrie {
+			class BaseGeometrieContainer;
+		}
+	}
 	namespace model {
 		namespace geometrie {
 
-			class BaseGeometrieContainer;
-			enum GeometrieDataType;
+			enum GeometrieDataType {
+				GEOMETRIE_NONE = 0,
+				GEOMETRIE_VERTICES = 1,
+				GEOMETRIE_COLORS = 2,
+				GEOMETRIE_NORMALS = 4,
+				GEOMETRIE_TEX2D_1 = 8,
+				GEOMETRIE_TEX2D_2 = 16,
+				GEOMETRIE_TEX2D_3 = 32,
+				GEOMETRIE_TEX2D_4 = 64,
+				GEOMETRIE_3DVECTOR = GEOMETRIE_VERTICES + GEOMETRIE_NORMALS,
+				GEOMETRIE_2DVECTOR = GEOMETRIE_TEX2D_1 + GEOMETRIE_TEX2D_2 + GEOMETRIE_TEX2D_3 + GEOMETRIE_TEX2D_4,
+				GEOMETRIE_4DVECTOR = GEOMETRIE_COLORS,
+				GEOMETRIE_MAX = 128
+			};
 
-			class UNIVERSUM_LIB_API BaseGeometrie
+			class UNIVERSUM_LIB_API BaseGeometrie : public DRIResource
 			{
 			public:
-				BaseGeometrie(BaseGeometrieContainer* container);
+				BaseGeometrie();
 				virtual ~BaseGeometrie();
 
 				virtual void generateVertices(GeometrieDataType type) = 0;
-				__inline__ BaseGeometrieContainer* getGeomtrieContainer() {return mContainer;}
+
+				virtual const char* getResourceType() const {return "model::geometrie::BaseGeometrie";}
+				// simple compare pointer adresses
+				virtual bool less_than(DRIResource& b) const {return this < &b;}
+
+				__inline__ void addVector(DRVector3 v3, GeometrieDataType type);
+				__inline__ void addVector(DRVector2 v2, GeometrieDataType type);
+				__inline__ void addVector(DRColor c, GeometrieDataType type);
+				__inline__ void addIndice(int index);
+
+				DRReturn copyToFastAccess();
+				void deleteFillingStructures();
+				void deleteFastAccessStructures();
+
+
+				__inline__ GeometrieDataType getGeometrieDataFlags() {return mVertexFormatFlags;}
+
+				// data access
+				// vertex data
+				__inline__ int getVertexSize() {return mVertexSize;}
+				__inline__ int getVertexCount() {return mVertexCount;}
+				__inline__ float* getVertices() {return mVertices;}
+				__inline__ float getVertex(int i) {assert(i >= 0 && i < mVertexCount*mVertexSize); return mVertices[i];}
+				// format
+				__inline__ GeometrieDataType getFormatFlags() { return mVertexFormatFlags;}
+				// indices
+				__inline__ int getIndexCount() {return mIndiceCount;}
+				__inline__ int* getIndices() {return mIndicesArray;}
+				__inline__ int getIndex(int i) {assert(i >= 0 && i < mIndiceCount); return mIndices[i];}
 
 			protected:
-				BaseGeometrieContainer* mContainer;
+
+				class UNIVERSUM_LIB_API GeometriePartVector 
+				{
+				public:
+					GeometriePartVector(GeometrieDataType type):mType(type) {}
+					~GeometriePartVector(){}
+
+					__inline__ void addVector(DRVector3 v3);
+					__inline__ void addVector(DRVector2 v2);
+					__inline__ void addVector(DRColor c);
+					__inline__ DRVector3 getVector3 (int index); 
+					__inline__ DRVector2 getVector2 (int index);
+					__inline__ DRColor   getColor(int index);
+
+					__inline__ GeometrieDataType getType() {return mType;}
+					int		   getTypeSize();
+					int		   getVertexCount();
+
+				protected:
+					GeometrieDataType mType;
+					std::vector<float> mRawData;
+
+					__inline__ void addFloats(float* c, int count);
+				};
+				// filling structure
+				typedef std::map<GeometrieDataType, GeometriePartVector*>::iterator GeometrieDataMapIterator;
+				typedef std::pair<GeometrieDataType, GeometriePartVector*> GeometrieDataMapPair;
+				std::map<GeometrieDataType, GeometriePartVector*> mGeometrieDataMap;
+				std::vector<int> mIndices;
+
+				// fast access structure
+				int*		mIndicesArray;
+				int			mIndiceCount;
+				float*		mVertices;
+				int			mVertexCount;
+				GeometrieDataType mVertexFormatFlags;
+				int			mVertexSize;
+
+				GeometriePartVector* getGeometriePartVector(GeometrieDataType type);
 			};
+
+			typedef DRResourcePtr<BaseGeometrie> BaseGeometriePtr;
 
 		}
 	}
