@@ -21,14 +21,19 @@ namespace UniversumLibTest {
 		virtual DRReturn run() 
 		{
 			mStartTicks = SDL_GetTicks();
-			int max = DRRandom::rInt(10000000, 1000000);
+			int max =  DRRandom::rInt(10000000, 1000000);
+			
+			
 			//max = 100;
 			for(int i = 0; i < max; i++) {
 				float number = 17.0f;
-				float ergebnis = pow(number, i);
+				float ergebnis = pow(number, 10);
 				number = sqrt(ergebnis);
+				
 				//printf("%d, number: %.2f\n", i, number);
 			}
+			//UniLib::EngineLog.writeToLog("floor or ceil: %d, number: %d", floorOrCeil, mNumber);
+			
 			lock();
 			mFinished = true;
 			unlock();

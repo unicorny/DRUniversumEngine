@@ -12,7 +12,7 @@ void fillTests()
 	gTests.push_back(new TimerTest());
 	gTests.push_back(new CPUTaskTest());
 	gTests.push_back(new HashTest());
-	gTests.push_back(new LoginTest());
+//	gTests.push_back(new LoginTest());
 }
 
 DRReturn load() {

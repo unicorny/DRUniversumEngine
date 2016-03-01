@@ -63,7 +63,13 @@ namespace UniLib {
 			static BlockMaterialManager* getInstance();
 			DRReturn init(const char* jsonFileName);
 			DRReturn initAsyn(const char* jsonFileName, CPUSheduler* scheduler);
+			// calling after every object using MaterialBlocks was cleaned up
 			void exit();
+
+			__inline__ LoadingState checkLoadingState() { mWorkMutex.lock(); LoadingState val = mLoadingState; mWorkMutex.unlock(); return val; }
+			__inline__ model::block::MaterialBlock* getMaterial(HASH id);
+			__inline__ model::block::MaterialBlock* getMaterial(const char* name) { return getMaterial(DRMakeStringHash(name));}
+
 
 		protected:
 			BlockMaterialManager();
@@ -77,6 +83,10 @@ namespace UniLib {
 			typedef std::pair<HASH, model::block::MaterialBlock*> MaterialPair;
 			typedef MaterialMap::iterator MaterialIter;
 			MaterialMap mMaterials;
+
+		private:
+			LoadingState mLoadingState;
+			
 
 		};
 	}

@@ -50,7 +50,8 @@ namespace UniLib {
 
 				virtual const char* getResourceType() const {return "MaterialBlock";}
 			protected:
-				
+				std::string mVertexShaderName;
+				std::string mFragmentShaderName;
 
 			};
 		}

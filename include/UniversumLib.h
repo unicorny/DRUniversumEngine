@@ -98,6 +98,17 @@ namespace UniLib {
 		VISIBLE_NODE = 4
 	};
 
+	enum LoadingState {
+		// empty structure
+		LOADING_STATE_EMPTY = 0,
+		// has every information needed to load
+		LOADING_STATE_HAS_INFORMATIONS = 1,
+		// work on loading resources
+		LOADING_STATE_PARTLY_LOADED = 2,
+		// fully loaded and ready for using
+		LOADING_STATE_FULLY_LOADED = 4
+	};
+
     UNIVERSUM_LIB_API DRReturn init();
     UNIVERSUM_LIB_API void exit();
 

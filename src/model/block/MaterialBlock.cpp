@@ -25,6 +25,8 @@ namespace UniLib {
 					mMeltingPoint = json.get("melting_point", 0.0f).asFloat();
 					mHitpoints = json.get("hitpoints", 0).asInt();
 					Json::Value shaderJson = json.get("shader", Json::Value());
+					mFragmentShaderName = shaderJson.get("fragment", std::string("")).asString();
+					mVertexShaderName = shaderJson.get("vertex", std::string("")).asString();
 				}
 				unlock();
 

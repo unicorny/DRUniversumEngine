@@ -41,17 +41,6 @@ namespace UniLib {
 	namespace model {
 		namespace block {
 
-			enum BlockTypeLoadingState {
-				// empty structure
-				BLOCK_TYPE_EMPTY = 0,
-				// has every information needed to load
-				BLOCK_TYPE_HAS_INFORMATIONS = 1,
-				// work on loading resources
-				BLOCK_TYPE_PARTLY_LOADED = 2,
-				// fully loaded and ready for using
-				BLOCK_TYPE_FULLY_LOADED = 4
-			};
-
 			enum BlockBaseType {
 				BLOCK_BASE_TYPE_SOLID = 0,
 				BLOCK_BASE_TYPE_FLUENT = 1,
@@ -83,7 +72,7 @@ namespace UniLib {
 			protected:
 				// control
 				int mId;
-				BlockTypeLoadingState mLoadingState;
+				LoadingState mLoadingState;
 
 				// block attributes
 				std::string mName;

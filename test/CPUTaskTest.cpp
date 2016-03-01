@@ -20,6 +20,7 @@ namespace UniversumLibTest {
 
 	DRReturn CPUTaskTest::init()
 	{
+		//mScheduler = new controller::CPUSheduler(12, "testShd");
 		mScheduler = new controller::CPUSheduler(12, "testShd");
 		u8 count;
 #ifdef _UNI_LIB_DEBUG
@@ -49,7 +50,7 @@ namespace UniversumLibTest {
 			cpuTask->start(task);
 		}
 		Uint32 startTicks = SDL_GetTicks();
-		while(SDL_GetTicks() - startTicks < 1000) {
+		while(SDL_GetTicks() - startTicks < 10000) {
 			SDL_Delay(1);
 			SDL_LockMutex(mWorkMutex);
 			if(mFinishedTasks == 48) break;
