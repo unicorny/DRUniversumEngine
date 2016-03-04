@@ -30,8 +30,8 @@ namespace UniversumLibTest {
 		int count = sizeof(v) / sizeof(DRVector3i);
 		
 		for(int i = 0; i < count; i++) {
-			//HASH h = DRMakeSmallVector3DHash(v[i]);
-			HASH h = v[i].x & 0x0000ff | (v[i].y & 0x0000ff) << 8 | (v[i].z & 0x0000ff) << 16;
+			HASH h = DRMakeSmallVector3DHash(v[i]);
+			//HASH h = v[i].x & 0x0000ff | (v[i].y & 0x0000ff) << 8 | (v[i].z & 0x0000ff) << 16;
 			printf("x as hex: %x   ", v[i].x);
 			printf("i: %d, hash: %d\n", i, h);
 			v[i].print();

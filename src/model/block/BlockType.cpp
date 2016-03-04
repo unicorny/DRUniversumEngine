@@ -5,7 +5,7 @@ namespace UniLib {
 		namespace block {
 
 			BlockType::BlockType(std::string name)
-				: mName(name), mLoadingState(BLOCK_TYPE_EMPTY)
+				: mName(name), mLoadingState(LOADING_STATE_EMPTY)
 			{
 
 			}

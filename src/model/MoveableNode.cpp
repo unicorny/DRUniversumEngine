@@ -16,12 +16,12 @@ namespace UniLib {
 				MoveableNode* parent = dynamic_cast<MoveableNode*>(mParent);
 				mMatrix *= parent->getMatrix();
 			}
-			for(std::list<Node*>::iterator it = mChilds.begin(); it != mChilds.end(); it++) {
-				if(((*it)->getType() & MOVEABLE_NODE) != 0) {
-					MoveableNode* child = dynamic_cast<MoveableNode*>(*it);
-					child->calculateMatrix();
-				}
-			}
+		}
+
+		DRReturn MoveableNode::move(float timeSinceLastFrame)
+		{
+			calculateMatrix();
+			return DR_OK;
 		}
 	}
 }

@@ -37,17 +37,17 @@
 namespace UniLib {
 	namespace model {
 		namespace block {
-			class MaterialBlock;	
+			class BlockType;	
 		}
 	}
 	namespace controller {
 		class CPUSheduler;
 
-		class MaterialsLoadingTask: public CPUTask
+		class BlockTypeLoadingTask: public CPUTask
 		{
 		public:
-			MaterialsLoadingTask(CPUSheduler* scheduler, const char* jsonFileName);
-			virtual ~MaterialsLoadingTask();
+			BlockTypeLoadingTask(CPUSheduler* scheduler, const char* jsonFileName);
+			virtual ~BlockTypeLoadingTask();
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() {return false;};
@@ -56,33 +56,33 @@ namespace UniLib {
 
 		};
 
-		class UNIVERSUM_LIB_API BlockMaterialManager : public lib::Singleton
+		class UNIVERSUM_LIB_API BlockTypeManager : public lib::Singleton
 		{
-			friend MaterialsLoadingTask;
+			friend BlockTypeLoadingTask;
 		public:
-			static BlockMaterialManager* getInstance();
+			static BlockTypeManager* getInstance();
 			DRReturn init(const char* jsonFileName);
 			DRReturn initAsyn(const char* jsonFileName, CPUSheduler* scheduler);
 			// calling after every object using MaterialBlocks was cleaned up
 			void exit();
 
 			__inline__ LoadingState checkLoadingState() { mWorkMutex.lock(); LoadingState val = mLoadingState; mWorkMutex.unlock(); return val; }
-			__inline__ model::block::MaterialBlock* getMaterial(HASH id);
-			__inline__ model::block::MaterialBlock* getMaterial(const char* name) { return getMaterial(DRMakeStringHash(name));}
+			__inline__ model::block::BlockType* getBlockType(HASH id);
+			__inline__ model::block::BlockType* getBlockType(const char* name) { return getBlockType(DRMakeStringHash(name));}
 
 
 		protected:
-			BlockMaterialManager();
-			virtual ~BlockMaterialManager();
+			BlockTypeManager();
+			virtual ~BlockTypeManager();
 
 			DRReturn _init(const char* jsonFilename);
 
 			// member variables
 			lib::MultithreadContainer mWorkMutex;
-			typedef std::map<HASH, model::block::MaterialBlock*> MaterialMap;
-			typedef std::pair<HASH, model::block::MaterialBlock*> MaterialPair;
-			typedef MaterialMap::iterator MaterialIter;
-			MaterialMap mMaterials;
+			typedef std::map<HASH, model::block::BlockType*> BlockTypeMap;
+			typedef std::pair<HASH, model::block::BlockType*> BlockTypePair;
+			typedef BlockTypeMap::iterator BlockTypelIter;
+			BlockTypeMap mBlockTypes;
 
 		private:
 			LoadingState mLoadingState;

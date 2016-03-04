@@ -26,11 +26,13 @@
 #include "Node.h"
 #include "view/Sektor.h"
 
+
 namespace UniLib {
 	namespace view {
 		class Camera;
 	}
 	namespace model {
+		class SektorID;
 		/*!
 		 * Sektor model prototyp, contains active and inactive objects in sector,
 		 * used for visible calculation
@@ -39,14 +41,12 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API Sektor : public Node
 		{
 		public:
-			Sektor(view::Sektor* sektorView = NULL);
+			Sektor(Node* parent, SektorID* id, view::Sektor* sektorView = NULL);
 			virtual ~Sektor();
 
 			// prototypes
 			// get name of sektor type
 			virtual const char* getSektorType() = 0;
-			// calculate current visibility mode for given camera, multiple calls per frame possible
-			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
 			// move/update objects in sektor
 			virtual DRReturn move(float timeSinceLastFrame) = 0;
 			// render sektor content on screen (using sektor view)
@@ -55,9 +55,11 @@ namespace UniLib {
 
 
 			__inline__ view::Sektor* getSektorView() {return mSektorView;}
+			__inline__ SektorID* getSektorID() { return mID; }
 
 		private:
 			view::Sektor* mSektorView;
+			SektorID* mID;
 			
 		};
 	};

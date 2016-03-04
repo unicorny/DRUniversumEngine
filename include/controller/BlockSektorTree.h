@@ -20,56 +20,51 @@
 *                                                                         *
 ***************************************************************************/
 
-
+#ifndef __UNIVERSUM_LIB_CONTROLLER_BLOCK_SECTOR_TREE_H
+#define __UNIVERSUM_LIB_CONTROLLER_BLOCK_SECTOR_TREE_H
 /*!
- *
- * \author: Dario Rekowski
- * 
- * \date: 27.12.15
- *
- * \desc: A Node in a Octree
- */
+* \author Dario Rekowski
+*
+* \date 02.03.16
+*
+* \desc Node controlling OctreeNode with BlockSektor Leafs
+*
+*/
 
-#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_OCTREE_NODE_H__
-#define __DR_UNIVERSUM_LIB_CONTROLLER_OCTREE_NODE_H__
+#include "OctreeNode.h"
 
-
-#include "model/Sektor.h"
 
 namespace UniLib {
 	namespace model {
 		class SektorID;
-	}
-    namespace controller {
-		class OctreeNode;
+		class BlockSektor;
 
-		class UNIVERSUM_LIB_API OctreeNode : public model::Sektor
+		namespace block {
+			class Block;
+			typedef DRResourcePtr<Block> BlockPtr;
+		}
+	}
+	namespace controller {
+		class UNIVERSUM_LIB_API BlockSektorTree : public OctreeNode
 		{
 		public:
-			OctreeNode(model::SektorID* id, model::Node* parent = NULL);
-			virtual ~OctreeNode();
+			BlockSektorTree(model::SektorID* id, model::Node* parent);
+			virtual ~BlockSektorTree();
 
-			// update 
 			virtual DRReturn move(float timeSinceLastFrame);
 
-			__inline__ model::Node* operator[] (DRVector3i index) {
-				assert(index.x == 0 || index.x == 1);
-				assert(index.y == 0 || index.y == 1);
-				assert(index.z == 0 || index.z == 1);
-				return mChilds[index.z*4+index.y*2+index.x];
-			}
-			__inline__ model::Node* operator[] (u8 index) {
-				assert(index >= 0 && index < 8);
-				return mChilds[index];
-			}
+			virtual const char* getSektorType() { return "BlockSektorTree"; };
 
-			// get name of sektor type
-			virtual const char* getSektorType() { return "OctreeNode"; };			
-
+			// \brief add block
+			// \param block block to add
+			// \param id of block sektor
+			// \param pos position inside BlockSektor
+			void addBlock(model::block::BlockPtr block, std::queue<u8> path, DRVector3i pos);
 		protected:
-			model::Node* mChilds[8];
 		};
+
 	}
 }
 
-#endif //__DR_UNIVERSUM_LIB_CONTROLLER_OCTREE_NODE_H__
+
+#endif //__UNIVERSUM_LIB_CONTROLLER_BLOCK_SECTOR_TREE_H

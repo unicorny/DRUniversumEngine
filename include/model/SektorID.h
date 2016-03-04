@@ -35,12 +35,34 @@
 
 namespace UniLib {
     namespace model {
-        class UNIVERSUM_LIB_API SektorID 
+		enum UNIVERSUM_LIB_API SektorIdType {
+			SEKTOR_ID_DEFAULT = 0,
+			SEKTOR_ID_BLOCK_SEKTOR = 1
+		};
+
+        class UNIVERSUM_LIB_API SektorID
         {
         public:
-            SektorID();
-            ~SektorID();
+			SektorID(u8 id, SektorIdType type, SektorID* parent = NULL);
+			SektorID(u16 id, SektorIdType type, SektorID* parent = NULL);
+			SektorID(u32 id, SektorIdType type, SektorID* parent = NULL);
+			SektorID(u64 id, SektorIdType type, SektorID* parent = NULL);
+			SektorID(u8* id, u8 arraySize, SektorIdType type, SektorID* parent = NULL);
+			
+			virtual ~SektorID();
+
+			// fill buffer with serialized id
+			DRReturn serialize(u8* buffer);
+			int getSeralizedSize();
+
+			// create Sektor ID Object tree from id
+			static SektorID* createSektorID(u8* id, u8 arraySize, SektorID* parent = NULL);
+
         protected:
+			u8* mID;
+			u8 mArraySize;
+			u8 mType;
+			SektorID* mParent;
         };
     }
 }

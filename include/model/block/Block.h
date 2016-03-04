@@ -39,22 +39,22 @@ namespace UniLib {
 	namespace model {
 		namespace block {
 
+			class BlockType;
+
 			class UNIVERSUM_LIB_API Block : public DRIResource
 			{
 			public:
-				Block(std::string name, HASH blockTypeId);
+				Block(HASH blockTypeId);
 				virtual ~Block();
 
 				virtual const char* getResourceType() const {return "Block";}
 				virtual bool less_than(DRIResource& b) const {
-					return mId <  dynamic_cast<Block&>(b).mId;
+					return mTypeData <  dynamic_cast<Block&>(b).mTypeData;
 				}
-				__inline__ HASH getBlockTypId() {return mBlockTypID;}
+				__inline__ BlockType* getBlockType() {return mTypeData;}
 				
 			protected:
-				HASH mId;
-				std::string mName;
-				HASH mBlockTypID;
+				BlockType* mTypeData;
 			};
 		}
 	}

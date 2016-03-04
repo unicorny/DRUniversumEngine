@@ -47,10 +47,8 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API BlockSektor : public Sektor 
 		{
 		public:
-			BlockSektor(view::BlockSektor* viewSektor);
+			BlockSektor(Node* parent, model::SektorID* id, view::BlockSektor* viewSektor);
 			virtual ~BlockSektor();
-
-
 			
 			__inline__ block::BlockPtr operator[] (DRVector3i index) const
 			{
@@ -69,8 +67,7 @@ namespace UniLib {
 			// overrides
 			// get name of sektor type
 			virtual const char* getSektorType() {return "BlockSektor";}
-			// calculate current visibility mode for given camera, multiple calls per frame possible
-			virtual DRReturn updateVisibility(view::Camera* camera);
+			
 			// move/update objects in sektor
 			virtual DRReturn move(float timeSinceLastFrame);
 			
@@ -80,7 +77,6 @@ namespace UniLib {
 			block::BlockPtr operator[] (HASH h) const;
 
 			// hash calculated from 3D block index
-			
 			typedef std::map<HASH, block::BlockPtr> BlockMap;
 			typedef std::pair<HASH, block::BlockPtr> BlockPair;
 			typedef BlockMap::const_iterator BlockIterator;
@@ -88,7 +84,7 @@ namespace UniLib {
 			BlockMap mBlocks;
 
 			// bit sets on every place with an solid block (not transparency)
-			u8 mGridSolid[8][8]; 
+			u16 mGridSolid[8][8]; 
 
 		};
 

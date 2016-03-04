@@ -1,5 +1,5 @@
 #include "model/BlockSektor.h"
-#include "view/BlockSector.h"
+#include "view/BlockSektor.h"
 
 namespace UniLib {
 	namespace view {
@@ -13,6 +13,12 @@ namespace UniLib {
 		BlockSektor::~BlockSektor()
 		{
 
+		}
+
+
+		DRReturn BlockSektor::updateVisibility(view::Camera* camera)
+		{
+			return DR_OK;
 		}
 
 		DRReturn BlockSektor::render(view::Camera* camera, float timeSinceLastFrame)

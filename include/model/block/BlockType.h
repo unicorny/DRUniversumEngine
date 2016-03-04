@@ -66,6 +66,7 @@ namespace UniLib {
 				__inline__ float getDensity() {return mDensity;}
 				__inline__ float getMeltingPoint() {return mMeltingPoint;}
 				__inline__ int getHitPoints() {return mHitpoints;}
+				__inline__ BlockBaseType getBaseType() { return mBaseType; }
 
 				// setter 
 				__inline__ void setId(HASH id) {mId = id;}

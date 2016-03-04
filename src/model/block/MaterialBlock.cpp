@@ -17,7 +17,7 @@ namespace UniLib {
 			DRReturn MaterialBlock::initFromJson(const Json::Value& json)
 			{
 				lock();
-				if(mLoadingState == BLOCK_TYPE_EMPTY) {
+				if(mLoadingState == LOADING_STATE_EMPTY) {
 					const char* baseType = json.get("base_type", "solid").asCString();
 					mBaseType = getBlockBaseTypeEnum(baseType);
 					mTransparency = json.get("transparency", false).asBool();
@@ -27,6 +27,7 @@ namespace UniLib {
 					Json::Value shaderJson = json.get("shader", Json::Value());
 					mFragmentShaderName = shaderJson.get("fragment", std::string("")).asString();
 					mVertexShaderName = shaderJson.get("vertex", std::string("")).asString();
+					mLoadingState = LOADING_STATE_FULLY_LOADED;
 				}
 				unlock();
 

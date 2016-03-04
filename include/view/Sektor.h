@@ -45,8 +45,12 @@ namespace UniLib {
 			__inline void setSektorModel(model::Sektor* sektorModel) {mSektorModel = mSektorModel;}
 
 			// prototypes
+			// calculate current visibility mode for given camera, multiple calls per frame possible
+			virtual DRReturn updateVisibility(view::Camera* camera) = 0;
 			// render sektor per camera (multiple calls pro frame possible)
 			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame) = 0;
+
+			
 		protected:
 			model::Sektor* mSektorModel;
 		private:

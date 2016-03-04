@@ -1,4 +1,4 @@
-#include "controller/BlockMaterialManager.h"
+#include "controller/BlockTypeManager.h"
 #include "controller/CPUSheduler.h"
 #include "model/block/MaterialBlock.h"
 
@@ -6,20 +6,20 @@ namespace UniLib {
 	namespace controller {
 
 		// CPU TASK 
-		MaterialsLoadingTask::MaterialsLoadingTask(CPUSheduler* scheduler, const char* jsonFileName)
+		BlockTypeLoadingTask::BlockTypeLoadingTask(CPUSheduler* scheduler, const char* jsonFileName)
 			: CPUTask(scheduler), mJsonFileName(jsonFileName)
 		{
 
 		}
 
-		MaterialsLoadingTask::~MaterialsLoadingTask()
+		BlockTypeLoadingTask::~BlockTypeLoadingTask()
 		{
 
 		}
 
-		DRReturn MaterialsLoadingTask::run()
+		DRReturn BlockTypeLoadingTask::run()
 		{
-			DRReturn ret = BlockMaterialManager::getInstance()->_init(mJsonFileName.data());
+			DRReturn ret = BlockTypeManager::getInstance()->_init(mJsonFileName.data());
 			return ret;
 			//return 
 		}
@@ -28,49 +28,50 @@ namespace UniLib {
 		// BLock Material Manager
 		// ************************************************************************************************++
 
-		BlockMaterialManager::BlockMaterialManager() 
+		BlockTypeManager::BlockTypeManager() 
 			: mLoadingState(LOADING_STATE_EMPTY)
 		{
 
 		}
 
-		BlockMaterialManager::~BlockMaterialManager()
+		BlockTypeManager::~BlockTypeManager()
 		{
 			exit();
 		}
 
-		BlockMaterialManager* BlockMaterialManager::getInstance()
+		BlockTypeManager* BlockTypeManager::getInstance()
 		{
-			static BlockMaterialManager theOne;
+			static BlockTypeManager theOne;
 			return &theOne;
 		}
 
-		DRReturn BlockMaterialManager::init(const char* jsonFileName)
+		DRReturn BlockTypeManager::init(const char* jsonFileName)
 		{
 			return _init(jsonFileName);
 		}
-		DRReturn BlockMaterialManager::initAsyn(const char* jsonFileName, CPUSheduler* scheduler)
+		DRReturn BlockTypeManager::initAsyn(const char* jsonFileName, CPUSheduler* scheduler)
 		{
-			TaskPtr task(new MaterialsLoadingTask(scheduler, jsonFileName));
+			TaskPtr task(new BlockTypeLoadingTask(scheduler, jsonFileName));
 			((CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
 			return DR_OK;
 		}
 
-		DRReturn BlockMaterialManager::_init(const char* jsonFilename)
+		DRReturn BlockTypeManager::_init(const char* jsonFilename)
 		{			
-			std::string material = readFileAsString(jsonFilename);
+			std::string cfg = readFileAsString(jsonFilename);
 			mWorkMutex.lock();
 			mLoadingState = LOADING_STATE_HAS_INFORMATIONS;
 			mWorkMutex.unlock();
-			Json::Value json = convertStringToJson(material);
-			if(json.isArray() ) {
-				for(int i = 0; i < json.size(); i++) {
-					Json::Value entry = json[i];
+			Json::Value json = convertStringToJson(cfg);
+			Json::Value material = json.get("materialTypes", Json::Value());
+			if(material.isArray() ) {
+				for(int i = 0; i < material.size(); i++) {
+					Json::Value entry = material[i];
 					std::string name = entry.get("name", "noname").asString();
 					HASH id = DRMakeStringHash(name.data());
 					mWorkMutex.lock();
-					MaterialIter it = mMaterials.find(id);
-					if(it != mMaterials.end()) {
+					BlockTypelIter it = mBlockTypes.find(id);
+					if(it != mBlockTypes.end()) {
 						if(std::string(it->second->getName()) != name) {
 							EngineLog.writeToLog("Material %s and Material %s have the same hash: %d",
 								it->second->getName(), name.data(), id);
@@ -89,7 +90,7 @@ namespace UniLib {
 						}
 						mat->setId(id);
 						mWorkMutex.lock();
-						mMaterials.insert(MaterialPair(id, mat));
+						mBlockTypes.insert(BlockTypePair(id, mat));
 						mLoadingState = LOADING_STATE_PARTLY_LOADED;
 					}
 					mWorkMutex.unlock();
@@ -104,25 +105,25 @@ namespace UniLib {
 			return DR_OK;
 		}
 
-		model::block::MaterialBlock* BlockMaterialManager::getMaterial(HASH id)
+		model::block::BlockType* BlockTypeManager::getBlockType(HASH id)
 		{
 			mWorkMutex.lock();
-			MaterialIter it = mMaterials.find(id);
-			model::block::MaterialBlock* result = NULL;
-			if (it != mMaterials.end()) {
+			BlockTypelIter it = mBlockTypes.find(id);
+			model::block::BlockType* result = NULL;
+			if (it != mBlockTypes.end()) {
 				result = it->second;
 			}
 			mWorkMutex.unlock();
 			return result;
 		}
 
-		void BlockMaterialManager::exit()
+		void BlockTypeManager::exit()
 		{
 			mWorkMutex.lock();
-			for(MaterialIter it = mMaterials.begin(); it != mMaterials.end(); it++) {
+			for(BlockTypelIter it = mBlockTypes.begin(); it != mBlockTypes.end(); it++) {
 				delete it->second;
 			}
-			mMaterials.clear();
+			mBlockTypes.clear();
 			mWorkMutex.unlock();
 		}
 	}

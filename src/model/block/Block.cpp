@@ -1,12 +1,14 @@
 #include "model/block/Block.h"
+#include "model/block/BlockType.h"
+#include "controller/BlockTypeManager.h"
 
 namespace UniLib {
 	namespace model {
 		namespace block {
-			Block::Block(std::string name, HASH blockTypeId)
-				: mName(name)
+			Block::Block(HASH blockTypeId)
+				: mTypeData(NULL)
 			{
-
+				mTypeData = controller::BlockTypeManager::getInstance()->getBlockType(blockTypeId);
 			}
 
 			Block::~Block()

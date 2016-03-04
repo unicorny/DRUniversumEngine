@@ -46,8 +46,12 @@ namespace UniLib {
 			BlockSektor(model::BlockSektor* sektorModel = NULL);
 			virtual ~BlockSektor();
 
+			// calculate current visibility mode for given camera, multiple calls per frame possible
+			virtual DRReturn updateVisibility(view::Camera* camera);
+			// render it, maybe
 			virtual DRReturn render(view::Camera* camera, float timeSinceLastFrame);
 		protected:
+
 		};
 	}
 }

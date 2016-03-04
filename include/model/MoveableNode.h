@@ -48,6 +48,8 @@ namespace UniLib {
 			__inline__ Position* getPosition() {return &mPosition;}
 			__inline__ Rotation* getRotation() {return &mRotation;}
 
+			virtual DRReturn move(float timeSinceLastFrame);
+
 			void calculateMatrix();
 			__inline__ const DRMatrix& getMatrix() const {return mMatrix;}
 			

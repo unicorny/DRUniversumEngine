@@ -44,13 +44,13 @@ namespace UniLib {
 			virtual ~Node() {};
 
 			__inline__ Node* getParent() {return mParent;}
-			__inline__ void addChild(Node* child) {mChilds.push_back(child);}
-			__inline__ void removeChild(Node* child) {mChilds.remove(child);}
+			// update node and child s
+			virtual DRReturn move(float timeSinceLastFrame) = 0;
 			__inline__ HASH getType() {return mType;}
+			__inline__ bool isTypeOf(NodeTypes type) { return (mType & type) == type; }
 		protected:
 			int  mType;
 			Node* mParent;
-			std::list<Node*> mChilds;
 		};
 
 	}

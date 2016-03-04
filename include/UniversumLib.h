@@ -95,7 +95,11 @@ namespace UniLib {
 		NODE_NONE = 0,
 		NODE = 1,
 		MOVEABLE_NODE = 2,
-		VISIBLE_NODE = 4
+		VISIBLE_NODE = 4,
+		SEKTOR_NODE = 8,
+		BLOCK_SEKTOR_NODE = 16,
+		OCTREE_NODE = 32,
+		BLOCK_SECTOR_TREE_NODE = 64
 	};
 
 	enum LoadingState {
