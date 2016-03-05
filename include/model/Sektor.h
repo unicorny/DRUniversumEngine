@@ -57,7 +57,7 @@ namespace UniLib {
 			__inline__ view::Sektor* getSektorView() {return mSektorView;}
 			__inline__ SektorID* getSektorID() { return mID; }
 
-		private:
+		protected:
 			view::Sektor* mSektorView;
 			SektorID* mID;
 			

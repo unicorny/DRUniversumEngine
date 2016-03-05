@@ -11,6 +11,13 @@ namespace UniLib {
 				mTypeData = controller::BlockTypeManager::getInstance()->getBlockType(blockTypeId);
 			}
 
+			Block::Block(const char* name)
+				: mTypeData(NULL)
+			{
+				mTypeData = controller::BlockTypeManager::getInstance()->getBlockType(name);
+			}
+
+
 			Block::~Block()
 			{
 

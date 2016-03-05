@@ -59,7 +59,7 @@ namespace UniLib {
 			// \param block block to add
 			// \param id of block sektor
 			// \param pos position inside BlockSektor
-			void addBlock(model::block::BlockPtr block, std::queue<u8> path, DRVector3i pos);
+			DRReturn addBlock(model::block::BlockPtr block, std::queue<u8> path, DRVector3i pos);
 		protected:
 		};
 

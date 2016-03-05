@@ -10,6 +10,7 @@ namespace UniLib {
 			: Node(parent),mSektorView(sektorView), mID(id)
 		{
 			mType |= SEKTOR_NODE;
+			if(mSektorView) mSektorView->setSektorModel(this);
 		}
 
 		// ---------------------------------------------------------------------------

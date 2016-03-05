@@ -1,4 +1,5 @@
 #include "model/block/BlockType.h"
+#include <sstream>
 
 namespace UniLib {
 	namespace model {
@@ -21,6 +22,19 @@ namespace UniLib {
 				if(blockBaseTypeString == std::string("fluent")) return BLOCK_BASE_TYPE_FLUENT;
 				if(blockBaseTypeString == std::string("gas")) return BLOCK_BASE_TYPE_GAS;
 				return BLOCK_BASE_TYPE_SOLID;
+			}
+
+			std::string BlockType::asString()
+			{
+				std::stringstream s;
+				s << "Name: " << mName << std::endl;
+				s << "Base Type: " << mBaseType << std::endl;
+				s << "Transparency: " << mTransparency << std::endl;
+				s << "Density: " << mDensity << std::endl;
+				s << "Melting point: " << mMeltingPoint << std::endl;
+				s << "Hitpoints: " << mHitpoints << std::endl;
+
+				return s.str();
 			}
 		}
 	}

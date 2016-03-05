@@ -38,7 +38,7 @@
 namespace UniLib {
 	namespace view {
 		class Material;
-
+		class BlockSektor;
 		
 
 	}
@@ -52,9 +52,11 @@ namespace UniLib {
 		{
 		public: 
 			virtual view::Material* newMaterial() = 0;
+			virtual view::BlockSektor* newBlockSektor() = 0;
 			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
 			virtual model::Shader* newShader(HASH id) = 0;
 			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
+			
 			//virtual 
 
 		};

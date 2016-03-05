@@ -42,9 +42,10 @@ namespace UniLib {
 		namespace block {
 
 			enum BlockBaseType {
-				BLOCK_BASE_TYPE_SOLID = 0,
-				BLOCK_BASE_TYPE_FLUENT = 1,
-				BLOCK_BASE_TYPE_GAS = 2
+				BLOCK_BASE_TYPE_NONE = 0,
+				BLOCK_BASE_TYPE_SOLID = 1,
+				BLOCK_BASE_TYPE_FLUENT = 2,
+				BLOCK_BASE_TYPE_GAS = 3
 			};
 
 			
@@ -70,6 +71,9 @@ namespace UniLib {
 
 				// setter 
 				__inline__ void setId(HASH id) {mId = id;}
+
+				// for debugging
+				std::string asString();
 			protected:
 				// control
 				int mId;

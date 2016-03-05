@@ -45,6 +45,7 @@ namespace UniLib {
 			{
 			public:
 				Block(HASH blockTypeId);
+				Block(const char* name);
 				virtual ~Block();
 
 				virtual const char* getResourceType() const {return "Block";}
@@ -56,6 +57,8 @@ namespace UniLib {
 			protected:
 				BlockType* mTypeData;
 			};
+
+			typedef DRResourcePtr<Block> BlockPtr;
 		}
 	}
 }

@@ -11,7 +11,8 @@ namespace UniLib {
 			: Sektor(parent, id, dynamic_cast<view::Sektor*>(viewSektor))
 		{
 			mType = BLOCK_SEKTOR_NODE;
-		}			//memset(mBlockGrid, 0, sizeof(short)*9*9*9);
+			memset(mGridSolid, 0, sizeof(u16) * 8 * 8);
+		}			//
 
 
 		BlockSektor::~BlockSektor()
@@ -31,13 +32,14 @@ namespace UniLib {
 			block::BlockBaseType type = block->getBlockType()->getBaseType();
 			assert(type < 3 && type >= 0);
 			// logging 
-			EngineLog.writeToLog("grid before adding block: %s", getValueAsBinaryString(mGridSolid[index.y][index.z]).data());
+			//EngineLog.writeToLog("grid before adding block: %s", getValueAsBinaryString(mGridSolid[index.y][index.z]).data());
 			//clear
 			mGridSolid[index.y][index.z] &= 0xffff ^ (3 << (index.x * 2));
 			// set new value
 			mGridSolid[index.y][index.z] |= type << (index.x * 2);
-			EngineLog.writeToLog("grid after adding this block base type: %d, %s",
-				type, getValueAsBinaryString(mGridSolid[index.y][index.z]).data());
+			//EngineLog.writeToLog("grid after adding this block base type: %d\n%s",
+			//	(int)type, getValueAsBinaryString(mGridSolid[index.y][index.z]).data());
+			
 
 			return DR_OK;
 		}

@@ -18,7 +18,7 @@ namespace UniLib {
 			{
 				lock();
 				if(mLoadingState == LOADING_STATE_EMPTY) {
-					const char* baseType = json.get("base_type", "solid").asCString();
+					std::string baseType = json.get("base_type", "solid").asString();
 					mBaseType = getBlockBaseTypeEnum(baseType);
 					mTransparency = json.get("transparency", false).asBool();
 					mDensity = json.get("density", 0.0f).asFloat();
@@ -28,6 +28,8 @@ namespace UniLib {
 					mFragmentShaderName = shaderJson.get("fragment", std::string("")).asString();
 					mVertexShaderName = shaderJson.get("vertex", std::string("")).asString();
 					mLoadingState = LOADING_STATE_FULLY_LOADED;
+
+					//EngineLog.writeToLog("[MaterialBlock::initFromJson] adding block: %s", asString().data());
 				}
 				unlock();
 

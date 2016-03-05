@@ -37,7 +37,8 @@ namespace UniLib {
     namespace model {
 		enum UNIVERSUM_LIB_API SektorIdType {
 			SEKTOR_ID_DEFAULT = 0,
-			SEKTOR_ID_BLOCK_SEKTOR = 1
+			SEKTOR_ID_BLOCK_SEKTOR = 1,
+			SEKTOR_ID_BLOCK_SEKTOR_TREE = 2
 		};
 
         class UNIVERSUM_LIB_API SektorID
@@ -57,6 +58,8 @@ namespace UniLib {
 
 			// create Sektor ID Object tree from id
 			static SektorID* createSektorID(u8* id, u8 arraySize, SektorID* parent = NULL);
+
+			__inline__ void setParent(SektorID* parent) { mParent = parent; }
 
         protected:
 			u8* mID;
