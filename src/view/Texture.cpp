@@ -36,7 +36,7 @@ namespace UniLib {
 
 		Texture::~Texture()
 		{
-			
+			DR_SAVE_DELETE(mTextureModel);
 		}
 
 		void Texture::loadFromFile()

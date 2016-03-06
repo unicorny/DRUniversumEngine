@@ -15,10 +15,7 @@ namespace UniLib {
 		}
 		Texture::~Texture()
 		{
-			if (mImage) {
-				DRIImage::deleteImage(mImage);
-				mImage = NULL;
-			}
+			clearMemory();
 		}
 
 		DHASH Texture::calculateHash(DRVector2i size, GLenum format)
@@ -71,8 +68,10 @@ namespace UniLib {
 
 		void Texture::clearMemory()
 		{
-			DRIImage::deleteImage(mImage);
-			mImage = NULL;
+			if (mImage) {
+				DRIImage::deleteImage(mImage);
+				mImage = NULL;
+			}
 		}
 	}
 }

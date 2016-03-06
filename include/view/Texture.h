@@ -75,6 +75,9 @@ namespace UniLib {
 			// access parameters
 			__inline__ DHASH getId() { return mId; }
 			__inline__ std::string getFilename() { return mTextureName; }
+			__inline__ Uint32 getTimeout() { return mTimeout; }
+			__inline__ void updateTimeout(Uint32 passingTime) { mTimeout -= passingTime; }
+			__inline__ void setTimeout(Uint32 timeout) { mTimeout = timeout; }
 
 		protected:
 			virtual void setLoadingState(LoadingState state);
@@ -84,6 +87,7 @@ namespace UniLib {
 			std::string mTextureName;
 
 			DHASH mId;
+			Uint32 mTimeout;
 		};
 		
 	}

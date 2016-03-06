@@ -4,11 +4,14 @@
 #include "model/Texture.h"
 #include "view/Texture.h"
 
+#include "lib/MultithreadContainer.h"
+#include "lib/Timer.h"
+
 namespace UniLib {
 	namespace controller {
 
 		TextureManager::TextureManager()
-			: mInitalized(false), mDefaultSheduler(NULL)
+			: mInitalized(false), mDefaultSheduler(NULL), mUpdateThread(NULL)
 		{
 
 		}
@@ -25,9 +28,12 @@ namespace UniLib {
 			return &TheOneAndOnly;
 		}
 
-		DRReturn TextureManager::init(CPUSheduler* defaultCPUSheduler)
+		DRReturn TextureManager::init(CPUSheduler* defaultCPUSheduler, lib::Timer* updateTimer, Uint32 rerunDelay/* = 10000*/)
 		{
 			mDefaultSheduler = defaultCPUSheduler;
+			mUpdateThread = new UpdateThread(rerunDelay, updateTimer);
+			// wait 20 seconds before deleting not used textures, maybe some other thread need the memory
+			mTimeToLetEmptyTexturesInStorage = 20000;
 			mInitalized = true;
 			LOG_INFO("TextureManager initalisiert");
 			return DR_OK;
@@ -35,6 +41,7 @@ namespace UniLib {
 
 		void TextureManager::exit()
 		{
+			DR_SAVE_DELETE(mUpdateThread);
 			mInitalized = false;
 			LOG_INFO("TextureManager beendet");
 		}
@@ -44,12 +51,19 @@ namespace UniLib {
 			assert(g_RenderBinder != NULL);
 
 			DHASH id = DRMakeFilenameHash(filename);
+			mUpdateThread->lock();
 			TextureMap::iterator it = mStoredTextures.find(id);
 			if (it != mStoredTextures.end()) {
+				mUpdateThread->unlock();
 				return it->second;
 			}
-			
+			mUpdateThread->unlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(filename));
+			tex->loadFromFile();
+			mUpdateThread->lock();
+			mStoredTextures.insert(TextureEntry(id, tex));
+			mUpdateThread->unlock();
+			return tex;
 		}
 
 		view::TexturePtr TextureManager::getEmptyTexture(DRVector2i size, GLenum format)
@@ -57,14 +71,57 @@ namespace UniLib {
 			assert(g_RenderBinder != NULL);
 
 			DHASH id = model::Texture::calculateHash(size, format);
+			mUpdateThread->lock();
 			TextureMultiMap::iterator it = mEmptyTextures.find(id);
 			if (it != mEmptyTextures.end()) {
+				mUpdateThread->unlock();
 				return it->second;
 			}
+			mUpdateThread->unlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(size, format));
+			mUpdateThread->lock();
+			mEmptyTextures.insert(TextureEntry(id, tex));
+			mUpdateThread->unlock();
+			return tex;
 		}
 
+		// Timer
+		int TextureManager::UpdateThread::ThreadFunction()
+		{
+			TextureManager::getInstance()->update();
+			return 0;
+		}
 
+		void TextureManager::update()
+		{
+			static Uint32 lastTicks = 0;
+			if (!lastTicks) {
+				lastTicks = SDL_GetTicks();
+				return;
+			}
+			Uint32 passingTime = SDL_GetTicks() - lastTicks;
+			// update and check multimap timeout
+			for (TextureMultiMap::iterator it = mEmptyTextures.begin(); it != mEmptyTextures.end(); it++) {
+				view::TexturePtr tex = it->second;
+				tex->updateTimeout(passingTime);
+				// enough time has passed, we remove texture storage from memory
+				if (tex->getTimeout() <= 0) {
+					it = mEmptyTextures.erase(it);
+				}
+				
+			}
+			// check map and removing not longer used textures
+			for (TextureMap::iterator it = mStoredTextures.begin(); it != mStoredTextures.end(); it++) {
+				view::TexturePtr tex = it->second;
+				if (tex.getResourcePtrHolder()->getRefCount() == 1) {
+					tex->setTimeout(mTimeToLetEmptyTexturesInStorage);
+					mEmptyTextures.insert(TextureEntry(it->first, it->second));
+					it = mStoredTextures.erase(it);
+				}
+			}
+			lastTicks = SDL_GetTicks();
+
+		}
 
 	}
 }
