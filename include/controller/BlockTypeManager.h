@@ -43,26 +43,42 @@ namespace UniLib {
 	namespace controller {
 		class CPUSheduler;
 
+		// task for parsing block type data
 		class BlockTypeLoadingTask: public CPUTask
 		{
 		public:
-			BlockTypeLoadingTask(CPUSheduler* scheduler, const char* jsonFileName);
-			virtual ~BlockTypeLoadingTask();
+			BlockTypeLoadingTask(CPUSheduler* scheduler, std::list<std::string>* fileContents)
+				: CPUTask(scheduler), mFileContents(fileContents) {}
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() {return false;};
 		protected:
-			std::string mJsonFileName;
+			std::list<std::string>* mFileContents;
 
+
+		};
+		// task for loading files from harddisk
+		class LoadingJsonFilesIntoMemoryTask : public CPUTask
+		{
+		public:
+			LoadingJsonFilesIntoMemoryTask(const std::list<std::string>* filenames, CPUSheduler* schedulerForParser)
+				: CPUTask(g_HarddiskScheduler), mFileNames(*filenames), mSchedulerForParser(schedulerForParser) {}
+
+			virtual DRReturn run();
+			virtual bool isTaskFinished() { return false; };
+		protected:
+			std::list<std::string> mFileNames;
+			CPUSheduler* mSchedulerForParser;
 		};
 
 		class UNIVERSUM_LIB_API BlockTypeManager : public lib::Singleton
 		{
 			friend BlockTypeLoadingTask;
+			friend LoadingJsonFilesIntoMemoryTask;
 		public:
 			static BlockTypeManager* getInstance();
-			DRReturn init(const char* jsonFileName);
-			DRReturn initAsyn(const char* jsonFileName, CPUSheduler* scheduler);
+			DRReturn init(const std::list<std::string>* filenames);
+			DRReturn initAsyn(const std::list<std::string>* filenames, CPUSheduler* scheduler);
 			// calling after every object using MaterialBlocks was cleaned up
 			void exit();
 
@@ -75,7 +91,8 @@ namespace UniLib {
 			BlockTypeManager();
 			virtual ~BlockTypeManager();
 
-			DRReturn _init(const char* jsonFilename);
+			DRReturn _loadingFilesIntoMemory(const std::list<std::string>* fileNames, std::list<std::string>* fileContentsReturn);
+			DRReturn _parsingJsonToBlockTypes(const std::list<std::string>* mFilesContent);
 
 			// member variables
 			lib::MultithreadContainer mWorkMutex;

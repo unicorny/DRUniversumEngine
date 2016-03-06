@@ -25,7 +25,7 @@
 #define __UNI_LIB_MODEL_BLOCK_BLOCK_TYPE_H
 
 //#include "UniversumLib.h"
-#include "lib/MultithreadContainer.h"
+#include "lib/MultithreadResource.h"
 /*!
  *
  * \author: Dario Rekowski
@@ -50,7 +50,7 @@ namespace UniLib {
 
 			
 
-			class UNIVERSUM_LIB_API BlockType : public DRIResource, protected lib::MultithreadContainer
+			class UNIVERSUM_LIB_API BlockType : public lib::MultithreadResource
 			{
 			public:
 				BlockType(std::string name);
@@ -58,7 +58,7 @@ namespace UniLib {
 
 				virtual const char* getResourceType() const {return "BlockType";}
 				virtual bool less_than(DRIResource& b) const {
-					return mId <  dynamic_cast<BlockType&>(b).mId;
+					return mId <  static_cast<BlockType&>(b).mId;
 				}
 
 				// getter
@@ -77,7 +77,6 @@ namespace UniLib {
 			protected:
 				// control
 				int mId;
-				LoadingState mLoadingState;
 
 				// block attributes
 				std::string mName;

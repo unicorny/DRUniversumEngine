@@ -1,4 +1,5 @@
 #include "controller/BlockSektorTree.h"
+#include "controller/BindToRenderer.h"
 #include "model/BlockSektor.h"
 #include "model/SektorID.h"
 

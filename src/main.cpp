@@ -1,10 +1,13 @@
 ﻿#include "UniversumLib.h"
 
+#include "controller/BindToRenderer.h"
+#include "controller/CPUSheduler.h"
+
 // some dll stuff for windows
 int         g_iProzess = 0;
 int			g_iProzessFunk = 0;
 UniLib::controller::BindToRenderer* UniLib::g_RenderBinder = NULL;
-
+UniLib::controller::CPUSheduler* UniLib::g_HarddiskScheduler = NULL;
 
 #ifdef _WIN32
 //DLL Main Funktion
@@ -46,17 +49,18 @@ namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
 
-    DRReturn init()
+    DRReturn init(int numberParallelStorageOperations/* = 1*/)
     {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
         EngineLog.init("EngineLogger.html", true);        
-
+		g_HarddiskScheduler = new controller::CPUSheduler(numberParallelStorageOperations, "ioThrd");
         return DR_OK;
     }
 
     void exit() 
     {
+		DR_SAVE_DELETE(g_HarddiskScheduler);
 		SDL_Quit();
         EngineLog.exit();
         Core2_exit();
@@ -87,7 +91,7 @@ namespace UniLib {
 		}
 
 		DRFile file(complete.data(), "rb");
-		if(!file.isOpen()) LOG_ERROR("Error by opening config", std::string());
+		if(!file.isOpen()) LOG_ERROR("Error by opening file", std::string());
 		unsigned long size = file.getSize();
 		void* data = malloc(size+1);
 		memset(data, 0, size+1);

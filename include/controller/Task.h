@@ -52,7 +52,7 @@ namespace UniLib {
             bool isAllParentsReady();
             //! \brief return true if task has finished, else false
             //! automatic scheduling of task if he isn't finished and sheduled yet
-            virtual bool isTaskFinished() = 0;
+			virtual bool isTaskFinished() { return false; }
             //! \brief called from task scheduler, maybe from another thread
             virtual DRReturn run() = 0;
 

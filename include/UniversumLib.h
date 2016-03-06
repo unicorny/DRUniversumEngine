@@ -50,7 +50,6 @@
 #include "Core2/Core2Main.h"
 #include "sdl/SDL.h"
 #include "lib/Logging.h"
-#include "controller/BindToRenderer.h"
 #include "json/json.h"
 
 #include <queue>
@@ -58,7 +57,12 @@
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern lib::EngineLogger EngineLog;
+	namespace controller {
+		class BindToRenderer;
+		class CPUSheduler;
+	}
 	extern controller::BindToRenderer* g_RenderBinder;
+	UNIVERSUM_LIB_API extern controller::CPUSheduler* g_HarddiskScheduler;
 }
 
 #undef WRITETOLOG
@@ -87,6 +91,23 @@ namespace UniLib {
 #endif
 
 
+// define OpenGL Types and defines if we haven't openGL
+#ifndef GLenum 
+typedef unsigned int GLenum;
+#endif
+#ifndef GLuint
+typedef unsigned int GLuint;
+#endif
+#ifndef GL_RGBA
+#define GL_RGBA 0x1908
+#endif 
+#ifndef GL_RGB
+#define GL_RGB 0x1907
+#endif
+#ifndef GL_COLOR_INDEX
+#define GL_COLOR_INDEX 0x1900
+#endif
+
 
 // engine functions
 namespace UniLib {	
@@ -113,7 +134,10 @@ namespace UniLib {
 		LOADING_STATE_FULLY_LOADED = 4
 	};
 
-    UNIVERSUM_LIB_API DRReturn init();
+	//! \brief 
+	//! \param numberParallelStorageOperations count of storage operations (read and write) at the same time
+	//!        1 recommended by mechanical hard disks, else more possible    
+    UNIVERSUM_LIB_API DRReturn init(int numberParallelStorageOperations = 1);
     UNIVERSUM_LIB_API void exit();
 
     UNIVERSUM_LIB_API DRString getTimeSinceStart();

@@ -268,7 +268,7 @@ void DRImage::setHeight(u32 height)
     mSize.y = (DRReal)height;
 }
 
-void DRImage::setImageFormat(GLuint format)
+void DRImage::setImageFormat(GLenum format)
 {
     mImageFormat = format;
 }

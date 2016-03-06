@@ -5,7 +5,8 @@
 #include <windows.h>
 #else
 #endif
-#include <Engine2Main.h>
+#include <UniversumLib.h> 
+#include <lib/DRIImage.h>
 
 #ifdef _WIN32
     #ifdef BUILD_DLL_IMAGE

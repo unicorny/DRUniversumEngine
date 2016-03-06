@@ -20,48 +20,53 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
 /*!
- * \author Dario Rekowski
- * 
- * \date 14.01.16
- * 
- * \desc Interface for render implemenattion callbacks
- * 
+ *
+ * \author: Dario Rekowski
+ *
+ * \date: 06.03.2016
+ *
+ * \desc: Texture Model, contains texture pixel data
+ *
  */
+
+#ifndef __DR_UNIVERSUM_LIB_MODEL_TEXTURE_H
+#define __DR_UNIVERSUM_LIB_MODEL_TEXTURE_H
 
 #include "UniversumLib.h"
 
+class DRIImage;
 
 namespace UniLib {
-	namespace view {
-		class Material;
-		class BlockSektor;
-		class Texture;
-
-	}
 	namespace model {
-		class Shader;
-		class ShaderProgram;
-	}
-
-	namespace controller {
-		class UNIVERSUM_LIB_API BindToRenderer
+		class UNIVERSUM_LIB_API Texture
 		{
-		public: 
-			virtual view::Material* newMaterial() = 0;
-			virtual view::BlockSektor* newBlockSektor() = 0;
-			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(const char* fileName) = 0;
-			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
-			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
-			
-			//virtual 
+		public:
+			Texture();
+			Texture(DRVector2i size, GLenum format);
+			virtual ~Texture();
 
+			// tasks
+			DRReturn loadFromFile(const char* filename);
+			DRReturn saveIntoFile(const char* filename, u8* data);
+			DRReturn saveIntoFile(const char* filename, DRColor* color);
+
+			void clearMemory();
+
+			// access data
+			__inline__ DRVector2i getSize() { return mSize; }
+			__inline__ void setSize(DRVector2i size) { mSize = size; }
+			__inline__ GLenum getFormat() { return mFormat; }
+			__inline__ DHASH getHash() { return calculateHash(mSize, mFormat); }
+
+			static DHASH calculateHash(DRVector2i size, GLenum format);
+
+		protected:
+			DRIImage* mImage;
+			DRVector2i mSize;
+			GLenum mFormat;
 		};
 	}
-} 
+}
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+#endif //__DR_UNIVERSUM_LIB_MODEL_TEXTURE_H
