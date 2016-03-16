@@ -53,9 +53,9 @@ namespace UniLib {
 			virtual const char* getResourceType() const {return "CPUTask";};
 			virtual bool const isCPUTask() const {return true;}
 
-			void start(TaskPtr own) {scheduleTask(own);}
-        protected:
 			virtual void scheduleTask(TaskPtr own);
+        protected:
+			
 		private: 
 			CPUSheduler* mScheduler;
         };

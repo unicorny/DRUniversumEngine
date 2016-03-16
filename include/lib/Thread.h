@@ -78,6 +78,7 @@ namespace UniLib {
 
 			private:
 				Timer* mTimer;
+				DRResourcePtr<TimerCallback> myself;
 
 		};
 

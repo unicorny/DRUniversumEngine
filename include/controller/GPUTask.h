@@ -47,8 +47,9 @@ namespace UniLib {
 			virtual const char* getResourceType() const {return "GPUTask";};
 
 			virtual bool isSlowGPUTask() {return mSlowTask;}
-		protected:
 			virtual void scheduleTask(TaskPtr own);
+		protected:
+			
 
 			bool mSlowTask;
 			

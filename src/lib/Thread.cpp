@@ -30,7 +30,7 @@ namespace UniLib {
                 exitCalled = true;
                 if(SDL_SemPost(semaphore)) LOG_WARNING_SDL();
                 condSignal();
-                SDL_Delay(500);
+                //SDL_Delay(500);
                 SDL_WaitThread(thread, NULL);
                 //LOG_WARNING_SDL();
 
@@ -84,18 +84,15 @@ namespace UniLib {
 		// ---------------------------------------------------------------------------------
 		// Timing thread
 		TimingThread::TimingThread(std::string name, Uint32 rerunDelay, Timer* timerOnWhichToAttach, const char* threadName/* = NULL*/)
-			: Thread(threadName), mTimer(timerOnWhichToAttach), mName(name)
+			: Thread(threadName), mName(name), mTimer(timerOnWhichToAttach), myself(this)
 		{
 			if(timerOnWhichToAttach) {
-				timerOnWhichToAttach->addTimer(name, DRResourcePtr<TimerCallback>(this), rerunDelay);
+				timerOnWhichToAttach->addTimer(name, myself, rerunDelay);
 			}
 		}
 		TimingThread::~TimingThread()
 		{
-			if(mTimer)
-			{
-				mTimer->removeTimer(mName);
-			}
+
 		}
 
 		TimerReturn TimingThread::callFromTimer()

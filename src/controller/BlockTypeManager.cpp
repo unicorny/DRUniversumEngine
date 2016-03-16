@@ -21,7 +21,8 @@ namespace UniLib {
 			DRReturn ret = BlockTypeManager::getInstance()->_loadingFilesIntoMemory(&mFileNames, fileContents);
 			if (ret == DR_OK) {
 				TaskPtr task(new BlockTypeLoadingTask(mSchedulerForParser, fileContents));
-				((CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
+				task->scheduleTask(task);
+				//((CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
 			}
 			return ret;
 		}
@@ -62,7 +63,8 @@ namespace UniLib {
 		DRReturn BlockTypeManager::initAsyn(const std::list<std::string>* fileNames, CPUSheduler* scheduler)
 		{
 			TaskPtr task(new LoadingJsonFilesIntoMemoryTask(fileNames, scheduler));
-			((CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
+			//((CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
+			task->scheduleTask(task);
 			return DR_OK;
 		}
 		// called from io Thread or callers thread

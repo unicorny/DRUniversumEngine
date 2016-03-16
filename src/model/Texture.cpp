@@ -41,6 +41,8 @@ namespace UniLib {
 				EngineLog.writeToLog("tried to load file: %s", complete.data());
 				LOG_ERROR("error by loading texture from storage", DR_ERROR);
 			}
+			mSize = mImage->getSize();
+			mFormat = mImage->getImageFormat();
 			return DR_OK;
 		}
 

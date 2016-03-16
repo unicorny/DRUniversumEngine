@@ -41,7 +41,9 @@ namespace UniLib {
 
 		void TextureManager::exit()
 		{
-			DR_SAVE_DELETE(mUpdateThread);
+			// not necessary, because will be deletet from timer
+			//DR_SAVE_DELETE(mUpdateThread);
+			
 			mInitalized = false;
 			LOG_INFO("TextureManager beendet");
 		}
@@ -58,7 +60,7 @@ namespace UniLib {
 				return it->second;
 			}
 			mUpdateThread->unlock();
-			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(filename));
+			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(id, filename));
 			tex->loadFromFile();
 			mUpdateThread->lock();
 			mStoredTextures.insert(TextureEntry(id, tex));
@@ -94,6 +96,7 @@ namespace UniLib {
 
 		void TextureManager::update()
 		{
+			if (!mInitalized) return;
 			static Uint32 lastTicks = 0;
 			if (!lastTicks) {
 				lastTicks = SDL_GetTicks();

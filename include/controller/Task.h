@@ -80,12 +80,12 @@ namespace UniLib {
 			virtual bool const isGPUTask() const {return false;}
 			virtual bool const isCPUTask() const {return false;}
 
-			
+			virtual void scheduleTask(TaskPtr own) = 0;
         protected:
 			// scheduling only once
 			__inline__ bool isTaskSheduled() {return mTaskScheduled;}
 			__inline__ void taskScheduled() {mTaskScheduled = true;}
-			virtual void scheduleTask(TaskPtr own) = 0;
+			
             
 			bool mTaskScheduled;
 			Command*	mFinishCommand;

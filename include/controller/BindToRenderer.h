@@ -53,7 +53,7 @@ namespace UniLib {
 			virtual view::Material* newMaterial() = 0;
 			virtual view::BlockSektor* newBlockSektor() = 0;
 			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(const char* fileName) = 0;
+			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
 			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
 			virtual model::Shader* newShader(HASH id) = 0;
 			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;

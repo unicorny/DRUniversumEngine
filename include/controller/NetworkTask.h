@@ -62,10 +62,10 @@ namespace UniLib {
 
 			__inline__ std::string getResult() {return mResult;}
 
-
+			virtual void scheduleTask(TaskPtr own) { run(); taskScheduled(); };
         protected:
 			__inline__ bool isRequestSend() {return mRequestSent;}
-			virtual void scheduleTask(TaskPtr own) {run(); taskScheduled();};
+			
 			// result string
 			std::string mResult;
 			// request

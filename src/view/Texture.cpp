@@ -44,7 +44,8 @@ namespace UniLib {
 			if (!mTextureModel) mTextureModel = new model::Texture();
 			if (g_HarddiskScheduler) {
 				controller::TaskPtr task(new TextureLoadingTask(this, g_HarddiskScheduler));
-				((controller::CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
+				task->scheduleTask(task);
+				//((controller::CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
 			}
 			else {
 				mTextureModel->loadFromFile(mTextureName.data());
