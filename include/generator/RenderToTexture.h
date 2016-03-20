@@ -19,53 +19,44 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
-
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
 /*!
- * \author Dario Rekowski
- * 
- * \date 14.01.16
- * 
- * \desc Interface for render implemenattion callbacks
- * 
- */
+*
+* \author: Dario Rekowski
+*
+* \date: 17.03.16
+*
+* \desc: Prototype for render to texture tasks
+*/
 
-#include "UniversumLib.h"
+#ifndef __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
+#define __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
+
+#include "view/Texture.h"
 
 
 namespace UniLib {
 	namespace view {
-		class Material;
-		class BlockSektor;
 		class Texture;
-		class Geometrie;
+		class Material;
+		typedef DRResourcePtr<Texture> TexturePtr;
+		
 	}
-	namespace model {
-		class Shader;
-		class ShaderProgram;
-		namespace geometrie {
-			class BaseGeometrie;
-		}
-	}
-
-	namespace controller {
-		class UNIVERSUM_LIB_API BindToRenderer
+	namespace generator {
+		class UNIVERSUM_LIB_API RenderToTexture
 		{
-		public: 
-			virtual view::Material* newMaterial() = 0;
-			virtual view::BlockSektor* newBlockSektor() = 0;
-			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
-			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
-			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
-			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
-			
-			//virtual 
+		public:
+			RenderToTexture(view::TexturePtr texture) : mTexture(texture) {}
+			virtual ~RenderToTexture() {};
+			virtual DRReturn prepareRendering() = 0;
+			virtual DRReturn render() = 0;
+			virtual bool    isReady();
 
+			void setMaterial(view::Material* mat);
+		protected:
+			view::TexturePtr mTexture;
+			view::Material* mMaterial;
 		};
 	}
-} 
+}
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+#endif //__DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H

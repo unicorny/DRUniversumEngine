@@ -11,7 +11,7 @@ namespace UniLib {
 
 		Geometrie::~Geometrie()
 		{
-
+			DR_SAVE_DELETE(mGeometrieModel);
 		}
 	}
 }

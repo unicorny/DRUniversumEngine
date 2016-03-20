@@ -59,6 +59,7 @@ namespace UniLib {
 			__inline__ void setSize(DRVector2i size) { mSize = size; }
 			__inline__ GLenum getFormat() { return mFormat; }
 			__inline__ DHASH getHash() { return calculateHash(mSize, mFormat); }
+			__inline__ bool hasImageData() { return mImage != NULL; }
 			__inline__ u8* getPixels() { assert(mImage != NULL); return mImage->getPixel(); }
 
 			static DHASH calculateHash(DRVector2i size, GLenum format);

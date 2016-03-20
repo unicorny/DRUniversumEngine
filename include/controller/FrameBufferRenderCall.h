@@ -20,52 +20,44 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
 /*!
- * \author Dario Rekowski
- * 
- * \date 14.01.16
- * 
- * \desc Interface for render implemenattion callbacks
- * 
- */
+*
+* \author: Dario Rekowski
+*
+* \date: 17.03.16
+*
+* \desc: go through RenderToTexture tasks and call them
+*/
 
-#include "UniversumLib.h"
-
-
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_FRAME_BUFFER_RENDER_CALL_H
+#define __DR_UNIVERSUM_LIB_CONTROLLER_FRAME_BUFFER_RENDER_CALL_H
+#include "GPUScheduler.h"
+#include "lib/MultithreadContainer.h"
 namespace UniLib {
-	namespace view {
-		class Material;
-		class BlockSektor;
-		class Texture;
-		class Geometrie;
+	namespace generator {
+		class RenderToTexture;
 	}
-	namespace model {
-		class Shader;
-		class ShaderProgram;
-		namespace geometrie {
-			class BaseGeometrie;
-		}
-	}
-
 	namespace controller {
-		class UNIVERSUM_LIB_API BindToRenderer
+		class UNIVERSUM_LIB_API FrameBufferRenderCall : public GPURenderCall, protected lib::MultithreadContainer
 		{
-		public: 
-			virtual view::Material* newMaterial() = 0;
-			virtual view::BlockSektor* newBlockSektor() = 0;
-			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
-			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
-			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
-			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
-			
-			//virtual 
+		public:
+			FrameBufferRenderCall();
+			virtual ~FrameBufferRenderCall();
+
+			virtual DRReturn render(float timeSinceLastFrame);
+			// if render return not DR_OK, Call will be removed from List and kicked will be called
+			virtual void kicked();
+			// will be called if render call need to much time
+			// \param percent used up percent time of render main loop
+			virtual void youNeedToLong(float percent);
+
+			DRReturn addRenderToTextureTask(generator::RenderToTexture* task, bool fastTask = true);
+
+		protected:
+			std::deque<generator::RenderToTexture*> mFastRenderToTextureTasks;
 
 		};
 	}
-} 
+}
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_FRAME_BUFFER_RENDER_CALL_H

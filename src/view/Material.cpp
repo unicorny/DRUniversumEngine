@@ -1,10 +1,9 @@
 #include "view/Material.h"
-#include "view/Texture.h"
-#include "controller/TextureManager.h"
 
 namespace UniLib {
 	namespace view {
 		Material::Material() 
+			: mUniformsSet(NULL)
 		{
 
 		}
@@ -14,10 +13,6 @@ namespace UniLib {
 
 		}
 
-		void Material::usingTexture(const char* filename)
-		{
-			controller::TextureManager* t = controller::TextureManager::getInstance();
-			mTexture = t->getTexture(filename);
-		}
+		
 	}
 }

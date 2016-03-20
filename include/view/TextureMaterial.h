@@ -20,52 +20,44 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+
 /*!
- * \author Dario Rekowski
- * 
- * \date 14.01.16
- * 
- * \desc Interface for render implemenattion callbacks
- * 
- */
+* \author: Dario Rekowski
+*
+* \date: 20.03.2016
+*
+* \desc: Material with one texture
+*/
 
-#include "UniversumLib.h"
+#ifndef __UNIVERSUM_LIB_VIEW_TEXTURE_MATERIAL_H
+#define __UNIVERSUM_LIB_VIEW_TEXTURE_MATERIAL_H
 
+#include "Material.h"
 
 namespace UniLib {
+	
 	namespace view {
-		class Material;
-		class BlockSektor;
+
 		class Texture;
-		class Geometrie;
-	}
-	namespace model {
-		class Shader;
-		class ShaderProgram;
-		namespace geometrie {
-			class BaseGeometrie;
-		}
-	}
+		typedef DRResourcePtr<Texture> TexturePtr;
 
-	namespace controller {
-		class UNIVERSUM_LIB_API BindToRenderer
+		class UNIVERSUM_LIB_API TextureMaterial : public Material
 		{
-		public: 
-			virtual view::Material* newMaterial() = 0;
-			virtual view::BlockSektor* newBlockSektor() = 0;
-			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
-			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
-			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
-			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
-			
-			//virtual 
+		public:
+			TextureMaterial();
+			virtual ~TextureMaterial();
 
+			
+			virtual const char* getResourceType() const { return "TextureMaterial"; }
+			virtual bool hasTexture() { return true; }
+
+			__inline__ void setTexture(TexturePtr texture) { mTexture = texture; }
+			void usingTexture(const char* filename);
+			__inline__ TexturePtr getTexture() { return mTexture; }
+		protected:
+			TexturePtr mTexture;
 		};
 	}
-} 
+}
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+#endif //__UNIVERSUM_LIB_VIEW_TEXTURE_MATERIAL_H

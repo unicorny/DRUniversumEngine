@@ -49,17 +49,15 @@ namespace UniLib {
 
 			virtual const char* getResourceType() const {return "Material";}
 			virtual bool less_than(DRIResource& b) const {return this < &b;}
+			virtual bool hasTexture() { return false; }
+			virtual bool hasMultiTexture() { return false; }
 
 			__inline__ void setUniformSet(model::UniformSet* uniforms) {mUniformsSet = uniforms;}
 			__inline__ model::UniformSet* const getUniformSet() const {return mUniformsSet;}
 
-			__inline__ void setTexture(TexturePtr texture) { mTexture = texture; }
-			void usingTexture(const char* filename);
-			__inline__ TexturePtr getTexture() { return mTexture; }
 		protected:
 			model::ShaderProgramPtr mShaderProgram;
 			model::UniformSet* mUniformsSet;
-			TexturePtr mTexture;
 		};
 
 		typedef DRResourcePtr<Material> MaterialPtr;

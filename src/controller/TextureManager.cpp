@@ -81,6 +81,7 @@ namespace UniLib {
 			}
 			mUpdateThread->unlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(size, format));
+			tex->uploadToGPU();
 			mUpdateThread->lock();
 			mEmptyTextures.insert(TextureEntry(id, tex));
 			mUpdateThread->unlock();

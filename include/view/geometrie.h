@@ -49,6 +49,8 @@ namespace UniLib {
 
 			virtual DRReturn uploadToGPU() = 0;
 			virtual DRReturn render() = 0;
+			virtual bool isReady() = 0;
+			__inline__ void setBaseGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) { mGeometrieModel = baseGeometrie; }
 
 			virtual const char* getResourceType() const {return "view::Geometrie";}
 			// simple compare pointer adresses

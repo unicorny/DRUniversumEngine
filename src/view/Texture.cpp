@@ -32,6 +32,7 @@ namespace UniLib {
 			: mTextureModel(new model::Texture(size, format))
 		{
 			mId = mTextureModel->getHash();
+			mLoadingState = LOADING_STATE_HAS_INFORMATIONS;
 		}
 
 		Texture::~Texture()

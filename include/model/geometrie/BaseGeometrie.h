@@ -36,11 +36,7 @@
 #include "UniversumLib.h" 
 
 namespace UniLib {
-	namespace view {
-		namespace geometrie {
-			class BaseGeometrieContainer;
-		}
-	}
+	
 	namespace model {
 		namespace geometrie {
 

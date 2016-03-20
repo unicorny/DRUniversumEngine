@@ -26,12 +26,11 @@
 
 #include "lib/MultithreadResource.h"
 #include "controller/CPUTask.h"
+#include "model/Texture.h"
 
 namespace UniLib {
 
-	namespace model {
-		class Texture;
-	}
+
 	namespace view {
 		class Texture;
 		class TextureLoadingTask : public controller::CPUTask
@@ -65,7 +64,7 @@ namespace UniLib {
 			virtual void uploadToGPU() = 0;
 			virtual void downloadFromGPU() = 0;
 			virtual void bind() = 0;
-
+			virtual GLuint getTextureId() = 0;
 			// virtuals from DRIResource
 			virtual const char* getResourceType() const { return "Texture"; }
 			virtual bool less_than(DRIResource& b) const {
@@ -78,6 +77,8 @@ namespace UniLib {
 			__inline__ Uint32 getTimeout() { return mTimeout; }
 			__inline__ void updateTimeout(Uint32 passingTime) { mTimeout -= passingTime; }
 			__inline__ void setTimeout(Uint32 timeout) { mTimeout = timeout; }
+
+			__inline__ DRVector2i getTextureSize() { return mTextureModel->getSize(); }
 
 		protected:
 			virtual void setLoadingState(LoadingState state);
