@@ -100,9 +100,14 @@ namespace UniLib {
 			while(mFastGPUTasks.size()) {
 				TaskPtr task = mFastGPUTasks.front();
 				mFastGPUTasks.pop();
-				task->run();
+				if (task->isReady()) {
+					task->run();
+				}
+				else {
+					mFastGPUTasks.push(task);
+				}
 				if(SDL_GetTicks() - startTicks > 2) {
-					LOG_WARNING("break fast GPU Tasks loop");
+					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
 					break;
 				}
 			}

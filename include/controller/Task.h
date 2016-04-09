@@ -47,6 +47,7 @@ namespace UniLib {
             Task(size_t parentTaskPointerArraySize);
             virtual ~Task();
 
+			virtual bool isReady() { return isAllParentsReady(); }
             // called from scheduler
             //! \brief return true if all parent task finished or return false and schedule not already finished parent tasks
             bool isAllParentsReady();

@@ -25,5 +25,11 @@ namespace UniLib {
 			uniforms->setUniform("proj", projection);
 			
 		}
+		DRReturn RenderToTexture::run()
+		{
+			if (prepareRendering()) LOG_ERROR("error by preparing rendering", DR_ERROR);
+			if (render()) LOG_ERROR("error by rendering", DR_ERROR);
+			return DR_OK;
+		}
 	}
 }

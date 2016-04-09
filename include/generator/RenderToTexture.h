@@ -31,7 +31,7 @@
 #ifndef __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
 #define __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
 
-#include "view/Texture.h"
+#include "controller/GPUTask.h"
 
 
 namespace UniLib {
@@ -42,7 +42,7 @@ namespace UniLib {
 		
 	}
 	namespace generator {
-		class UNIVERSUM_LIB_API RenderToTexture
+		class UNIVERSUM_LIB_API RenderToTexture : public controller::GPUTask
 		{
 		public:
 			RenderToTexture(view::TexturePtr texture) : mTexture(texture) {}
@@ -50,8 +50,11 @@ namespace UniLib {
 			virtual DRReturn prepareRendering() = 0;
 			virtual DRReturn render() = 0;
 			virtual bool    isReady();
+			virtual DRReturn run();
 
 			void setMaterial(view::Material* mat);
+
+			virtual const char* getResourceType() { return "RenderToTexture"; }
 		protected:
 			view::TexturePtr mTexture;
 			view::Material* mMaterial;
