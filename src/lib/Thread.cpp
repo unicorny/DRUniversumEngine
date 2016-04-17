@@ -58,13 +58,13 @@ namespace UniLib {
             {
                 if(t->exitCalled) return 0;
                 // Lock work mutex
-                t->lock();
+                t->threadLock();
                 int status = SDL_CondWait(t->condition, t->mutex); 
                 if(t->exitCalled) return 0;
                 if( status == 0)
                 {
                     int ret = t->ThreadFunction();
-                    t->unlock();
+                    t->threadUnlock();
                     if(ret)
                     {
                         EngineLog.writeToLog("error-code: %d", ret);
@@ -74,7 +74,7 @@ namespace UniLib {
                 else
                 {
                     //unlock mutex and exit
-                    t->unlock();
+                    t->threadUnlock();
                     LOG_ERROR("Fehler in Thread, exit", -1);
                 }
             }

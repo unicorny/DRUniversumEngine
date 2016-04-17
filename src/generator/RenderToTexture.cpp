@@ -15,6 +15,10 @@ namespace UniLib {
 		{
 			mFrameBuffer = g_RenderBinder->newFrameBuffer(texture);
 		}
+		RenderToTexture::RenderToTexture()
+		{
+			mFrameBuffer = g_RenderBinder->newFrameBuffer();
+		}
 
 		RenderToTexture::~RenderToTexture()
 		{

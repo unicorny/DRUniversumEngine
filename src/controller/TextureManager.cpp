@@ -53,18 +53,18 @@ namespace UniLib {
 			assert(g_RenderBinder != NULL);
 
 			DHASH id = DRMakeFilenameHash(filename);
-			mUpdateThread->lock();
+			mUpdateThread->threadLock();
 			TextureMap::iterator it = mStoredTextures.find(id);
 			if (it != mStoredTextures.end()) {
-				mUpdateThread->unlock();
+				mUpdateThread->threadUnlock();
 				return it->second;
 			}
-			mUpdateThread->unlock();
+			mUpdateThread->threadUnlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(id, filename));
 			tex->loadFromFile();
-			mUpdateThread->lock();
+			mUpdateThread->threadLock();
 			mStoredTextures.insert(TextureEntry(id, tex));
-			mUpdateThread->unlock();
+			mUpdateThread->threadUnlock();
 			return tex;
 		}
 
@@ -73,18 +73,18 @@ namespace UniLib {
 			assert(g_RenderBinder != NULL);
 
 			DHASH id = model::Texture::calculateHash(size, format);
-			mUpdateThread->lock();
+			mUpdateThread->threadLock();
 			TextureMultiMap::iterator it = mEmptyTextures.find(id);
 			if (it != mEmptyTextures.end()) {
-				mUpdateThread->unlock();
+				mUpdateThread->threadUnlock();
 				return it->second;
 			}
-			mUpdateThread->unlock();
+			mUpdateThread->threadUnlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(size, format));
 			tex->uploadToGPU();
-			mUpdateThread->lock();
+			mUpdateThread->threadLock();
 			mEmptyTextures.insert(TextureEntry(id, tex));
-			mUpdateThread->unlock();
+			mUpdateThread->threadUnlock();
 			return tex;
 		}
 

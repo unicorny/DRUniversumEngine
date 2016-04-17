@@ -54,6 +54,9 @@ namespace UniLib {
 			__inline__ void setScale(const DRVector3& scale) {mScale = scale;}
 			__inline__ const DRVector3& getScale() const {return mScale;}
 
+			__inline__ const DRVector3& getPositionAdd() const { return mPositionAdd; }
+			__inline__ void setPositionAdd(const DRVector3& positionAdd) { mPositionAdd = positionAdd; }
+
 			//! \brief calculate matrix from position
 			//! \param mat if object has also rotation, give mat to add position changes relative
 			DRMatrix calculateMatrix(const DRMatrix& mat = DRMatrix::identity());

@@ -52,7 +52,7 @@ public:
 						
 	inline const bool operator== (const DRBoundingBox& otherBoundingBox) const {return mMin == otherBoundingBox.mMin && mMax == otherBoundingBox.mMax;}
 	inline void operator+ (const DRVector2i& diff) { moveBy(diff); }
-	inline void operator+ (const DRBoundingBox& otherBoundingBox) { expandBy(otherBoundingBox); }
+	inline void operator+= (const DRBoundingBox& otherBoundingBox) { expandBy(otherBoundingBox); }
 protected:
 	DRVector2i mMin;
 	DRVector2i mMax;

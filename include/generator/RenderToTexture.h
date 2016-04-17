@@ -47,6 +47,7 @@ namespace UniLib {
 		{
 		public:
 			RenderToTexture(view::TexturePtr texture);
+			RenderToTexture();
 			virtual ~RenderToTexture();
 			virtual DRReturn render();
 			virtual bool    isReady();

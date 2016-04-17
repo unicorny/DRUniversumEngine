@@ -42,8 +42,8 @@ namespace UniLib {
             Thread(const char* threadName = NULL);
             virtual ~Thread();
 
-            __inline__ DRReturn lock() {if(SDL_LockMutex(mutex)) LOG_ERROR_SDL(DR_ERROR); return DR_OK;}
-            __inline__ DRReturn unlock() {if(SDL_UnlockMutex(mutex)) LOG_ERROR_SDL(DR_ERROR); return DR_OK;} 
+            __inline__ DRReturn threadLock() {if(SDL_LockMutex(mutex)) LOG_ERROR_SDL(DR_ERROR); return DR_OK;}
+            __inline__ DRReturn threadUnlock() {if(SDL_UnlockMutex(mutex)) LOG_ERROR_SDL(DR_ERROR); return DR_OK;} 
             // signal data chance, will continue thread, if he is paused
             DRReturn condSignal();
 

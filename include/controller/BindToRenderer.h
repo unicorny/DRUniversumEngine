@@ -37,6 +37,8 @@
 namespace UniLib {
 	namespace view {
 		class Material;
+		class TextureMaterial;
+		class MultiTextureMaterial;
 		class BlockSektor;
 		class Texture;
 		typedef DRResourcePtr<Texture> TexturePtr;
@@ -57,11 +59,14 @@ namespace UniLib {
 		{
 		public: 
 			virtual view::Material* newMaterial() = 0;
+			virtual view::TextureMaterial* newTextureMaterial() = 0;
+			virtual view::MultiTextureMaterial* newMultiTextureMaterial(size_t textureCount) = 0;
 			virtual view::BlockSektor* newBlockSektor() = 0;
 			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
 			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
 			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
 			virtual view::FrameBuffer* newFrameBuffer(view::TexturePtr texture) = 0;
+			virtual view::FrameBuffer* newFrameBuffer() = 0;
 			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
 			virtual model::Shader* newShader(HASH id) = 0;
 			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;

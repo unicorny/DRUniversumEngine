@@ -43,12 +43,14 @@ namespace UniLib {
 		{
 		public:
 			FrameBuffer(view::TexturePtr texture) : mTexture(texture) {}
+			FrameBuffer() {};
 			virtual ~FrameBuffer() {};
 
 			virtual DRReturn setup() = 0;
 			virtual void release() = 0;
 			virtual void bind() = 0;
 			virtual bool isReady() = 0;
+			__inline__ void setTexture(view::TexturePtr texture) { mTexture = texture; }
 		protected:
 			view::TexturePtr mTexture;
 

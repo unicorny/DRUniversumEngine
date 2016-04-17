@@ -30,9 +30,9 @@ namespace UniLib {
 
 		void CPUShedulerThread::setNewTask(TaskPtr cpuTask)
 		{
-			lock();
+			threadLock();
 			mWaitingTask = cpuTask;
-			unlock();
+			threadUnlock();
 			condSignal();
 		}
 	}
