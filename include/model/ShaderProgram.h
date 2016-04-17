@@ -31,6 +31,7 @@
 #define	__UNIVERSUM_LIB_MODEL_SHADER_PROGRAM_H
 
 #include "UniformSet.h"
+#include "lib/Loadable.h"
 
 namespace UniLib {
 	namespace model {
@@ -63,12 +64,12 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API Shader : public DRIResource
 		{
 		public:
-			Shader(DHASH id = 0);
+			Shader(HASH id = 0);
 			~Shader();
 
 			virtual DRReturn init(const char* shaderFile, ShaderType shaderType) = 0;
 			//__inline__ GLuint getShader() {return mShaderID;}
-			__inline__ DHASH getID() {return mID;}
+			__inline__ HASH getID() {return mID;}
 
 			virtual const char* getResourceType() const {return "Shader";}
 			virtual bool less_than(DRIResource& shader) const
@@ -81,16 +82,16 @@ namespace UniLib {
 			unsigned char* readShaderFile(const char *filename);
 
 		private:
-			DHASH mID;
+			HASH mID;
 			//GLuint mShaderID;
 		};
 
 		typedef DRResourcePtr<Shader> ShaderPtr;
 
-		class UNIVERSUM_LIB_API ShaderProgram : public DRIResource
+		class UNIVERSUM_LIB_API ShaderProgram : public DRIResource, public lib::Loadable
 		{
 		public:
-			ShaderProgram(DHASH id = 0);
+			ShaderProgram(HASH id = 0);
 			~ShaderProgram();
 
 			virtual DRReturn init(ShaderPtr vertexShader, ShaderPtr fragmentShader) = 0;
@@ -99,7 +100,7 @@ namespace UniLib {
 
 
 			//__inline__ GLuint getProgram() {return mProgram;}
-			__inline__ DHASH getID() {return mId;}
+			__inline__ HASH getID() {return mId;}
 
 			virtual const char* getResourceType() const {return "ShaderProgram";}
 			virtual bool less_than(DRIResource& shader) const
@@ -108,7 +109,7 @@ namespace UniLib {
 			}
 
 		protected:
-			DHASH  mId;
+			HASH  mId;
 			ShaderPtr mVertexShader;
 			ShaderPtr mFragmentShader;
 			//GLuint mProgram;

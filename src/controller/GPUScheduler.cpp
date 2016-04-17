@@ -96,18 +96,21 @@ namespace UniLib {
 			SDL_UnlockMutex(mFrameTimeMutex);
 
 			Uint32 startTicks = SDL_GetTicks();
+			Uint32 reQueueCount = 0;
 			// update fast GPU Tasks
-			while(mFastGPUTasks.size()) {
+			while(mFastGPUTasks.size()- reQueueCount) {
 				TaskPtr task = mFastGPUTasks.front();
 				mFastGPUTasks.pop();
+				if(!task.getResourcePtrHolder()) continue;
 				if (task->isReady()) {
 					task->run();
 				}
 				else {
 					mFastGPUTasks.push(task);
+					reQueueCount++;
 				}
 				if(SDL_GetTicks() - startTicks > 2) {
-					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
+ 					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
 					break;
 				}
 			}

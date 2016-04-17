@@ -44,7 +44,7 @@ namespace UniLib {
 			virtual ~Material();
 
 			virtual void bind() = 0;
-			__inline__ void setShaderProgram(model::ShaderProgramPtr shaderProgram) {mShaderProgram = shaderProgram;}
+			__inline__ void setShaderProgram(model::ShaderProgramPtr shaderProgram) { mShaderProgram = shaderProgram; }
 			__inline__ model::ShaderProgramPtr getShaderProgram() {return mShaderProgram;}
 
 			virtual const char* getResourceType() const {return "Material";}
@@ -55,7 +55,11 @@ namespace UniLib {
 			__inline__ void setUniformSet(model::UniformSet* uniforms) {mUniformsSet = uniforms;}
 			__inline__ model::UniformSet* const getUniformSet() const {return mUniformsSet;}
 
+			// check loading state
+			virtual LoadingState checkLoadingState();
+
 		protected:
+
 			model::ShaderProgramPtr mShaderProgram;
 			model::UniformSet* mUniformsSet;
 		};

@@ -3,7 +3,7 @@
 namespace UniLib {
 	namespace model {
 
-		Shader::Shader(DHASH id/* = 0*/)
+		Shader::Shader(HASH id/* = 0*/)
 		: mID(id)
 		{
     
@@ -32,7 +32,7 @@ namespace UniLib {
 
 		// ********************************************************************
 
-		ShaderProgram::ShaderProgram(DHASH id/* = 0*/)
+		ShaderProgram::ShaderProgram(HASH id/* = 0*/)
 		: mId(id), mVertexShader(), mFragmentShader()
 		{
 

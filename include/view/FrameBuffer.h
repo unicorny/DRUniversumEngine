@@ -20,56 +20,43 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
-#define __UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
 /*!
- * \author Dario Rekowski
- * 
- * \date 14.01.16
- * 
- * \desc Interface for render implemenattion callbacks
- * 
- */
+* \author: Dario Rekowski
+*
+* \date: 17.04.2016
+*
+* \desc: Interface for frame buffer
+*/
+
+#ifndef __UNIVERSUM_LIB_VIEW_FRAME_BUFFER_H
+#define __UNIVERSUM_LIB_VIEW_FRAME_BUFFER_H
 
 #include "UniversumLib.h"
 
-
 namespace UniLib {
 	namespace view {
-		class Material;
-		class BlockSektor;
+
 		class Texture;
 		typedef DRResourcePtr<Texture> TexturePtr;
-		class Geometrie;
-		class FrameBuffer;
-	}
-	namespace model {
-		class Shader;
-		class ShaderProgram;
-		class UniformSet;
-		namespace geometrie {
-			class BaseGeometrie;
-		}
-	}
 
-	namespace controller {
-		class UNIVERSUM_LIB_API BindToRenderer
+		class UNIVERSUM_LIB_API FrameBuffer
 		{
-		public: 
-			virtual view::Material* newMaterial() = 0;
-			virtual view::BlockSektor* newBlockSektor() = 0;
-			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
-			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
-			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
-			virtual view::FrameBuffer* newFrameBuffer(view::TexturePtr texture) = 0;
-			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
-			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
-			virtual model::UniformSet* newUniformSet() = 0;
-			//virtual 
+		public:
+			FrameBuffer(view::TexturePtr texture) : mTexture(texture) {}
+			virtual ~FrameBuffer() {};
+
+			virtual DRReturn setup() = 0;
+			virtual void release() = 0;
+			virtual void bind() = 0;
+			virtual bool isReady() = 0;
+		protected:
+			view::TexturePtr mTexture;
 
 		};
-	}
-} 
 
-#endif //__UNIVERSUM_LIB_CONTROLLER_BIND_TO_RENDER_H
+	}
+}
+
+
+
+#endif //__UNIVERSUM_LIB_VIEW_GEOMETRIE_H

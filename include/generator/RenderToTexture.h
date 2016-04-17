@@ -38,6 +38,7 @@ namespace UniLib {
 	namespace view {
 		class Texture;
 		class Material;
+		class FrameBuffer;
 		typedef DRResourcePtr<Texture> TexturePtr;
 		
 	}
@@ -45,19 +46,18 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API RenderToTexture : public controller::GPUTask
 		{
 		public:
-			RenderToTexture(view::TexturePtr texture) : mTexture(texture) {}
-			virtual ~RenderToTexture() {};
-			virtual DRReturn prepareRendering() = 0;
-			virtual DRReturn render() = 0;
+			RenderToTexture(view::TexturePtr texture);
+			virtual ~RenderToTexture();
+			virtual DRReturn render();
 			virtual bool    isReady();
 			virtual DRReturn run();
 
 			void setMaterial(view::Material* mat);
-
 			virtual const char* getResourceType() { return "RenderToTexture"; }
 		protected:
 			view::TexturePtr mTexture;
 			view::Material* mMaterial;
+			view::FrameBuffer* mFrameBuffer;
 		};
 	}
 }

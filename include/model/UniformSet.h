@@ -30,7 +30,7 @@ namespace UniLib {
     namespace model {
         
 		class ShaderProgram;
-		typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
+		//typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
 
         /*!
          * \author Dario Rekowski
@@ -59,7 +59,15 @@ namespace UniLib {
 			DRReturn setUniform(const char* name, DRMatrix value);
 
 			DRReturn addUniformMapping(const char* name, void* location, HASH programID);
+			// must be called from render thread
+			virtual DRReturn addLocationToUniform(const char* name, ShaderProgram* program) = 0;
+			
 			DRReturn removeUniformMapping(const char* name, HASH programID);
+			// must be called from render thread
+			virtual DRReturn removeLocationFromUniform(const char* name, ShaderProgram* program) = 0;
+			
+			// must be called from render thread, after binding shader
+			virtual void updateUniforms(ShaderProgram* program) = 0;
 
 			DRMatrix getUniformMatrix(const char* name);
 
