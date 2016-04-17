@@ -72,27 +72,35 @@ namespace UniLib {
 			DHASH id = makeShaderHash(vertexShader, fragmentShader);
 
 			//Schauen ob schon vorhanden
+			lock();
 			if(mShaderProgramEntrys.find(id) != mShaderProgramEntrys.end())
 			{
+				unlock();
 				return mShaderProgramEntrys[id];
 			}
-			
-			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(id));    
-			if(shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT)))
-				LOG_ERROR("error loading shader program", NULL);
-			std::string shaderNames("Shader loaded: ");
-			shaderNames += vertexShader;
-			shaderNames += ", ";
-			shaderNames += fragmentShader;
+			unlock();
+			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(id));
+			//shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT));
+			shaderProgram->addShader(vertexShader, SHADER_VERTEX);
+			shaderProgram->addShader(fragmentShader, SHADER_FRAGMENT);
 
-			LOG_INFO(shaderNames.data());
-
-			if(!mShaderProgramEntrys.insert(SHADER_PROGRAM_ENTRY(id, shaderProgram)).second)
+			if (g_HarddiskScheduler) {
+				controller::TaskPtr task(new ShaderLoadingTask(shaderProgram, g_HarddiskScheduler));
+				task->scheduleTask(task);
+			}
+			else {
+				shaderProgram->loadShaderDataIntoMemory();
+			}
+			//*/
+			lock();
+			if (!mShaderProgramEntrys.insert(SHADER_PROGRAM_ENTRY(id, shaderProgram)).second)
 			{
+				unlock();
 				LOG_ERROR("Unerwarteter Fehler in ShaderManager::getShaderProgram aufgetreten", 0);
 			}
-
+			unlock();
 			return shaderProgram;
+
 		}
 
 		ShaderPtr ShaderManager::getShader(const char* shaderName, ShaderType shaderType)
@@ -103,10 +111,13 @@ namespace UniLib {
 			DHASH id = DRMakeFilenameHash(shaderName);
 
 			//Schauen ob schon vorhanden
+			lock();
 			if(mShaderEntrys.find(id) != mShaderEntrys.end())
 			{
+				unlock();
 				return mShaderEntrys[id];
 			}
+			unlock();
 
 			EngineLog.writeToLog("[ShaderManager::getShader] start loading shader (%s)!", shaderName);
 

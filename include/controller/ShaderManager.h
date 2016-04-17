@@ -24,6 +24,7 @@
 #define __DR_UNIVERSUM_LIB_CONTROLLER_SHADER_MANAGER__
 
 #include "model/ShaderProgram.h"
+#include "lib/MultithreadContainer.h"
 
 namespace UniLib {
 /*	namespace model {
@@ -35,7 +36,7 @@ namespace UniLib {
 		typedef DRResourcePtr<Shader> ShaderPtr;
 	}*/
 	namespace controller {
-		class UNIVERSUM_LIB_API ShaderManager
+		class UNIVERSUM_LIB_API ShaderManager : public lib::MultithreadContainer
 		{
 		public:
 			
