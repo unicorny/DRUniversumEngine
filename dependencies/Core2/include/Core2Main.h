@@ -49,7 +49,7 @@
 #include <math.h>
 #include <list>
 #include <vector>
-
+#include <algorithm>
 
 
 /*  To use this exported function of dll, include this header
@@ -144,6 +144,7 @@ enum /*CORE_API*/ DRReturn
 #include "DRColor.h"
 #include "DRPlane.h"
 #include "DRMatrix.h"
+#include "DRBoundingBox.h"
 #include "DRRandom.h"
 #include "DRObjekt.h"
 #include "DRFrustumCulling.h"
