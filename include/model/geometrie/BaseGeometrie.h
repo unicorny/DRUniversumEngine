@@ -61,7 +61,7 @@ namespace UniLib {
 				BaseGeometrie();
 				virtual ~BaseGeometrie();
 
-				virtual void generateVertices(GeometrieDataType type) = 0;
+				virtual void generateVertices(GeometrieDataType type) {};
 
 				virtual const char* getResourceType() const {return "model::geometrie::BaseGeometrie";}
 				// simple compare pointer adresses
@@ -89,6 +89,7 @@ namespace UniLib {
 				__inline__ GeometrieDataType getFormatFlags() { return mVertexFormatFlags;}
 				// indices
 				__inline__ int getIndexCount() {return mIndiceCount;}
+				__inline__ int getIndexCountFromVector() { return mIndices.size(); }
 				__inline__ int* getIndices() {return mIndicesArray;}
 				__inline__ int getIndex(int i) {assert(i >= 0 && i < mIndiceCount); return mIndices[i];}
 
