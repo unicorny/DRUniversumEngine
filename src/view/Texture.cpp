@@ -54,6 +54,16 @@ namespace UniLib {
 			}
 		}
 
+		DRReturn Texture::loadFromMemory(u8* data)
+		{
+			if (!mTextureModel) 
+				LOG_ERROR("texture model not created, size not known!", DR_ERROR);
+			if (mTextureModel->loadFromMemory(data)) 
+				LOG_ERROR("error loading from memory", DR_ERROR);
+			setLoadingState(LOADING_STATE_PARTLY_LOADED);
+			return DR_OK;
+		}
+
 
 		void Texture::setLoadingState(LoadingState state)
 		{

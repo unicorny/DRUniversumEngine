@@ -49,6 +49,8 @@ namespace UniLib {
 
 			// tasks
 			DRReturn loadFromFile(const char* filename);
+			//! \brief load image from memory
+			DRReturn loadFromMemory(u8* data);
 			DRReturn saveIntoFile(const char* filename, u8* data);
 			DRReturn saveIntoFile(const char* filename, DRColor* color);
 

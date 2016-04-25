@@ -46,6 +46,16 @@ namespace UniLib {
 			return DR_OK;
 		}
 
+		DRReturn Texture::loadFromMemory(u8* data)
+		{
+			if (!mImage) mImage = DRIImage::newImage();
+			mImage->setSize(mSize);
+			mImage->setImageFormat(-1);
+			if (mImage->setPixel(data))
+				LOG_ERROR("error setting pixel", DR_ERROR);
+			return DR_OK;
+		}
+
 		DRReturn Texture::saveIntoFile(const char* filename, u8* data)
 		{
 			assert(data != NULL);

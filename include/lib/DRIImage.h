@@ -68,7 +68,7 @@ public:
     //! width und height müssen vorher gesetzt werden!
     //! \param pixel zeigt auf einen Puffer gefüllt mit Pixeln, Daten werden kopiert,
     //! Puffer kann danach freigegeben werden
-    virtual void setPixel(u8* pixel);
+    virtual DRReturn setPixel(u8* pixel);
     virtual void setPixel(DRColor* pixel);
     
 

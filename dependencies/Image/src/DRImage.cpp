@@ -1,9 +1,30 @@
 #include "DRImageMain.h"
 
+/**
+FreeImage error handler
+@param fif Format / Plugin responsible for the error
+@param message Error message
+*/
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) {
+	UniLib::EngineLog.writeToLogDirect("<font color='#f82438'><b>FreeImage Error: </b></font> ");
+	
+	if (fif != FIF_UNKNOWN) {
+		//printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
+		UniLib::EngineLog.writeToLogDirect("%s Format", FreeImage_GetFormatFromFIF(fif));
+	}
+	//printf(message);
+	UniLib::EngineLog.writeToLogDirect(message);
+	UniLib::EngineLog.writeToLogDirect("\n");
+	//printf(" ***\n");
+}
+
+
 DRImage::DRImage()
 : mImage(NULL), mFilename(""), mSize(0.0f), mImageFormat(0), mLoadedSucessfully(false)
 {
   //  LOG_INFO("constructer called");
+  // In your main program …
+	FreeImage_SetOutputMessage(FreeImageErrorHandler);
 }
 
 DRImage::~DRImage()
@@ -273,7 +294,7 @@ void DRImage::setImageFormat(GLenum format)
     mImageFormat = format;
 }
 
-void DRImage::setPixel(u8* pixel)
+DRReturn DRImage::setPixel(u8* pixel)
 {
     if(mLoadedSucessfully)
     {
@@ -290,9 +311,10 @@ void DRImage::setPixel(u8* pixel)
     FreeImage_Unload(t);
 
     if(!mImage)
-        LOG_ERROR_VOID("Fehler beim erstellen des Images");
+        LOG_ERROR("Fehler beim erstellen des Images", DR_ERROR);
     
     mLoadedSucessfully = true; 
+	return DR_OK;
 }
 
 void DRImage::setPixel(DRColor* pixel)

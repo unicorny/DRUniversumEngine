@@ -21,7 +21,7 @@ public:
     virtual void setSize(DRVector2i size);
     virtual u8* getPixel();
     virtual void getPixel(DRColor* buffer);
-    virtual void setPixel(u8* pixel);
+    virtual DRReturn setPixel(u8* pixel);
     virtual void setPixel(DRColor* pixel);
 
 protected:

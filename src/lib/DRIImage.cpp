@@ -81,9 +81,10 @@ void DRIImage::getPixel(DRColor* buffer)
     LOG_WARNING("Not implemented!");
 }
 
-void DRIImage::setPixel(u8* pixel)
+DRReturn DRIImage::setPixel(u8* pixel)
 {
     LOG_WARNING("Not implemented!");
+	return DR_OK;
 }
 
 void DRIImage::setSize(DRVector2i size)

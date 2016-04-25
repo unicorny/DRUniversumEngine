@@ -59,6 +59,9 @@ namespace UniLib {
 			//! \param filename name of file, using FileManager to find file
 			void loadFromFile();
 			virtual void saveIntoFile(const char* filename) = 0;
+			//! \brief load image from memory, attention copy direct input data to intern memory,
+			//! maybe slow by large images! doesn't use a CPU Task
+			DRReturn loadFromMemory(u8* data);
 
 			// virtuals, contains renderer specific code
 			virtual void uploadToGPU() = 0;
