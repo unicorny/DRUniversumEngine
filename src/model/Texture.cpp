@@ -77,6 +77,11 @@ namespace UniLib {
 			mImage->setPixel(color);
 			return mImage->saveIntoFile(filename);
 		}
+		DRReturn Texture::saveIntoFile(const char* filename)
+		{
+			if (!mImage->getPixel()) LOG_ERROR("no pixels to save", DR_ERROR);
+			return mImage->saveIntoFile(filename);
+		}
 
 		void Texture::clearMemory()
 		{

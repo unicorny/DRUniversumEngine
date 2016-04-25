@@ -33,22 +33,37 @@ namespace UniLib {
 
 	namespace view {
 		class Texture;
-		class TextureLoadingTask : public controller::CPUTask
+		class TextureTask : public controller::CPUTask 
+		{
+		public:
+			TextureTask(view::Texture* texView, controller::CPUSheduler* scheduler)
+				: CPUTask(scheduler), mViewTexture(texView) {}
+		protected:
+			view::Texture* mViewTexture;
+
+		};
+		class TextureLoadingTask : public TextureTask
 		{
 		public:
 			TextureLoadingTask(view::Texture* texView, controller::CPUSheduler* scheduler)
-				: CPUTask(scheduler), mViewTexture(texView) {}
-
+				: TextureTask(texView, scheduler) {}
 			//! \brief called from task scheduler, maybe from another thread
 			virtual DRReturn run();
-		
-		protected:
-			view::Texture* mViewTexture;
 		};
 
+		class TextureSavingTask : public TextureTask
+		{
+		public:
+			TextureSavingTask(view::Texture* texView, controller::CPUSheduler* scheduler, const char* filename)
+				: TextureTask(texView, scheduler), mFilename(filename) {}
+			virtual DRReturn run();
+		protected:
+			DRString mFilename;
+		};
 		class UNIVERSUM_LIB_API Texture : public lib::MultithreadResource
 		{
 			friend TextureLoadingTask;
+			friend TextureSavingTask;
 		public:
 			Texture(DHASH id, const char* textureName = NULL);
 			Texture(DRVector2i size, GLenum format);
@@ -58,7 +73,7 @@ namespace UniLib {
 			//! \brief load image data from file into memory
 			//! \param filename name of file, using FileManager to find file
 			void loadFromFile();
-			virtual void saveIntoFile(const char* filename) = 0;
+			void saveIntoFile(const char* filename);
 			//! \brief load image from memory, attention copy direct input data to intern memory,
 			//! maybe slow by large images! doesn't use a CPU Task
 			DRReturn loadFromMemory(u8* data);

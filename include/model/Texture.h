@@ -53,6 +53,7 @@ namespace UniLib {
 			DRReturn loadFromMemory(u8* data);
 			DRReturn saveIntoFile(const char* filename, u8* data);
 			DRReturn saveIntoFile(const char* filename, DRColor* color);
+			DRReturn saveIntoFile(const char* filename);
 
 			void clearMemory();
 

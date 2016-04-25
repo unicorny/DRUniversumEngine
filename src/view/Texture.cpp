@@ -16,6 +16,14 @@ namespace UniLib {
 			return DR_OK;
 		}
 
+		DRReturn TextureSavingTask::run()
+		{
+			model::Texture* m = mViewTexture->getTextureModel();
+			if(m->saveIntoFile(mFilename.data())) {
+				LOG_ERROR("error saving texture", DR_ERROR);
+			}
+			return DR_OK;
+		}
 		// ********************************************************************
 
 
@@ -51,6 +59,17 @@ namespace UniLib {
 			else {
 				mTextureModel->loadFromFile(mTextureName.data());
 				setLoadingState(LOADING_STATE_PARTLY_LOADED);
+			}
+		}
+
+		void Texture::saveIntoFile(const char* filename)
+		{
+			if (g_HarddiskScheduler) {
+				controller::TaskPtr task(new TextureSavingTask(this, g_HarddiskScheduler, filename));
+				task->scheduleTask(task);
+			}
+			else {
+				mTextureModel->saveIntoFile(filename);
 			}
 		}
 
