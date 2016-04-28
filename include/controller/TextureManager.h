@@ -58,7 +58,7 @@ namespace UniLib {
 			//! \param defaultCPUSheduler CPUSheduler on which texture loading and saving take place
 			//! \param updateTimer timer on which to attach for updating texture storage
 			//! \param rerunDelay how much ms passes between update calls
-			DRReturn init(CPUSheduler* defaultCPUSheduler, lib::Timer* updateTimer, Uint32 rerunDelay = 10000);
+			DRReturn init(lib::Timer* updateTimer, Uint32 rerunDelay = 10000);
 			void exit();
 
 			view::TexturePtr getTexture(const char* filename);
@@ -66,6 +66,7 @@ namespace UniLib {
 
 			// access
 			__inline__ void setTimeoutForNotLongerUsedTextures(Uint32 timeout) { mTimeToLetEmptyTexturesInStorage = timeout; }
+			__inline__ CPUSheduler* getTextureCPUScheduler() { return mTextureSheduler; }
 
 		protected:
 			TextureManager();
@@ -75,7 +76,7 @@ namespace UniLib {
 
 			// member variables
 			bool mInitalized;
-			CPUSheduler* mDefaultSheduler; 
+			CPUSheduler* mTextureSheduler; 
 			
 
 			// for updateing

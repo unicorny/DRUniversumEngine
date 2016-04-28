@@ -106,6 +106,7 @@ namespace UniLib {
 
 			//! \brief called from task scheduler, maybe from another thread
 			virtual DRReturn run(); 
+			virtual const char* getResourceType() const { return "ShaderLoadingTask"; };
 
 		protected:
 			ShaderProgram* mShaderProgram;
@@ -113,8 +114,10 @@ namespace UniLib {
 		class ShaderCompileTask : public controller::GPUTask
 		{
 		public: 
-			ShaderCompileTask(ShaderProgram* shader) : mShaderProgram(shader) {}
+			ShaderCompileTask(ShaderProgram* shader) 
+				: GPUTask(true), mShaderProgram(shader) {}
 			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "ShaderCompileTask"; };
 		protected:
 			ShaderProgram* mShaderProgram;
 		};

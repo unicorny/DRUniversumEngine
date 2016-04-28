@@ -30,27 +30,34 @@ namespace UniLib {
 		{
 			CPUShedulerThread* t = NULL;
 			// look at free worker threads
-			if(mFreeWorkerThreads.pop(t)) {
+			if(task->isAllParentsReady() && mFreeWorkerThreads.pop(t)) {
 				// gave him the new task
 				t->setNewTask(task);
 			} else {
 				// else put task to pending queue
-				mPendingTasks.push(task);
+				mPendingTasksMutex.lock();
+				mPendingTasks.push_back(task);
+				mPendingTasksMutex.unlock();
 			}
 			return DR_OK;
 		}
 		TaskPtr CPUSheduler::getNextUndoneTask(CPUShedulerThread* Me)
 		{
-			
 			// look at pending tasks
 			TaskPtr task;
-			if(mPendingTasks.pop(task)) {
-				// return task
-				return task;
-			} else {
-				// push thread to worker queue
-				mFreeWorkerThreads.push(Me);
+			mPendingTasksMutex.lock();
+			for (std::list<TaskPtr>::iterator it = mPendingTasks.begin(); it != mPendingTasks.end(); it++) {
+				if ((*it)->isAllParentsReady()) {
+					task = *it;
+					mPendingTasks.erase(it);
+					mPendingTasksMutex.unlock();
+					return task;
+				}
 			}
+			mPendingTasksMutex.unlock();
+			// push thread to worker queue
+			mFreeWorkerThreads.push(Me);
+			
 			return TaskPtr();
 		}
 

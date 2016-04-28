@@ -58,6 +58,8 @@ namespace UniLib {
 			// return null if no task pending, putting thread in wait queue,
 			// to inform him if a new task is ready for him
 			TaskPtr getNextUndoneTask(CPUShedulerThread* Me);
+
+			__inline__ u8 getThreadCount() { return mThreadCount; }
         protected:
 			
 			
@@ -69,7 +71,9 @@ namespace UniLib {
 			// free worker
 			lib::MultithreadQueue<CPUShedulerThread*> mFreeWorkerThreads;
 			// work to do
-			lib::MultithreadQueue<TaskPtr> mPendingTasks;
+			//lib::MultithreadQueue<TaskPtr> mPendingTasks;
+			std::list<TaskPtr> mPendingTasks;
+			lib::MultithreadContainer mPendingTasksMutex;
 
         };
     }

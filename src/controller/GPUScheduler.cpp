@@ -103,7 +103,9 @@ namespace UniLib {
 				mFastGPUTasks.pop();
 				if(!task.getResourcePtrHolder()) continue;
 				if (task->isReady()) {
+					EngineLog.writeToLog("<font color='orange'>start fast gpu task: %s</font>", task->getResourceType());
 					task->run();
+					EngineLog.writeToLog("<font color='orange'>end fast gpu task: %s</font>", task->getResourceType());
 				}
 				else {
 					mFastGPUTasks.push(task);
@@ -118,10 +120,15 @@ namespace UniLib {
 			// update one slow GPU Task
 			if(mSlowGPUTasks.size()) {
 				TaskPtr task = mSlowGPUTasks.front();
-				mSlowGPUTasks.pop();
-				task->run();
-				if(SDL_GetTicks() - ticks > 5) {
-					LOG_WARNING("slow GPU Task used more then 5 ms");
+				
+				if (task.getResourcePtrHolder() && task->isReady()) {
+					mSlowGPUTasks.pop();
+					EngineLog.writeToLog("<font color='orange'>start slow gpu task: %s</font>", task->getResourceType());
+					task->run();
+					EngineLog.writeToLog("<font color='orange'>end slow gpu task: %s</font>", task->getResourceType());
+				}
+				if(SDL_GetTicks() - ticks > 10) {
+					LOG_WARNING("slow GPU Task used more then 10 ms");
 				}
 			}
 			

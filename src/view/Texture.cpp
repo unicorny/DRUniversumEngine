@@ -1,5 +1,6 @@
 #include "view/Texture.h"
 #include "model/Texture.h"
+//#include "controller/CPUSheduler.h"
 
 namespace UniLib {
 	namespace view {
@@ -16,12 +17,31 @@ namespace UniLib {
 			return DR_OK;
 		}
 
+		DRReturn TextureGetPixelTask::run()
+		{
+			return DR_OK;
+		}
+
 		DRReturn TextureSavingTask::run()
 		{
 			model::Texture* m = mViewTexture->getTextureModel();
 			if(m->saveIntoFile(mFilename.data())) {
 				LOG_ERROR("error saving texture", DR_ERROR);
 			}
+			if (mHasParent) mViewTexture->setLoadingState(LOADING_STATE_PARTLY_LOADED);
+			return DR_OK;
+		}
+
+		DRReturn TextureSetPixelTask::run()
+		{
+			model::Texture* m = mViewTexture->getTextureModel();
+			if (m->loadFromMemory(mData)) {
+				DR_SAVE_DELETE_ARRAY(mData);
+				LOG_ERROR("error setting data", DR_ERROR);
+			}
+			DR_SAVE_DELETE_ARRAY(mData);
+			if(!mHasParent)
+				mViewTexture->setLoadingState(LOADING_STATE_PARTLY_LOADED);
 			return DR_OK;
 		}
 		// ********************************************************************
@@ -51,39 +71,42 @@ namespace UniLib {
 		void Texture::loadFromFile()
 		{
 			if (!mTextureModel) mTextureModel = new model::Texture();
-			if (g_HarddiskScheduler) {
-				controller::TaskPtr task(new TextureLoadingTask(this, g_HarddiskScheduler));
-				task->scheduleTask(task);
-				//((controller::CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
-			}
-			else {
-				mTextureModel->loadFromFile(mTextureName.data());
-				setLoadingState(LOADING_STATE_PARTLY_LOADED);
-			}
+			controller::TaskPtr task(new TextureLoadingTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler()));
+			task->scheduleTask(task);
+			//((controller::CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
 		}
 
 		void Texture::saveIntoFile(const char* filename)
 		{
-			if (g_HarddiskScheduler) {
-				controller::TaskPtr task(new TextureSavingTask(this, g_HarddiskScheduler, filename));
-				task->scheduleTask(task);
-			}
-			else {
-				mTextureModel->saveIntoFile(filename);
-			}
+			controller::TaskPtr task(new TextureSavingTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler(), filename));
+			task->scheduleTask(task);
 		}
+
+		
 
 		DRReturn Texture::loadFromMemory(u8* data)
 		{
 			if (!mTextureModel) 
 				LOG_ERROR("texture model not created, size not known!", DR_ERROR);
-			if (mTextureModel->loadFromMemory(data)) 
-				LOG_ERROR("error loading from memory", DR_ERROR);
-			setLoadingState(LOADING_STATE_PARTLY_LOADED);
+			controller::TaskPtr task(new TextureSetPixelTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler(), data));
+			task->scheduleTask(task);
+			
 			return DR_OK;
 		}
-
-
+		DRReturn Texture::saveIntoFile(const char* filename, u8* data)
+		{
+			if (!mTextureModel)
+				LOG_ERROR("texture model not created, size not known!", DR_ERROR);
+			controller::CPUSheduler* textureScheduler = controller::TextureManager::getInstance()->getTextureCPUScheduler();
+			TextureSetPixelTask* setPixel = new TextureSetPixelTask(this, textureScheduler, data);
+			setPixel->hasParent();
+			controller::TaskPtr setPixelTask(setPixel);
+			
+			controller::TaskPtr savingTask(new TextureSavingTask(this, textureScheduler, filename, 1));
+			savingTask->setParentTaskPtrInArray(setPixelTask, 0);
+			
+			savingTask->scheduleTask(savingTask);
+		}
 		void Texture::setLoadingState(LoadingState state)
 		{
 			MultithreadResource::setLoadingState(state);

@@ -53,6 +53,7 @@ namespace UniLib {
 			mImage->setImageFormat(-1);
 			if (mImage->setPixel(data))
 				LOG_ERROR("error setting pixel", DR_ERROR);
+			///LOG_INFO("load texture from memory successfully");
 			return DR_OK;
 		}
 

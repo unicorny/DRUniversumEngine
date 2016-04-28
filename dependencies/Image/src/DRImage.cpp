@@ -6,15 +6,14 @@ FreeImage error handler
 @param message Error message
 */
 void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) {
-	UniLib::EngineLog.writeToLogDirect("<font color='#f82438'><b>FreeImage Error: </b></font> ");
+	UniLib::EngineLog.writeToLog("<font color='#f82438'><b>FreeImage Error: </b></font> ");
 	
 	if (fif != FIF_UNKNOWN) {
 		//printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
-		UniLib::EngineLog.writeToLogDirect("%s Format", FreeImage_GetFormatFromFIF(fif));
+		UniLib::EngineLog.writeToLog("%s Format", FreeImage_GetFormatFromFIF(fif));
 	}
 	//printf(message);
-	UniLib::EngineLog.writeToLogDirect(message);
-	UniLib::EngineLog.writeToLogDirect("\n");
+	UniLib::EngineLog.writeToLog(message);
 	//printf(" ***\n");
 }
 
@@ -178,20 +177,24 @@ DRReturn DRImage::saveIntoFile(const char* filename)
     //if still unkown, return failure
     if(fif == FIF_UNKNOWN)
         LOG_ERROR("Unknown File Format", DR_ERROR);
+	FIBITMAP* clone = FreeImage_Clone(mImage);
+
     if(fif == FIF_JPEG)
     {
-        FIBITMAP* t = FreeImage_ConvertTo24Bits(mImage);
-        FreeImage_Unload(mImage);
-        mImage = t;
+        FIBITMAP* t = FreeImage_ConvertTo24Bits(clone);
+		if (t) {
+			FreeImage_Unload(clone);
+			clone = t;
+		}
+		
     }
     //FIBITMAP* t = FreeImage_Rotate(mImage, 0);
     //FreeImage_Unload(mImage);
     //mImage = t;
-    FreeImage_FlipVertical(mImage);
-    
-    if(!FreeImage_Save(fif, mImage, filename, 0 ))
+    FreeImage_FlipVertical(clone);
+    if(!FreeImage_Save(fif, clone, filename, 0 ))
         LOG_ERROR("image couldn't be saved", DR_ERROR);
-    
+	FreeImage_Unload(clone);
     return DR_OK;
 }
 

@@ -26,6 +26,7 @@
 
 #include "lib/MultithreadResource.h"
 #include "controller/CPUTask.h"
+#include "controller/TextureManager.h"
 #include "model/Texture.h"
 
 namespace UniLib {
@@ -38,6 +39,10 @@ namespace UniLib {
 		public:
 			TextureTask(view::Texture* texView, controller::CPUSheduler* scheduler)
 				: CPUTask(scheduler), mViewTexture(texView) {}
+			TextureTask(view::Texture* texView, controller::CPUSheduler* scheduler, u8 dependencyCount)
+				: CPUTask(scheduler, dependencyCount), mViewTexture(texView) {}
+
+			virtual const char* getResourceType() const { return "TextureTask"; };
 		protected:
 			view::Texture* mViewTexture;
 
@@ -49,21 +54,52 @@ namespace UniLib {
 				: TextureTask(texView, scheduler) {}
 			//! \brief called from task scheduler, maybe from another thread
 			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "TextureLoadingTask"; };
 		};
 
+		class TextureSetPixelTask : public TextureTask
+		{
+		public:
+			TextureSetPixelTask(view::Texture* texView, controller::CPUSheduler* scheduler, u8* data)
+				: TextureTask(texView, scheduler), mData(data), mHasParent(false){}
+
+			virtual DRReturn run();
+			virtual bool isTaskFinished() { return mData == NULL; }
+			__inline__ void hasParent() { mHasParent = true; }
+			virtual const char* getResourceType() const { return "TextureSetPixelTask"; };
+		protected:
+			u8* mData;
+			bool mHasParent;
+		};
+
+		class TextureGetPixelTask : public TextureTask
+		{
+		public:
+			TextureGetPixelTask(view::Texture* texView, controller::CPUSheduler* scheduler)
+				: TextureTask(texView, scheduler) {}
+			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "TextureGetPixelTask"; };
+		};
 		class TextureSavingTask : public TextureTask
 		{
 		public:
 			TextureSavingTask(view::Texture* texView, controller::CPUSheduler* scheduler, const char* filename)
-				: TextureTask(texView, scheduler), mFilename(filename) {}
+				: TextureTask(texView, scheduler), mFilename(filename), mHasParent(false){}
+			TextureSavingTask(view::Texture* texView, controller::CPUSheduler* scheduler, const char* filename, u8 dependenceTaskCount)
+				: TextureTask(texView, scheduler, dependenceTaskCount), mFilename(filename), mHasParent(true) {}
 			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "TextureSavingTask"; };
 		protected:
 			DRString mFilename;
+			bool mHasParent;
 		};
+
 		class UNIVERSUM_LIB_API Texture : public lib::MultithreadResource
 		{
 			friend TextureLoadingTask;
 			friend TextureSavingTask;
+			friend TextureSetPixelTask;
+			//friend TextureGetPixelTask;
 		public:
 			Texture(DHASH id, const char* textureName = NULL);
 			Texture(DRVector2i size, GLenum format);
@@ -74,9 +110,9 @@ namespace UniLib {
 			//! \param filename name of file, using FileManager to find file
 			void loadFromFile();
 			void saveIntoFile(const char* filename);
-			//! \brief load image from memory, attention copy direct input data to intern memory,
-			//! maybe slow by large images! doesn't use a CPU Task
+			//! \brief load image from memory, release data in texture manager thread			
 			DRReturn loadFromMemory(u8* data);
+			DRReturn saveIntoFile(const char* filename, u8* data);
 
 			// virtuals, contains renderer specific code
 			virtual void uploadToGPU() = 0;

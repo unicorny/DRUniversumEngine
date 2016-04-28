@@ -1,5 +1,6 @@
 #include "controller/TextureManager.h"
 #include "controller/BindToRenderer.h"
+#include "controller/CPUSheduler.h"
 
 #include "model/Texture.h"
 #include "view/Texture.h"
@@ -11,13 +12,13 @@ namespace UniLib {
 	namespace controller {
 
 		TextureManager::TextureManager()
-			: mInitalized(false), mDefaultSheduler(NULL), mUpdateThread(NULL)
+			: mInitalized(false), mTextureSheduler(NULL), mUpdateThread(NULL)
 		{
 
 		}
 
 		TextureManager::TextureManager(const TextureManager&)
-			: mInitalized(false), mDefaultSheduler(NULL)
+			: mInitalized(false), mTextureSheduler(NULL)
 		{
 
 		}
@@ -28,9 +29,12 @@ namespace UniLib {
 			return &TheOneAndOnly;
 		}
 
-		DRReturn TextureManager::init(CPUSheduler* defaultCPUSheduler, lib::Timer* updateTimer, Uint32 rerunDelay/* = 10000*/)
+		DRReturn TextureManager::init(lib::Timer* updateTimer, Uint32 rerunDelay/* = 10000*/)
 		{
-			mDefaultSheduler = defaultCPUSheduler;
+			if (g_HarddiskScheduler && g_HarddiskScheduler->getThreadCount() == 1)
+				mTextureSheduler = g_HarddiskScheduler;
+			else 
+				mTextureSheduler = new CPUSheduler(1, "texture");
 			mUpdateThread = new UpdateThread(rerunDelay, updateTimer);
 			// wait 20 seconds before deleting not used textures, maybe some other thread need the memory
 			mTimeToLetEmptyTexturesInStorage = 20000;
@@ -43,7 +47,8 @@ namespace UniLib {
 		{
 			// not necessary, because will be deletet from timer
 			//DR_SAVE_DELETE(mUpdateThread);
-			
+			if(g_HarddiskScheduler != mTextureSheduler)
+				DR_SAVE_DELETE(mTextureSheduler);
 			mInitalized = false;
 			LOG_INFO("TextureManager beendet");
 		}

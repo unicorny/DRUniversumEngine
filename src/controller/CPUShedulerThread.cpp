@@ -22,7 +22,9 @@ namespace UniLib {
 		{
 			while(mWaitingTask.getResourcePtrHolder()) 
 			{
+				EngineLog.writeToLog("<font color='orange'>start task: %s</font>", mWaitingTask->getResourceType());
 				mWaitingTask->run();
+				EngineLog.writeToLog("<font color='orange'>end task: %s</font>", mWaitingTask->getResourceType());
 				mWaitingTask = mParent->getNextUndoneTask(this);
 			}
 			return 0;

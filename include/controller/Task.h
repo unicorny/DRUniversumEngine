@@ -57,6 +57,8 @@ namespace UniLib {
             //! \brief called from task scheduler, maybe from another thread
             virtual DRReturn run() = 0;
 
+			
+
 			__inline__ void lock() {SDL_LockMutex(mWorkingMutex);}
 			__inline__ void unlock() {SDL_UnlockMutex(mWorkingMutex);}
 
