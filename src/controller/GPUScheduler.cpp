@@ -1,5 +1,6 @@
 #include "controller/GPUScheduler.h"
 #include "controller/Task.h"
+#include "debug/CPUSchedulerTasksLog.h"
 
 namespace UniLib {
 	namespace controller {
@@ -97,15 +98,22 @@ namespace UniLib {
 
 			Uint32 startTicks = SDL_GetTicks();
 			Uint32 reQueueCount = 0;
+#ifdef _UNI_LIB_DEBUG
+			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
+#endif
 			// update fast GPU Tasks
 			while(mFastGPUTasks.size()- reQueueCount) {
 				TaskPtr task = mFastGPUTasks.front();
 				mFastGPUTasks.pop();
 				if(!task.getResourcePtrHolder()) continue;
 				if (task->isReady()) {
-					EngineLog.writeToLog("<font color='orange'>start fast gpu task: %s</font>", task->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU fast", task->getName());
+#endif
 					task->run();
-					EngineLog.writeToLog("<font color='orange'>end fast gpu task: %s</font>", task->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+#endif
 				}
 				else {
 					mFastGPUTasks.push(task);
@@ -123,9 +131,13 @@ namespace UniLib {
 				
 				if (task.getResourcePtrHolder() && task->isReady()) {
 					mSlowGPUTasks.pop();
-					EngineLog.writeToLog("<font color='orange'>start slow gpu task: %s</font>", task->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU slow", task->getName());
+#endif
 					task->run();
-					EngineLog.writeToLog("<font color='orange'>end slow gpu task: %s</font>", task->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+#endif
 				}
 				if(SDL_GetTicks() - ticks > 10) {
 					LOG_WARNING("slow GPU Task used more then 10 ms");
@@ -136,7 +148,13 @@ namespace UniLib {
 			for(int i = 0; i < GPU_SCHEDULER_COMMAND_MAX; i++) {
 				for(std::list<GPURenderCall*>::iterator it = mGPURenderCommands[i].begin(); it != mGPURenderCommands[i].end(); it++) {
 					ticks = SDL_GetTicks();
+#ifdef _UNI_LIB_DEBUG
+					l->addTaskLogEntry(1, getGPUCommandTypeString((GPUSchedulerCommandType)i), "GPU Render Call", (*it)->getName());
+#endif 
 					DRReturn result = (*it)->render(secondsSinceLastFrame);
+#ifdef _UNI_LIB_DEBUG
+					l->removeTaskLogEntry(1);
+#endif
 					Uint32 diff = SDL_GetTicks()-ticks;
 					if(result) {
 						(*it)->kicked();
@@ -174,6 +192,18 @@ namespace UniLib {
 			lock();
 			mThreadRunning = false;
 			unlock();
+		}
+
+		const char* GPUScheduler::getGPUCommandTypeString(GPUSchedulerCommandType type)
+		{
+			switch (type) {
+			case GPU_SCHEDULER_COMMAND_AFTER_AFTER_RENDERING: return "after after rendering";
+			case GPU_SCHEDULER_COMMAND_AFTER_RENDERING: return "after rendering";
+			case GPU_SCHEDULER_COMMAND_BEFORE_PREPARE_RENDERING: return "before prepare rendering";
+			case GPU_SCHEDULER_COMMAND_PREPARE_RENDERING: return "prepare rendering";
+			case GPU_SCHEDULER_COMMAND_RENDERING: return "rendering";
+			case GPU_SCHEDULER_COMMAND_MAX: return "max";
+			}
 		}
 	}
 }

@@ -1,6 +1,8 @@
 #include "controller/CPUShedulerThread.h"
 #include "controller/CPUSheduler.h"
 #include "controller/Task.h"
+#include "debug/CPUSchedulerTasksLog.h"
+
 
 namespace UniLib {
 	namespace controller {
@@ -22,9 +24,16 @@ namespace UniLib {
 		{
 			while(mWaitingTask.getResourcePtrHolder()) 
 			{
-				EngineLog.writeToLog("<font color='orange'>start task: %s</font>", mWaitingTask->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+				debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
+				const char* name = mWaitingTask->getName();
+				l->addTaskLogEntry((HASH)mWaitingTask.getResourcePtrHolder(), mWaitingTask->getResourceType(), mName.data(), name);
+#endif 
 				mWaitingTask->run();
-				EngineLog.writeToLog("<font color='orange'>end task: %s</font>", mWaitingTask->getResourceType());
+#ifdef _UNI_LIB_DEBUG
+				l->removeTaskLogEntry((HASH)mWaitingTask.getResourcePtrHolder());
+#endif
+				
 				mWaitingTask = mParent->getNextUndoneTask(this);
 			}
 			return 0;

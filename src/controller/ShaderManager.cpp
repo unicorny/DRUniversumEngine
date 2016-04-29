@@ -85,8 +85,13 @@ namespace UniLib {
 			shaderProgram->addShader(fragmentShader, SHADER_FRAGMENT);
 
 			if (g_HarddiskScheduler) {
-				controller::TaskPtr task(new ShaderLoadingTask(shaderProgram, g_HarddiskScheduler));
+				ShaderLoadingTask* sl = new ShaderLoadingTask(shaderProgram, g_HarddiskScheduler);
+				controller::TaskPtr task(sl);
 				task->scheduleTask(task);
+#ifdef _UNI_LIB_DEBUG
+				if(vertexShader)
+					sl->setName(vertexShader);
+#endif
 			}
 			else {
 				shaderProgram->loadShaderDataIntoMemory();

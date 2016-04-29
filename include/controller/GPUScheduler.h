@@ -54,6 +54,8 @@ namespace UniLib {
 			// will be called if render call need to much time
 			// \param percent used up percent time of render main loop
 			virtual void youNeedToLong(float percent) = 0;
+
+			virtual const char* getName() const { return ""; }
 		};
 
 		enum GPUSchedulerCommandType {
@@ -111,6 +113,8 @@ namespace UniLib {
 			Uint32    mLastFrameDurationCursor;
 
 			float mSecondsSinceLastFrame;
+
+			static const char* getGPUCommandTypeString(GPUSchedulerCommandType type);
 
 
 		private:

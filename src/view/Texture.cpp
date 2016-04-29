@@ -71,7 +71,11 @@ namespace UniLib {
 		void Texture::loadFromFile()
 		{
 			if (!mTextureModel) mTextureModel = new model::Texture();
-			controller::TaskPtr task(new TextureLoadingTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler()));
+			TextureLoadingTask* tl = new TextureLoadingTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler());
+#ifdef _UNI_LIB_DEBUG
+			tl->setName(mTextureName.data());
+#endif
+			controller::TaskPtr task(tl);
 			task->scheduleTask(task);
 			//((controller::CPUTask*)(task.getResourcePtrHolder()->mResource))->start(task);
 		}
@@ -101,11 +105,15 @@ namespace UniLib {
 			TextureSetPixelTask* setPixel = new TextureSetPixelTask(this, textureScheduler, data);
 			setPixel->hasParent();
 			controller::TaskPtr setPixelTask(setPixel);
-			
-			controller::TaskPtr savingTask(new TextureSavingTask(this, textureScheduler, filename, 1));
-			savingTask->setParentTaskPtrInArray(setPixelTask, 0);
-			
-			savingTask->scheduleTask(savingTask);
+			TextureSavingTask* savingTask = new TextureSavingTask(this, textureScheduler, filename, 1);
+			controller::TaskPtr savingTaskPtr(savingTask);
+			savingTaskPtr->setParentTaskPtrInArray(setPixelTask, 0);
+			mTextureName = filename;
+#ifdef _UNI_LIB_DEBUG
+			setPixel->setName(filename);
+			savingTask->setName(filename);
+#endif
+			savingTaskPtr->scheduleTask(savingTaskPtr);
 		}
 		void Texture::setLoadingState(LoadingState state)
 		{

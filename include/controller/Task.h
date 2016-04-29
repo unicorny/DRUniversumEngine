@@ -76,6 +76,7 @@ namespace UniLib {
 
 			// from parent
 			virtual const char* getResourceType() const {return "Task";};
+			virtual const char* getName() const { return ""; }
 			virtual bool less_than(DRIResource& b) const {return false;};
 
 			// type check

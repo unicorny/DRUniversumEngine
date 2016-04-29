@@ -43,8 +43,15 @@ namespace UniLib {
 				: CPUTask(scheduler, dependencyCount), mViewTexture(texView) {}
 
 			virtual const char* getResourceType() const { return "TextureTask"; };
+#ifdef _UNI_LIB_DEBUG
+			__inline__ void setName(const char* name) { mTextureName = name; }
+			virtual const char* getName() const { return mTextureName.data(); }
+#endif
 		protected:
 			view::Texture* mViewTexture;
+#ifdef _UNI_LIB_DEBUG
+			std::string mTextureName;
+#endif
 
 		};
 		class TextureLoadingTask : public TextureTask
