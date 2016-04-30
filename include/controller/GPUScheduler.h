@@ -115,6 +115,8 @@ namespace UniLib {
 			float mSecondsSinceLastFrame;
 
 			static const char* getGPUCommandTypeString(GPUSchedulerCommandType type);
+			void runSlowGPUTask();
+			void runFastGPUTasks();
 
 
 		private:

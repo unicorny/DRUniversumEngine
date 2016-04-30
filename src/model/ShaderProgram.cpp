@@ -33,7 +33,7 @@ namespace UniLib {
 			long unsigned int bytesread = 0;
 			file.read(buffer, 1, bytesinfile, &bytesread);
 			buffer[bytesread] = 0; // Terminate the string with 0
-			EngineLog.writeToLog("read shader file: %s", filename);
+			//EngineLog.writeToLog("read shader file: %s", filename);
 
 			return buffer;
 		}
@@ -55,7 +55,7 @@ namespace UniLib {
 		// ***********************************************************************
 
 		ShaderProgram::ShaderProgram(HASH id/* = 0*/)
-		: mId(id), mVertexShader(), mFragmentShader()
+		: mId(id), mShaderCompileTask(new ShaderCompileTask(this))
 		{
 
 		}
@@ -84,9 +84,12 @@ namespace UniLib {
 			}
 			setLoadingState(LOADING_STATE_PARTLY_LOADED);
 			unlock();
-
-			controller::TaskPtr task(new ShaderCompileTask(this));
-			task->scheduleTask(task);
+#ifdef _UNI_LIB_DEBUG
+			lock();
+			mShaderCompileTask->setName(mShaderToLoad.front().filename.data());
+			unlock();
+#endif
+			mShaderCompileTask->scheduleTask(mShaderCompileTask);
 		}
 
 

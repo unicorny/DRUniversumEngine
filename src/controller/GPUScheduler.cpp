@@ -76,17 +76,92 @@ namespace UniLib {
 					s->unlock();
 					return 0;
 				}
+				s->unlock();
 				if(s->updateEveryRendering()) {
-					s->unlock();
 					s->stopThread();
 					LOG_ERROR("error in main game rendering loop", DR_ERROR);
 				}
-				s->unlock();
 			}
 			return 0;
 		}
+		void GPUScheduler::runSlowGPUTask()
+		{
+#ifdef _UNI_LIB_DEBUG
+			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
+			std::string runningTasksTable;
+#endif
+			Uint32 ticks = SDL_GetTicks();
+			if (mSlowGPUTasks.size()) {
+				TaskPtr task = mSlowGPUTasks.front();
+				if (task.getResourcePtrHolder() && task->isReady()) {
+					mSlowGPUTasks.pop();
+
+#ifdef _UNI_LIB_DEBUG
+					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU slow", task->getName());
+					runningTasksTable = l->getCurrentlRunningTasksTableString();
+#endif
+					unlock();
+					task->run();
+					lock();
+#ifdef _UNI_LIB_DEBUG
+					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+#endif
+				}
+
+				if (SDL_GetTicks() - ticks > 10) {
+#ifdef _UNI_LIB_DEBUG
+					EngineLog.writeToLogDirect(runningTasksTable);
+					runningTasksTable = "";
+#endif
+					EngineLog.writeToLog("<font color='red'>used %d ms</font>", SDL_GetTicks() - ticks);
+					LOG_WARNING("slow GPU Task used more then 10 ms");
+				}
+			}
+		}
+		void GPUScheduler::runFastGPUTasks()
+		{
+			Uint32 reQueueCount = 0;
+			Uint32 startTicks = SDL_GetTicks();
+#ifdef _UNI_LIB_DEBUG
+			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
+			std::string runningTasksTable;
+#endif
+
+			while (mFastGPUTasks.size() - reQueueCount) {
+				TaskPtr task = mFastGPUTasks.front();
+				mFastGPUTasks.pop();
+				if (!task.getResourcePtrHolder()) continue;
+				if (task->isReady()) {
+#ifdef _UNI_LIB_DEBUG
+					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU fast", task->getName());
+					runningTasksTable = l->getCurrentlRunningTasksTableString();
+#endif
+					unlock();
+					task->run();
+					lock();
+#ifdef _UNI_LIB_DEBUG
+					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+#endif
+				}
+				else {
+					mFastGPUTasks.push(task);
+					reQueueCount++;
+				}
+				if (SDL_GetTicks() - startTicks > 2) {
+#ifdef _UNI_LIB_DEBUG
+					//l->printCurrentlyRunningTasks();
+					EngineLog.writeToLogDirect(runningTasksTable);
+					runningTasksTable = "";
+#endif
+					EngineLog.writeToLog("<font color='red'>used %d ms</font>", SDL_GetTicks() - startTicks);
+					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
+					break;
+				}
+			}
+		}
 		DRReturn GPUScheduler::updateEveryRendering()
 		{
+			
 			float secondsSinceLastFrame = 0.0f;
 			Uint32 sumFrames = 0;
 			for(int i = 0; i < GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT; i++)
@@ -97,59 +172,21 @@ namespace UniLib {
 			SDL_UnlockMutex(mFrameTimeMutex);
 
 			Uint32 startTicks = SDL_GetTicks();
-			Uint32 reQueueCount = 0;
+
+			lock();
+			// update fast GPU Tasks
+			runFastGPUTasks();
+
+			// update one slow GPU Task
+			runSlowGPUTask();
+	
 #ifdef _UNI_LIB_DEBUG
 			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
 #endif
-			// update fast GPU Tasks
-			while(mFastGPUTasks.size()- reQueueCount) {
-				TaskPtr task = mFastGPUTasks.front();
-				mFastGPUTasks.pop();
-				if(!task.getResourcePtrHolder()) continue;
-				if (task->isReady()) {
-#ifdef _UNI_LIB_DEBUG
-					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU fast", task->getName());
-#endif
-					task->run();
-#ifdef _UNI_LIB_DEBUG
-					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
-#endif
-				}
-				else {
-					mFastGPUTasks.push(task);
-					reQueueCount++;
-				}
-				if(SDL_GetTicks() - startTicks > 2) {
-					EngineLog.writeToLog("used %d ms", SDL_GetTicks() - startTicks);
- 					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
-					break;
-				}
-			}
-			Uint32 ticks = SDL_GetTicks();
-			// update one slow GPU Task
-			if(mSlowGPUTasks.size()) {
-				TaskPtr task = mSlowGPUTasks.front();
-				
-				if (task.getResourcePtrHolder() && task->isReady()) {
-					mSlowGPUTasks.pop();
-#ifdef _UNI_LIB_DEBUG
-					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU slow", task->getName());
-#endif
-					task->run();
-#ifdef _UNI_LIB_DEBUG
-					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
-#endif
-				}
-				if(SDL_GetTicks() - ticks > 10) {
-					EngineLog.writeToLog("used %d ms", SDL_GetTicks() - startTicks);
-					LOG_WARNING("slow GPU Task used more then 10 ms");
-				}
-			}
-			
 			// update render calls
 			for(int i = 0; i < GPU_SCHEDULER_COMMAND_MAX; i++) {
 				for(std::list<GPURenderCall*>::iterator it = mGPURenderCommands[i].begin(); it != mGPURenderCommands[i].end(); it++) {
-					ticks = SDL_GetTicks();
+					Uint32 ticks = SDL_GetTicks();
 #ifdef _UNI_LIB_DEBUG
 					l->addTaskLogEntry(1, getGPUCommandTypeString((GPUSchedulerCommandType)i), "GPU Render Call", (*it)->getName());
 #endif 
@@ -173,11 +210,9 @@ namespace UniLib {
 
 			// if we have time left, let's run some more slow gpu tasks
 			while(SDL_GetTicks() - startTicks < 15 && mSlowGPUTasks.size()) {
-				TaskPtr task = mSlowGPUTasks.front();
-				mSlowGPUTasks.pop();
-				task->run();
+				runSlowGPUTask();
 			}
-
+			unlock();
 			// if we have still time left, we wait
 			if(SDL_GetTicks() - startTicks < 16) {
 				SDL_Delay(16 -  SDL_GetTicks() + startTicks);

@@ -45,6 +45,7 @@ namespace UniLib {
 			void removeTaskLogEntry(HASH id);
 
 			void printCurrentlyRunningTasks();
+			std::string getCurrentlRunningTasksTableString();
 
 		protected:
 			CPUShedulerTasksLog();

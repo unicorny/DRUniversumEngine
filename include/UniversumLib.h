@@ -54,6 +54,7 @@
 
 #include <queue>
 #include <cassert>
+#include <sstream>
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern lib::EngineLogger EngineLog;

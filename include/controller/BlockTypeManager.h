@@ -47,14 +47,14 @@ namespace UniLib {
 		class BlockTypeLoadingTask: public CPUTask
 		{
 		public:
-			BlockTypeLoadingTask(CPUSheduler* scheduler, std::list<std::string>* fileContents)
-				: CPUTask(scheduler), mFileContents(fileContents) {}
+			BlockTypeLoadingTask(CPUSheduler* scheduler, std::string fileContent)
+				: CPUTask(scheduler), mFileContent(fileContent) {}
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() {return false;};
 			virtual const char* getResourceType() const { return "BlockTypeLoadingTask"; };
 		protected:
-			std::list<std::string>* mFileContents;
+			std::string mFileContent;
 
 
 		};
@@ -62,14 +62,14 @@ namespace UniLib {
 		class LoadingJsonFilesIntoMemoryTask : public CPUTask
 		{
 		public:
-			LoadingJsonFilesIntoMemoryTask(const std::list<std::string>* filenames, CPUSheduler* schedulerForParser)
-				: CPUTask(g_HarddiskScheduler), mFileNames(*filenames), mSchedulerForParser(schedulerForParser) {}
+			LoadingJsonFilesIntoMemoryTask(std::string filename, CPUSheduler* schedulerForParser)
+				: CPUTask(g_HarddiskScheduler), mFileName(filename), mSchedulerForParser(schedulerForParser) {}
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() { return false; };
 			virtual const char* getResourceType() const { return "LoadingJsonFilesIntoMemoryTask"; };
 		protected:
-			std::list<std::string> mFileNames;
+			std::string mFileName;
 			CPUSheduler* mSchedulerForParser;
 		};
 
@@ -93,8 +93,7 @@ namespace UniLib {
 			BlockTypeManager();
 			virtual ~BlockTypeManager();
 
-			DRReturn _loadingFilesIntoMemory(const std::list<std::string>* fileNames, std::list<std::string>* fileContentsReturn);
-			DRReturn _parsingJsonToBlockTypes(const std::list<std::string>* mFilesContent);
+			DRReturn _parsingJsonToBlockTypes(const std::string& mFilesContent);
 
 			// member variables
 			lib::MultithreadContainer mWorkMutex;

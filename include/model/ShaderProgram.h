@@ -77,7 +77,7 @@ namespace UniLib {
 
 			virtual DRReturn init(const char* shaderFile, ShaderType shaderType) = 0;
 			virtual DRReturn init(unsigned char* shaderFileInMemory, ShaderType type) = 0;
-			//__inline__ GLuint getShader() {return mShaderID;}
+			
 			__inline__ HASH getID() {return mID;}
 
 			virtual const char* getResourceType() const {return "Shader";}
@@ -88,13 +88,13 @@ namespace UniLib {
 
 
 			static unsigned char* readShaderFile(const char *filename);
-			//operator GLuint() {return mShaderID;}
+			
 		protected:
-			//unsigned char* readShaderFile(const char *filename);
+			ShaderType mType;
 
 		private:
 			HASH mID;
-			//GLuint mShaderID;
+			
 		};
 
 		typedef DRResourcePtr<Shader> ShaderPtr;
@@ -112,16 +112,7 @@ namespace UniLib {
 			ShaderProgram* mShaderProgram;
 
 		};
-		class ShaderCompileTask : public controller::GPUTask
-		{
-		public: 
-			ShaderCompileTask(ShaderProgram* shader) 
-				: GPUTask(true), mShaderProgram(shader) {}
-			virtual DRReturn run();
-			virtual const char* getResourceType() const { return "ShaderCompileTask"; };
-		protected:
-			ShaderProgram* mShaderProgram;
-		};
+		class ShaderCompileTask;
 
 		class UNIVERSUM_LIB_API ShaderProgram : public lib::MultithreadResource
 		{
@@ -132,7 +123,7 @@ namespace UniLib {
 			ShaderProgram(HASH id = 0);
 			~ShaderProgram();
 
-			virtual DRReturn init(ShaderPtr vertexShader, ShaderPtr fragmentShader) = 0;
+			//virtual DRReturn init(ShaderPtr vertexShader, ShaderPtr fragmentShader) = 0;
 			DRReturn addShader(const char* filename, ShaderType type);
 
 			virtual void bind() const = 0;
@@ -161,13 +152,25 @@ namespace UniLib {
 				ShaderType type;
 			};
 			HASH  mId;
-			ShaderPtr mVertexShader;
-			ShaderPtr mFragmentShader;
 			std::list<ShaderData> mShaderToLoad;
+			std::list<Shader*> mLoadedShader;
+			controller::TaskPtr mShaderCompileTask;
 			//GLuint mProgram;
 		};
 
 		typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
+
+		class ShaderCompileTask : public controller::GPUTask
+		{
+		public:
+			ShaderCompileTask(ShaderProgram* shader)
+				: GPUTask(true), mShaderProgram(shader) {}
+			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "ShaderCompileTask"; };
+		protected:
+			ShaderProgram* mShaderProgram;
+			ShaderProgram::ShaderData* mShaderData;
+		};
 	}
 }
 

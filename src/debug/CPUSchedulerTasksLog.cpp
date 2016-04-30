@@ -9,7 +9,8 @@ namespace UniLib {
 		}
 		CPUShedulerTasksLog::~CPUShedulerTasksLog()
 		{
-
+			if(mInitialized)
+				exit();
 		}
 		CPUShedulerTasksLog* const CPUShedulerTasksLog::getInstance()
 		{
@@ -25,20 +26,23 @@ namespace UniLib {
 
 		void CPUShedulerTasksLog::exit()
 		{
-			mInitialized = false;
+			
 			for (TaskLogEntryMap::iterator it = mTaskLogEntrys.begin(); it != mTaskLogEntrys.end(); it++) {
 				DR_SAVE_DELETE(it->second);
 			}
 			mTaskLogEntrys.clear();
+			mInitialized = false;
 		}
 
 		void CPUShedulerTasksLog::addTaskLogEntry(HASH id, const char* resourcesTypeName, const char* threadName, const char* name/* = NULL*/)
 		{
+			
 			lock();
 			mTaskLogEntrys.insert(TaskLogEntryPair(id, new TaskLogEntry(id, resourcesTypeName, threadName, name)));
+			u8 count = mTaskLogEntrys.size();
 			unlock();
-			if(id != 1)
-				printCurrentlyRunningTasks();
+			//if(id != 1)
+				//printCurrentlyRunningTasks();
 		}
 		void CPUShedulerTasksLog::removeTaskLogEntry(HASH id)
 		{
@@ -51,6 +55,10 @@ namespace UniLib {
 			unlock();
 		}
 		void CPUShedulerTasksLog::printCurrentlyRunningTasks()
+		{
+			EngineLog.writeToLogDirect(getCurrentlRunningTasksTableString());
+		}
+		std::string CPUShedulerTasksLog::getCurrentlRunningTasksTableString()
 		{
 			std::stringstream ss;
 			ss << "<tr><td><table style='color:grey;font-size:10px;border: 1px solid grey'>";
@@ -67,7 +75,7 @@ namespace UniLib {
 			}
 			unlock();
 			ss << "</table></td></tr>";
-			EngineLog.writeToLogDirect(ss.str());
+			return ss.str();
 		}
 	}
 }
