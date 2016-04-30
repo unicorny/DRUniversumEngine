@@ -35,12 +35,13 @@
 
 #include "UniversumLib.h"
 #include "lib/DRIImage.h"
+#include "lib/MultithreadContainer.h"
 
 class DRIImage;
 
 namespace UniLib {
 	namespace model {
-		class UNIVERSUM_LIB_API Texture
+		class UNIVERSUM_LIB_API Texture : public lib::MultithreadContainer
 		{
 		public:
 			Texture();

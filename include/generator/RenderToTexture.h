@@ -54,7 +54,7 @@ namespace UniLib {
 			virtual DRReturn run();
 
 			void setMaterial(view::Material* mat);
-			virtual const char* getResourceType() { return "RenderToTexture"; }
+			virtual const char* getResourceType() const { return "RenderToTexture"; }
 		protected:
 			view::TexturePtr mTexture;
 			view::Material* mMaterial;

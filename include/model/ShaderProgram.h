@@ -104,20 +104,13 @@ namespace UniLib {
 			ShaderLoadingTask(ShaderProgram* shader, controller::CPUSheduler* scheduler)
 				: CPUTask(scheduler), mShaderProgram(shader) {}
 
-#ifdef _UNI_LIB_DEBUG
-			__inline__ void setName(const char* name) { mShaderName = name; }
-			virtual const char* getName() const { return mShaderName.data(); }
-#endif
-
 			//! \brief called from task scheduler, maybe from another thread
 			virtual DRReturn run(); 
 			virtual const char* getResourceType() const { return "ShaderLoadingTask"; };
 
 		protected:
 			ShaderProgram* mShaderProgram;
-#ifdef _UNI_LIB_DEBUG
-			std::string mShaderName;
-#endif
+
 		};
 		class ShaderCompileTask : public controller::GPUTask
 		{

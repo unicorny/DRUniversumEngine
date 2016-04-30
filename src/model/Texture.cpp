@@ -35,24 +35,30 @@ namespace UniLib {
 			else {
 				complete = std::string(filename);
 			}
-
+			lock();
 			if (mImage->loadFromFile(complete.data())) {
 				DR_SAVE_DELETE(mImage);
 				EngineLog.writeToLog("tried to load file: %s", complete.data());
+				unlock();
 				LOG_ERROR("error by loading texture from storage", DR_ERROR);
 			}
 			mSize = mImage->getSize();
 			mFormat = mImage->getImageFormat();
+			unlock();
 			return DR_OK;
 		}
 
 		DRReturn Texture::loadFromMemory(u8* data)
 		{
 			if (!mImage) mImage = DRIImage::newImage();
+			lock();
 			mImage->setSize(mSize);
 			mImage->setImageFormat(-1);
-			if (mImage->setPixel(data))
+			if (mImage->setPixel(data)) {
+				unlock();
 				LOG_ERROR("error setting pixel", DR_ERROR);
+			}
+			unlock();
 			///LOG_INFO("load texture from memory successfully");
 			return DR_OK;
 		}
@@ -62,10 +68,13 @@ namespace UniLib {
 			assert(data != NULL);
 			assert(filename != NULL);
 			if (!mImage) mImage = DRIImage::newImage();
+			lock();
 			mImage->setSize(mSize);
 			mImage->setImageFormat(-1);
 			mImage->setPixel(data);
-			return mImage->saveIntoFile(filename);
+			DRReturn result = mImage->saveIntoFile(filename);
+			unlock();
+			return result;
 
 		}
 		DRReturn Texture::saveIntoFile(const char* filename, DRColor* color)
@@ -73,23 +82,34 @@ namespace UniLib {
 			assert(color != NULL);
 			assert(filename != NULL);
 			if (!mImage) mImage = DRIImage::newImage();
+			lock();
 			mImage->setSize(mSize);
 			mImage->setImageFormat(-1);
 			mImage->setPixel(color);
-			return mImage->saveIntoFile(filename);
+			DRReturn result = mImage->saveIntoFile(filename);
+			unlock();
+			return result;
 		}
 		DRReturn Texture::saveIntoFile(const char* filename)
 		{
-			if (!mImage->getPixel()) LOG_ERROR("no pixels to save", DR_ERROR);
-			return mImage->saveIntoFile(filename);
+			lock();
+			if (!mImage->getPixel()) {
+				LOG_ERROR("no pixels to save", DR_ERROR);
+				unlock();
+			}
+			DRReturn result = mImage->saveIntoFile(filename);
+			unlock();
+			return result;
 		}
 
 		void Texture::clearMemory()
 		{
+			lock();
 			if (mImage) {
 				DRIImage::deleteImage(mImage);
 				mImage = NULL;
 			}
+			unlock();
 		}
 	}
 }

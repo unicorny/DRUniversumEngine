@@ -1,5 +1,6 @@
 #include "view/Texture.h"
 #include "model/Texture.h"
+#include "controller/Command.h"
 //#include "controller/CPUSheduler.h"
 
 namespace UniLib {
@@ -42,6 +43,7 @@ namespace UniLib {
 			DR_SAVE_DELETE_ARRAY(mData);
 			if(!mHasParent)
 				mViewTexture->setLoadingState(LOADING_STATE_PARTLY_LOADED);
+			if (mFinishCommand) mFinishCommand->taskFinished(this);
 			return DR_OK;
 		}
 		// ********************************************************************
@@ -88,11 +90,12 @@ namespace UniLib {
 
 		
 
-		DRReturn Texture::loadFromMemory(u8* data)
+		DRReturn Texture::loadFromMemory(u8* data, controller::Command* finishCommand)
 		{
 			if (!mTextureModel) 
 				LOG_ERROR("texture model not created, size not known!", DR_ERROR);
 			controller::TaskPtr task(new TextureSetPixelTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler(), data));
+			if (finishCommand) task->setFinishCommand(finishCommand);
 			task->scheduleTask(task);
 			
 			return DR_OK;

@@ -120,6 +120,7 @@ namespace UniLib {
 					reQueueCount++;
 				}
 				if(SDL_GetTicks() - startTicks > 2) {
+					EngineLog.writeToLog("used %d ms", SDL_GetTicks() - startTicks);
  					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
 					break;
 				}
@@ -140,6 +141,7 @@ namespace UniLib {
 #endif
 				}
 				if(SDL_GetTicks() - ticks > 10) {
+					EngineLog.writeToLog("used %d ms", SDL_GetTicks() - startTicks);
 					LOG_WARNING("slow GPU Task used more then 10 ms");
 				}
 			}

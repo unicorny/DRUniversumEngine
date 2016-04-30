@@ -43,15 +43,11 @@ namespace UniLib {
 				: CPUTask(scheduler, dependencyCount), mViewTexture(texView) {}
 
 			virtual const char* getResourceType() const { return "TextureTask"; };
-#ifdef _UNI_LIB_DEBUG
-			__inline__ void setName(const char* name) { mTextureName = name; }
-			virtual const char* getName() const { return mTextureName.data(); }
-#endif
+			__inline__ view::Texture* getViewTexture() { return mViewTexture; }
+
 		protected:
 			view::Texture* mViewTexture;
-#ifdef _UNI_LIB_DEBUG
-			std::string mTextureName;
-#endif
+
 
 		};
 		class TextureLoadingTask : public TextureTask
@@ -118,7 +114,7 @@ namespace UniLib {
 			void loadFromFile();
 			void saveIntoFile(const char* filename);
 			//! \brief load image from memory, release data in texture manager thread			
-			DRReturn loadFromMemory(u8* data);
+			DRReturn loadFromMemory(u8* data, controller::Command* finishCommand = NULL);
 			DRReturn saveIntoFile(const char* filename, u8* data);
 
 			// virtuals, contains renderer specific code

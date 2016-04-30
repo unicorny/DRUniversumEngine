@@ -52,6 +52,7 @@ namespace UniLib {
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() {return false;};
+			virtual const char* getResourceType() const { return "BlockTypeLoadingTask"; };
 		protected:
 			std::list<std::string>* mFileContents;
 
@@ -66,6 +67,7 @@ namespace UniLib {
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() { return false; };
+			virtual const char* getResourceType() const { return "LoadingJsonFilesIntoMemoryTask"; };
 		protected:
 			std::list<std::string> mFileNames;
 			CPUSheduler* mSchedulerForParser;
