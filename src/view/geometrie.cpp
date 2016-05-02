@@ -1,4 +1,5 @@
 #include "view/Geometrie.h"
+#include "model/geometrie/BaseGeometrie.h"
 
 namespace UniLib {
 	namespace view {

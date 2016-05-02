@@ -105,6 +105,9 @@ namespace UniLib {
 					lock();
 #ifdef _UNI_LIB_DEBUG
 					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+					Uint32 diff = SDL_GetTicks() - ticks;
+					SpeedLog.writeToLog("%3d ms used on GPU (slow) by Task: %s of: %s",
+						diff, task->getResourceType(), task->getName());
 #endif
 				}
 
@@ -135,12 +138,17 @@ namespace UniLib {
 #ifdef _UNI_LIB_DEBUG
 					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU fast", task->getName());
 					runningTasksTable = l->getCurrentlRunningTasksTableString();
+					Uint32 ticks = SDL_GetTicks();
 #endif
 					unlock();
 					task->run();
 					lock();
 #ifdef _UNI_LIB_DEBUG
+					Uint32 diff = SDL_GetTicks() - ticks;
+					SpeedLog.writeToLog("%3d ms used on GPU (fast) by Task: %s of: %s",
+						diff, task->getResourceType(), task->getName());
 					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
+					
 #endif
 				}
 				else {

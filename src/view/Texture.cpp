@@ -117,6 +117,7 @@ namespace UniLib {
 			savingTask->setName(filename);
 #endif
 			savingTaskPtr->scheduleTask(savingTaskPtr);
+			return DR_OK;
 		}
 		void Texture::setLoadingState(LoadingState state)
 		{

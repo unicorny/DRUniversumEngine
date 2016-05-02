@@ -58,6 +58,7 @@
 
 namespace UniLib {
     UNIVERSUM_LIB_API extern lib::EngineLogger EngineLog;
+	UNIVERSUM_LIB_API extern lib::EngineLogger SpeedLog;
 	namespace controller {
 		class BindToRenderer;
 		class CPUSheduler;

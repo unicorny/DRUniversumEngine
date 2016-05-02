@@ -151,6 +151,7 @@ enum /*CORE_API*/ DRReturn
 #include "DRIni.h"
 #include "DRDampingSpring.h"
 #include "DRCubicSpline.h"
+#include "DRBezierCurve2.h"
 //#include "DRGeometrieGenerator.h"
 #include "DRHash.hpp"
 #include "DRHashList.hpp"

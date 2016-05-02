@@ -3,7 +3,7 @@ SET(CoreSrc
 	Core2Main.cpp DRCubicSpline.cpp DRFile.cpp DRFileManager.cpp DRHashList.cpp
 	DRLogger.cpp DRUtils.cpp DRMatrix.cpp DRVector2.cpp DRVector2i DRDampingSpring.cpp DRIni.cpp
     DRVector3.cpp DRVector3i DRObjekt.cpp DRFrustumCulling DRPlane DRIndexReferenzHolder DRRandom
-	DRResourcePtr DRResourcePtrHolder DRGameStateManager DRBoundingBox)
+	DRResourcePtr DRResourcePtrHolder DRGameStateManager DRBoundingBox DRBezierCurve2)
 
 
 	
@@ -15,7 +15,7 @@ SET(CoreSrc ${CoreSrc} ../include/Core2Main.h ../include/DRFile.h ../include/DRF
                        ../include/DRObjekt.h ../include/DRFrustumCulling.h ../include/DRIndexReferenzHolder.h
 					   ../include/DRRandom.h ../include/DRGameStateManager.h
 					   ../include/DRResourcePtr.h ../include/DRResourcePtrHolder.h ../include/DRIResource.h
-					   ../include/DRCubicSpline ../include/DRBoundingBox)
+					   ../include/DRCubicSpline ../include/DRBoundingBox ../include/DRBezierCurve2)
 #ENDIF(WIN32)
 ADD_LIBRARY(DRCore2 SHARED ${CoreSrc})
 

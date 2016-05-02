@@ -48,12 +48,14 @@ int WINAPI DllMain(HINSTANCE DllHandle, unsigned long ReasonForCall, void* Reser
 namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
+	EngineLogger SpeedLog;
 
     DRReturn init(int numberParallelStorageOperations/* = 1*/)
     {
 		SDL_Init(SDL_INIT_TIMER);
         Core2_init("Logger.html");
-        EngineLog.init("EngineLogger.html", true);        
+        EngineLog.init("EngineLogger.html", true);     
+		SpeedLog.init("SpeedLogger.html", false);
 		g_HarddiskScheduler = new controller::CPUSheduler(numberParallelStorageOperations, "ioThrd");
         return DR_OK;
     }

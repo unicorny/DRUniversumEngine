@@ -36,6 +36,9 @@ namespace UniLib {
 		void BaseGeometrieLoadingGPUTask::scheduleTask(TaskPtr own)
 		{
 			own.getResourcePtrHolder()->addRef();
+#ifdef _UNI_LIB_DEBUG
+			mChildCPUTask->setName(getName());
+#endif
 			mChildCPUTask->scheduleTask(mChildCPUTask);
 		}
 		
@@ -81,6 +84,10 @@ namespace UniLib {
 				mGeometrieArray[type] = g_RenderBinder->newGeometrie(NULL);
 				mMutex.unlock();
 				TaskPtr task(new BaseGeometrieLoadingGPUTask(mCPUScheduler, type));
+#ifdef _UNI_LIB_DEBUG
+				if (type == BASE_GEOMETRIE_PLANE)
+					task->setName("Plane");
+#endif
 				task->scheduleTask(task);
 			}
 
