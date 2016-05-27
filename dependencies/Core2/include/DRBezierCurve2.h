@@ -43,7 +43,7 @@ public:
 	//! \brief free memory
 	~DRBezierCurve2();
 	void setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory = false);
-	DRVector2& operator[](u32 index) { if (index >= mNodeCount) return DRVector2(-1.0f); return mNodes[index]; }
+	DRVector2& operator[](u32 index) { assert(index < mNodeCount); return mNodes[index]; }
 
 	inline DRVector2* getNodes() { return mNodes; }
 	inline u32 getNodeCount() { return mNodeCount; }

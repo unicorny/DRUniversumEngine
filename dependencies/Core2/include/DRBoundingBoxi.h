@@ -28,37 +28,37 @@
  * \brief class for calculating and using bounding box volume for collision
  */
 
-#ifndef __DR_CORE2_BOUNDING_BOX_H
-#define __DR_CORE2_BOUNDING_BOX_H
+#ifndef __DR_CORE2_BOUNDING_BOX_I_H
+#define __DR_CORE2_BOUNDING_BOX_I_H
 
-class CORE2_API DRBoundingBox 
+class CORE2_API DRBoundingBoxi 
 {
 public:
-	DRBoundingBox(DRVector2 minValues = DRVector2(0.0f), DRVector2 maxValues = DRVector2(0.0f))
+	DRBoundingBoxi(DRVector2i minValues = DRVector2i(0), DRVector2i maxValues = DRVector2i(0))
 		: mMin(minValues), mMax(maxValues) {}
-	~DRBoundingBox() {};
+	~DRBoundingBoxi() {};
 
-	inline DRReal getCenterX() const { return mMin.x + (mMax.x - mMin.x) / 2; }
-	inline DRReal getCenterY() const { return mMin.y + (mMax.y - mMin.y) / 2; }
-	inline DRVector2 getCenter() { return mMin + (mMax - mMin) / 2; }
-	void expandBy(const DRBoundingBox& otherBoundingBox);
-	inline void moveBy(DRVector2 diff) { mMin += diff; mMax += diff; }
-	inline DRReal getWidth() const { return mMax.x - mMin.x; }
-	inline DRReal getHeight() const { return mMax.y - mMin.y; }
-	inline DRVector2 getSize() const { return mMax - mMin; }
+	inline int getCenterX() const { return mMin.x + (mMax.x - mMin.x) / 2; }
+	inline int getCenterY() const { return mMin.y + (mMax.y - mMin.y) / 2; }
+	inline DRVector2i getCenter() { return mMin + (mMax - mMin) / 2; }
+	void expandBy(const DRBoundingBoxi& otherBoundingBox);
+	inline void moveBy(DRVector2i diff) { mMin += diff; mMax += diff; }
+	inline int getWidth() const { return mMax.x - mMin.x; }
+	inline int getHeight() const { return mMax.y - mMin.y; }
+	inline DRVector2i getSize() const { return mMax - mMin; }
 	// \brief  Return true if this bounding box intersects the specified bounding box. 
-	bool intersects(const DRBoundingBox& otherBoundingBox) const;
-	bool inside(const DRBoundingBox& otherBoundingBox) const;
+	bool intersects(const DRBoundingBoxi& otherBoundingBox) const;
+	bool inside(const DRBoundingBoxi& otherBoundingBox) const;
 						
-	inline const bool operator== (const DRBoundingBox& otherBoundingBox) const {return mMin == otherBoundingBox.mMin && mMax == otherBoundingBox.mMax;}
-	inline void operator+ (const DRVector2& diff) { moveBy(diff); }
-	inline void operator+= (const DRBoundingBox& otherBoundingBox) { expandBy(otherBoundingBox); }
-	inline DRVector2 getMin() { return mMin; }
-	inline DRVector2 getMax() { return mMax; }
+	inline const bool operator== (const DRBoundingBoxi& otherBoundingBox) const {return mMin == otherBoundingBox.mMin && mMax == otherBoundingBox.mMax;}
+	inline void operator+ (const DRVector2i& diff) { moveBy(diff); }
+	inline void operator+= (const DRBoundingBoxi& otherBoundingBox) { expandBy(otherBoundingBox); }
+	inline DRVector2i getMin() { return mMin; }
+	inline DRVector2i getMax() { return mMax; }
 protected:
-	DRVector2 mMin;
-	DRVector2 mMax;
+	DRVector2i mMin;
+	DRVector2i mMax;
 
 };
 
-#endif //__DR_CORE2_BOUNDING_BOX_H
+#endif //__DR_CORE2_BOUNDING_BOX_I_H

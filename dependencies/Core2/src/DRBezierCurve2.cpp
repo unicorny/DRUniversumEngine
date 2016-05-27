@@ -49,7 +49,7 @@ DRReturn DRBezierCurve2::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2
 	prepareTempMemory(controlPoints, true);
 	for (u32 tIndex = 0; tIndex < tCount; tIndex++) {
 		s32 currentBlock = mNodeCount - 1;
-		u32 blockCursor = 0;
+		s32 blockCursor = 0;
 		for (u32 i = mNodeCount; i < controlPoints; i++) {
 			mTempMemory[i] = mTempMemory[i - currentBlock - 1] + (mTempMemory[i - currentBlock] - mTempMemory[i - currentBlock - 1]) * ts[tIndex];
 			blockCursor++;
@@ -76,7 +76,7 @@ DRReturn DRBezierCurve2::splitWithDeCasteljau(DRBezierCurve2& secondBezierCurve,
 		secondBezierCurve.setNodeMemory(secondBezierMemory, mNodeCount);
 	}
 	// sort new points
-	for (int i = 0; i < mNodeCount; i++) {
+	for (u32 i = 0; i < mNodeCount; i++) {
 		mNodes[i] = mTempMemory[mNodeCount*i - (i*(i - 1)) / 2];
 		secondBezierCurve.mNodes[i] = mTempMemory[controlPointCount - 1 - (i*(i + 1)) / 2];	
 	}
@@ -109,22 +109,22 @@ DRBezierCurve2* DRBezierCurve2::gradreduktionAndSplit()
 void DRBezierCurve2::gradreduktionDynamic()
 {
 	prepareTempMemory(2 * mNodeCount, false);
-	int newCount = mNodeCount - 1;
+	u32 newCount = mNodeCount - 1;
 	DRVector2* newPoints = new DRVector2[newCount];
 	newPoints[0] = mNodes[0];
 	newPoints[newCount - 1] = mNodes[mNodeCount - 1];
 	DRVector2* hutTempPoints = mTempMemory;
 	hutTempPoints[0] = mNodes[0];
-	for (int j = 1; j < mNodeCount; j++) {
-		hutTempPoints[j] = (mNodeCount*mNodes[j] - j*hutTempPoints[j - 1]) / (mNodeCount - j);
+	for (u32 j = 1; j < mNodeCount; j++) {
+		hutTempPoints[j] = ((DRReal)mNodeCount*mNodes[j] - (DRReal)j*hutTempPoints[j - 1]) / (DRReal)(mNodeCount - j);
 	}
 	DRVector2* strichTempPoints = &mTempMemory[mNodeCount];
 	strichTempPoints[mNodeCount - 1] = mNodes[mNodeCount - 1];
-	for (int j = mNodeCount - 1; j > 0; j--) {
-		strichTempPoints[j - 1] = (mNodeCount*mNodes[j] - (mNodeCount - j)*strichTempPoints[j]) / j;
+	for (u32 j = mNodeCount - 1; j > 0; j--) {
+		strichTempPoints[j - 1] = ((DRReal)mNodeCount*mNodes[j] - (DRReal)(mNodeCount - j)*strichTempPoints[j]) / (DRReal)j;
 	}
-	for (int j = 1; j < newCount - 1; j++) {
-		newPoints[j] = (1 - j / (mNodeCount - 1))*hutTempPoints[j] + j / (mNodeCount - 1)*strichTempPoints[j];
+	for (u32 j = 1; j < newCount - 1; j++) {
+		newPoints[j] = (1.0f - (DRReal)j / (DRReal)(mNodeCount - 1))*hutTempPoints[j] + (DRReal)j / (DRReal)(mNodeCount - 1)*strichTempPoints[j];
 	}
 	DR_SAVE_DELETE_ARRAY(mNodes);
 	mNodes = newPoints;

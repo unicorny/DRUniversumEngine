@@ -50,7 +50,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
-
+#include <assert.h>
 
 /*  To use this exported function of dll, include this header
  *  in your project.
@@ -145,6 +145,7 @@ enum /*CORE_API*/ DRReturn
 #include "DRPlane.h"
 #include "DRMatrix.h"
 #include "DRBoundingBox.h"
+#include "DRBoundingBoxi.h"
 #include "DRRandom.h"
 #include "DRObjekt.h"
 #include "DRFrustumCulling.h"

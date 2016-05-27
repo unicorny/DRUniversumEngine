@@ -21,63 +21,81 @@
 ***************************************************************************/
 
 /*!
- 
- \brief Container class for mutex protected queue
 
- \author Dario Rekowski
+\brief Container class for mutex protected map
 
- \date 08.10.2015
+\author Dario Rekowski
+
+\date 27.05.2016
 */
 
-#ifndef _DR_UNIVERSUM_LIB_LIB_MULTITHREAD_QUEUE_H__
-#define _DR_UNIVERSUM_LIB_LIB_MULTITHREAD_QUEUE_H__
+#ifndef __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_MAP_H
+#define __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_MAP_H
 
 #include "MultithreadContainer.h"
 
 namespace UniLib {
 	namespace lib {
-		template <class ResourceType>
-		class MultithreadQueue: protected std::queue<ResourceType>, protected MultithreadContainer
+		template <class KeyType, class ResourceType>
+		class MultithreadMap : public std::map<KeyType, ResourceType>, public MultithreadContainer
 		{
-		public:
-			virtual ~MultithreadQueue() {
+		public: 
+			typedef std::map<KeyType, ResourceType>::iterator iterator;
+			virtual ~MultithreadMap() {
 				lock();
-				while(!std::queue<ResourceType>::empty()) std::queue<ResourceType>::pop();
+				for (iterator it = begin(); it != end(); it++) {
+					DR_SAVE_DELETE(it->second);
+				}
+				clear();
 				unlock();
 			}
-			void push(ResourceType val) 
-			{
+			DRReturn s_add(KeyType key, ResourceType resource, ResourceType* dublette) {
 				lock();
-				std::queue<ResourceType>::push(val);
-				unlock();
-			}
-			bool empty()
-			{
-				bool result = false;
-				lock();
-				result = std::queue<ResourceType>::empty();
-				unlock();
-				return result;
-			}
-			//! \return false if no values are there
-			//! \return true if value is there, gave val a copy from the value on top of queue
-			bool pop(ResourceType& val) 
-			{
-				lock();
-				if(!std::queue<ResourceType>::empty()) {
-					val = std::queue<ResourceType>::front();
-					std::queue<ResourceType>::pop();
+				iterator it = find(key);
+				if (it != end()) {
+					// maybe a Hash collision?
+					if (!(it->second == resource)) {
+						if (dublette) dublette = &it->second;
+						unlock();
+						LOG_ERROR("hash collision!", DR_ERROR);
+					}
 					unlock();
-					return true;
+					// element already in map
+					return DR_OK;
+				}
+				else {
+					insert(std::pair<KeyType, ResourceType>(key, resource));
+					unlock();
+					return DR_OK;
 				}
 				unlock();
-				return false;
+				return DR_ERROR;
+			}
+			ResourceType s_find(KeyType key) {
+				lock();
+				iterator it = find(id);
+				if (it != end()) {
+					unlock();
+					return it->second;
+				}
+				unlock();
+				return NULL;
+			}
+			ResourceType s_remove(KeyType key) {
+				lock();
+				iterator it = find(id);
+				if (it != end()) {
+					ResourceType result = it->second;
+				    erase(it);
+					unlock();
+					return result;
+				}
+				unlock();
+				return NULL;
 			}
 
-
 		};
-
 	}
 }
 
-#endif //_DR_UNIVERSUM_LIB_LIB_MULTITHREAD_QUEUE_H__
+#endif __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_MAP_H
