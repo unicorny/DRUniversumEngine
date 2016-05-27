@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
- ***************************************************************************/
 
 /**
  * \author Dario Rekowski copied from: http://fara.cs.uni-potsdam.de/~kaufmann/?page=GenCppFaqs&faq=Singleton
