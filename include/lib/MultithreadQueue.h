@@ -32,7 +32,7 @@
 #ifndef _DR_UNIVERSUM_LIB_LIB_MULTITHREAD_QUEUE_H__
 #define _DR_UNIVERSUM_LIB_LIB_MULTITHREAD_QUEUE_H__
 
-#include "MultithreadContainer.h"
+//#include "MultithreadContainer.h"
 
 namespace UniLib {
 	namespace lib {

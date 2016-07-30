@@ -1,26 +1,32 @@
-#include "lib/Thread.h"
+//#include "lib/Thread.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
     namespace lib {
 
-        Thread::Thread(const char* threadName/* = NULL*/)
+        Thread::Thread(const char* threadName/* = NULL*/, bool createInConstructor/* = true*/)
             : mutex(NULL), thread(NULL), condition(NULL), semaphore(NULL), exitCalled(false)
         {
-            semaphore = SDL_CreateSemaphore(1);
-            if(!semaphore) LOG_WARNING_SDL();
-            condition = SDL_CreateCond(); 
-            if(!condition) LOG_WARNING_SDL();
-            if(SDL_SemWait(semaphore)) LOG_WARNING_SDL();
-            mutex = SDL_CreateMutex(); 
-            if(!mutex) LOG_WARNING_SDL();  
+			if (createInConstructor) init(threadName);
+        } 
+
+		DRReturn Thread::init(const char* threadName)
+		{
+			semaphore = SDL_CreateSemaphore(1);
+			if (!semaphore) LOG_WARNING_SDL();
+			condition = SDL_CreateCond();
+			if (!condition) LOG_WARNING_SDL();
+			if (SDL_SemWait(semaphore)) LOG_WARNING_SDL();
+			mutex = SDL_CreateMutex();
+			if (!mutex) LOG_WARNING_SDL();
 
 #if SDL_VERSION_ATLEAST(1,3,0)
-            thread = SDL_CreateThread(run, threadName, this);
+			thread = SDL_CreateThread(run, threadName, this);
 #else
-            thread = SDL_CreateThread(run, this);
+			thread = SDL_CreateThread(run, this);
 #endif
-
-        } 
+			return DR_OK;
+		}
 
         Thread::~Thread()
         {

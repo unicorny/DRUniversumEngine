@@ -24,7 +24,7 @@
 #ifndef __DR_UNIVERSUM_LIB_MODEL_UNIFORM_SET__H
 #define __DR_UNIVERSUM_LIB_MODEL_UNIFORM_SET__H
 
-#include "lib/MultithreadContainer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
     namespace model {

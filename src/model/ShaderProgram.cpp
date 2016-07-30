@@ -49,6 +49,9 @@ namespace UniLib {
 		// ---------------------------------------------------------------------------
 		DRReturn ShaderCompileTask::run()
 		{
+#ifdef _UNI_LIB_DEBUG
+			setName(mShaderProgram->getName());
+#endif
 			mShaderProgram->parseShaderData();
 			return DR_OK;
 		}
@@ -69,6 +72,10 @@ namespace UniLib {
 		DRReturn ShaderProgram::addShader(const char* filename, ShaderType type)
 		{
 			lock();
+#ifdef _UNI_LIB_DEBUG
+			mName += " ";
+			mName += filename;
+#endif
 			mShaderToLoad.push_back(ShaderData(filename, type));
 			unlock();
 			return DR_OK;

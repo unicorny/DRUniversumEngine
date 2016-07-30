@@ -34,7 +34,7 @@
 #ifndef __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_RESOURCE_H
 #define __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_RESOURCE_H
 
-#include "MultithreadContainer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
 	namespace lib {

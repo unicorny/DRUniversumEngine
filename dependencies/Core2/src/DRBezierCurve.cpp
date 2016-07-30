@@ -1,22 +1,32 @@
 #include "Core2Main.h"
 
-DRBezierCurve2::DRBezierCurve2(const DRVector2* input, const int nodeCount)
-	: DRBezierCurve2(nodeCount)
+DRBezierCurve::DRBezierCurve(const DRVector2* input, const int nodeCount)
+	: DRBezierCurve(nodeCount)
 {
 	memcpy(mNodes, input, sizeof(DRVector2)*nodeCount);
 }
 
-DRBezierCurve2::DRBezierCurve2(const int nodeCount)
+DRBezierCurve::DRBezierCurve(const int nodeCount)
 	: mNodes(new DRVector2[nodeCount]), mNodeCount(nodeCount), mTempMemory(NULL), mTempMemorySize(0)
 {
 }
 
-DRBezierCurve2::DRBezierCurve2(DRVector2* input, const int nodeCount)
+DRBezierCurve::DRBezierCurve()
+	: mNodes(NULL), mNodeCount(0), mTempMemory(NULL), mTempMemorySize(0)
+{
+}
+DRBezierCurve::DRBezierCurve(const DRBezierCurve& ref)
+	: mNodes(new DRVector2[ref.mNodeCount]), mNodeCount(ref.mNodeCount), mTempMemory(NULL), mTempMemorySize(0)
+{
+	memcpy(mNodes, ref.mNodes, sizeof(DRVector2)*ref.mNodeCount);
+}
+
+DRBezierCurve::DRBezierCurve(DRVector2* input, const int nodeCount)
 	: mNodes(input), mNodeCount(nodeCount), mTempMemory(NULL), mTempMemorySize(0)
 {
 
 }
-DRBezierCurve2::~DRBezierCurve2()
+DRBezierCurve::~DRBezierCurve()
 {
 	if (mNodes) {
 		DR_SAVE_DELETE_ARRAY(mNodes);
@@ -26,21 +36,21 @@ DRBezierCurve2::~DRBezierCurve2()
 	}
 }
 
-void DRBezierCurve2::setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory/* = false*/)
+void DRBezierCurve::setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory/* = false*/)
 {
 	if (releaseMemory) DR_SAVE_DELETE_ARRAY(mNodes);
 	mNodes = nodeMemory;
 	mNodeCount = nodeCount;
 }
 
-DRVector2 DRBezierCurve2::calculatePointOnCurve(float t)
+DRVector2 DRBezierCurve::calculatePointOnCurve(float t)
 {
 	DRVector2 result;
 	calculatePointsOnCurve(&t, 1, &result);
 	return result;
 }
 
-DRReturn DRBezierCurve2::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2* resultArray)
+DRReturn DRBezierCurve::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2* resultArray)
 {
 	if (!resultArray) return DR_ZERO_POINTER;
 	if (!ts) return DR_ZERO_POINTER;
@@ -65,7 +75,7 @@ DRReturn DRBezierCurve2::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2
 	return DR_OK;
 }
 
-DRReturn DRBezierCurve2::splitWithDeCasteljau(DRBezierCurve2& secondBezierCurve, bool hasMemory)
+DRReturn DRBezierCurve::splitWithDeCasteljau(DRBezierCurve& secondBezierCurve, bool hasMemory)
 {
 	// calculate center pointer and new endpoint of first bezier curve
 	// temporary results stay in temp memory
@@ -83,7 +93,7 @@ DRReturn DRBezierCurve2::splitWithDeCasteljau(DRBezierCurve2& secondBezierCurve,
 	return DR_OK;
 }
 
-DRBezierCurve2* DRBezierCurve2::gradreduktionAndSplit()
+DRBezierCurve* DRBezierCurve::gradreduktionAndSplit()
 {
 	if (mNodeCount == 4) {
 		DRVector2* newPoints = new DRVector2[mNodeCount - 1];
@@ -95,7 +105,7 @@ DRBezierCurve2* DRBezierCurve2::gradreduktionAndSplit()
 		mNodeCount--;
 	}
 	else if (mNodeCount > 4) {
-		DRBezierCurve2* secondBezier = new DRBezierCurve2(mNodeCount);
+		DRBezierCurve* secondBezier = new DRBezierCurve(mNodeCount);
 		splitWithDeCasteljau(*secondBezier, true);
 		gradreduktionDynamic();
 		secondBezier->setTempMemory(mTempMemory, mTempMemorySize);
@@ -106,7 +116,17 @@ DRBezierCurve2* DRBezierCurve2::gradreduktionAndSplit()
 	return NULL;
 }
 
-void DRBezierCurve2::gradreduktionDynamic()
+DRString DRBezierCurve::getAsString()
+{
+	std::string str;
+	for (int i = 0; i < mNodeCount; i++) {
+		DRVector2 v = mNodes[i];
+		str += std::string("point " + std::to_string(i) + ": (" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")\n");
+	}
+	return str;
+}
+
+void DRBezierCurve::gradreduktionDynamic()
 {
 	prepareTempMemory(2 * mNodeCount, false);
 	u32 newCount = mNodeCount - 1;
@@ -132,7 +152,7 @@ void DRBezierCurve2::gradreduktionDynamic()
 }
 
 
-void DRBezierCurve2::prepareTempMemory(u32 size, bool copyNodesToBegin/* = false*/)
+void DRBezierCurve::prepareTempMemory(u32 size, bool copyNodesToBegin/* = false*/)
 {
 	if (mTempMemorySize < size) {
 		DR_SAVE_DELETE_ARRAY(mTempMemory);

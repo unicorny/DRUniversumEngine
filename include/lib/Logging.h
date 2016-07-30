@@ -30,10 +30,11 @@
  * \date:
  * 
  * \desc: Base Thread Safe Logging class 
+ *        adding stack for logging entrys to act fast in multithreaded environment
  */
 namespace UniLib {
     namespace lib {
-        class UNIVERSUM_LIB_API EngineLogger : public DRLogger
+        class UNIVERSUM_LIB_API EngineLogger : public DRLogger, Thread
         {
         public:
             EngineLogger();
@@ -55,7 +56,9 @@ namespace UniLib {
             
             virtual DRReturn writeAsBinary_intern(DRString name, DRString zahlBuffer);
 
-            SDL_mutex*  mMutex;
+			virtual int ThreadFunction();
+
+			MultithreadQueue<DRString> mMessages;
 
         private:
 

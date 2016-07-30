@@ -32,7 +32,7 @@
 #ifndef __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_CONTAINER_H__
 #define __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_CONTAINER_H__
 
-#include "UniversumLib.h"
+//#include "UniversumLib.h"
 
 namespace UniLib {
 	namespace lib {

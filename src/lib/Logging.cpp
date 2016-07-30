@@ -3,42 +3,41 @@
 namespace UniLib {
     namespace lib {
   
+		EngineLogger::EngineLogger()
+			: Thread(NULL, false)
+		{
+
+		}
 
         EngineLogger::~EngineLogger()
         {
 
         }
 
-        EngineLogger::EngineLogger()
-            : mMutex(NULL)
-        {
-
-        }
-
         DRReturn EngineLogger::init(const char* pcFilename, bool printToConsole)
         {
-            mMutex = SDL_CreateMutex(); 
-            if(!mMutex) LOG_ERROR_SDL(DR_ERROR);
+			Thread::init(pcFilename);
+			threadLock();
             DRReturn ret = DRLogger::init(pcFilename, printToConsole);    
+			threadUnlock();
             return ret;
         }
 
         void EngineLogger::exit()
         {
-            DRLogger::exit();
-            if(mMutex)
-                SDL_DestroyMutex(mMutex); 
-
+			threadLock();
+            DRLogger::exit();  
+			threadUnlock();
+			exitCalled = true;
         }
 
         DRReturn EngineLogger::writeToLogDirect(DRString text)
         {
             DRReturn ret = DR_OK;
-            if(mMutex) 
-                if(SDL_LockMutex(mMutex)) LOG_ERROR_SDL(DR_ERROR);
-            DRLogger::writeToLogDirect(text);
-            if(mMutex)
-                if(SDL_UnlockMutex(mMutex)) LOG_ERROR_SDL(DR_ERROR);
+            
+            //DRLogger::writeToLogDirect(text);
+			mMessages.push(text);
+			condSignal();
             return ret;
         }
 
@@ -125,5 +124,22 @@ namespace UniLib {
             final += DRString("</td></tr>");
             return writeToLogDirect(final.data());
         }
+
+		int EngineLogger::ThreadFunction()
+		{
+			if (exitCalled) return 0;
+			DRString text;
+			while (mMessages.pop(text)) {
+				threadLock();
+				if (DRLogger::writeToLogDirect(text)) {
+					printf("\n=========== error by writing into logfile ============\n\n");
+					threadUnlock();
+					return -1;
+				}
+				threadUnlock();
+			}
+
+			return 0;
+		}
     }
 }

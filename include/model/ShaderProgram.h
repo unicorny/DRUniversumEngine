@@ -132,6 +132,9 @@ namespace UniLib {
 
 			//__inline__ GLuint getProgram() {return mProgram;}
 			__inline__ HASH getID() {return mId;}
+#ifdef _UNI_LIB_DEBUG
+			__inline__ const char* getName() { return mName.data(); }
+#endif
 
 			virtual const char* getResourceType() const {return "ShaderProgram";}
 			virtual bool less_than(DRIResource& shader) const
@@ -155,6 +158,9 @@ namespace UniLib {
 			std::list<ShaderData> mShaderToLoad;
 			std::list<Shader*> mLoadedShader;
 			controller::TaskPtr mShaderCompileTask;
+#ifdef _UNI_LIB_DEBUG
+			std::string mName;
+#endif
 			//GLuint mProgram;
 		};
 

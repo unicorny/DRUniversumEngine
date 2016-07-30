@@ -32,7 +32,7 @@
 #ifndef __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_MAP_H
 #define __DR_UNIVERSUM_LIB_LIB_MULTITHREAD_MAP_H
 
-#include "MultithreadContainer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
 	namespace lib {
@@ -40,8 +40,11 @@ namespace UniLib {
 		class MultithreadMap : public std::map<KeyType, ResourceType>, public MultithreadContainer
 		{
 		public: 
-			typedef std::map<KeyType, ResourceType>::iterator iterator;
 			virtual ~MultithreadMap() {
+				s_clear();
+			}
+			void s_clear()
+			{
 				lock();
 				for (iterator it = begin(); it != end(); it++) {
 					DR_SAVE_DELETE(it->second);
@@ -73,7 +76,7 @@ namespace UniLib {
 			}
 			ResourceType s_find(KeyType key) {
 				lock();
-				iterator it = find(id);
+				iterator it = find(key);
 				if (it != end()) {
 					unlock();
 					return it->second;
@@ -83,7 +86,7 @@ namespace UniLib {
 			}
 			ResourceType s_remove(KeyType key) {
 				lock();
-				iterator it = find(id);
+				iterator it = find(key);
 				if (it != end()) {
 					ResourceType result = it->second;
 				    erase(it);

@@ -31,7 +31,7 @@
 #ifndef __DR_UNIVERSUM_LIB_THREAD__
 #define __DR_UNIVERSUM_LIB_THREAD__
 
-#include "Timer.h"
+//#include "Timer.h"
 #include <sdl/SDL_thread.h>
 
 namespace UniLib {
@@ -39,8 +39,9 @@ namespace UniLib {
         class UNIVERSUM_LIB_API Thread
         {
         public:
-            //! \param threadName used up SDL 1.3, for BeOS max. 32, for Linux max 16, for Visual Studio 6.0 max 9 char
-            Thread(const char* threadName = NULL);
+            //! \param threadName used since SDL 1.3, for BeOS max. 32, for Linux max 16, for Visual Studio 6.0 max 9 char
+			//! \param createInConstructor set to false if thread shouldn't create in constructor, for example if SDL isn't loaded yet
+            Thread(const char* threadName = NULL, bool createInConstructor = true);
             virtual ~Thread();
 
             __inline__ DRReturn threadLock() {if(SDL_LockMutex(mutex)) LOG_ERROR_SDL(DR_ERROR); return DR_OK;}
@@ -48,6 +49,8 @@ namespace UniLib {
             // signal data chance, will continue thread, if he is paused
             DRReturn condSignal();
 
+			//! \param threadName used since SDL 1.3, for BeOS max. 32, for Linux max 16, for Visual Studio 6.0 max 9 char
+			DRReturn init(const char* threadName);
         protected:
             //! \brief will be called every time from thread, when condSignal was called
             //! will be called from thread with locked working mutex,<br>

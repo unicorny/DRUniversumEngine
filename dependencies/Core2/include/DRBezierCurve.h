@@ -31,17 +31,22 @@
  * \desc: class for simple 2D Bezier Curves with n dimensions
  * release node memory by default
  */
-class CORE2_API DRBezierCurve2 
+class CORE2_API DRBezierCurve 
 {
 public:
 	//! \brief copy input data, create own memory
-	DRBezierCurve2(const DRVector2* input, const int nodeCount);
+	DRBezierCurve(const DRVector2* input, const int nodeCount);
 	//! \brief only create memory for nodes
-	DRBezierCurve2(const int nodeCount);
+	DRBezierCurve(const int nodeCount);
 	//! \brief take pointer as own, attention! delete memory in deconstruction
-	DRBezierCurve2(DRVector2* input, const int nodeCount);
+	DRBezierCurve(DRVector2* input, const int nodeCount);
+	//! \brief default empty constructor
+	DRBezierCurve();
+	//! \brief default copy constructor
+	DRBezierCurve(const DRBezierCurve& ref);
 	//! \brief free memory
-	~DRBezierCurve2();
+	~DRBezierCurve();
+
 	void setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory = false);
 	DRVector2& operator[](u32 index) { assert(index < mNodeCount); return mNodes[index]; }
 
@@ -59,10 +64,13 @@ public:
 	//! \param secondBezierCurve referenze on target new bezier curve
 	//! \param hasMemory if set to true, no memory allocation for secondBezierCurve (enough memory must be reserved)
 	//! \param hasMemory if set to false, new memory will be set to secondBezierCurve, without checking previous allocated memory!
-	DRReturn splitWithDeCasteljau(DRBezierCurve2& secondBezierCurve, bool hasMemory);
+	DRReturn splitWithDeCasteljau(DRBezierCurve& secondBezierCurve, bool hasMemory);
 
 	//! \brief reduce bezier curve grade and split curve in two by more than 4 control points
-	DRBezierCurve2* gradreduktionAndSplit();
+	DRBezierCurve* gradreduktionAndSplit();
+
+	//! \brief for debugging
+	DRString getAsString();
 
 	// helper for calculation
 	//! \brief will be deleted on deconstruction or if and intern calculation need more
@@ -73,6 +81,7 @@ public:
 
 	inline u32 calculateControlPointsCount() { return (mNodeCount*(mNodeCount + 1)) / 2; }
 protected:
+
 	//! \brief check and create temp memory for calculation of points
 	void prepareTempMemory(u32 size, bool copyNodesToBegin = false);
 

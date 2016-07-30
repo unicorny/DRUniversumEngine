@@ -32,7 +32,7 @@
 #ifndef __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_THREAD_H__
 #define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_SHEDULER_THREAD_H__
 
-#include "lib/Thread.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
     namespace controller {

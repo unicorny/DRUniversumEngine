@@ -1,4 +1,5 @@
- #include "lib/Timer.h"
+ //#include "lib/Timer.h"
+#include "UniversumLib.h"
 
 namespace UniLib {
 	namespace lib {

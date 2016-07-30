@@ -65,6 +65,7 @@ namespace UniLib {
 		DR_SAVE_DELETE(g_HarddiskScheduler);
 		SDL_Quit();
         EngineLog.exit();
+		SpeedLog.exit();
         Core2_exit();
     }
 
