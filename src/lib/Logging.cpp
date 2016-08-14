@@ -36,8 +36,10 @@ namespace UniLib {
             DRReturn ret = DR_OK;
             
             //DRLogger::writeToLogDirect(text);
-			mMessages.push(text);
-			condSignal();
+			if (text.size() > 0) {
+				mMessages.push(text);
+				condSignal();
+			}
             return ret;
         }
 

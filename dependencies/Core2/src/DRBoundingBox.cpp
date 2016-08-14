@@ -1,5 +1,15 @@
 #include "Core2Main.h"
 
+DRBoundingBox::DRBoundingBox(DRVector2* vertices, u16 vertexCount)
+{
+	mMin = DRVector2(1000.0f);
+	for (int iVertices = 0; iVertices < vertexCount; iVertices++) {
+		for (int i = 0; i < 2; i++) {
+			mMin.c[i] = min(mMin.c[i], vertices[iVertices].c[i]);
+			mMax.c[i] = max(mMax.c[i], vertices[iVertices].c[i]);
+		}
+	}
+}
 void DRBoundingBox::expandBy(const DRBoundingBox& otherBoundingBox)
 {
 	for (int i = 0; i < 2; i++) {

@@ -44,14 +44,22 @@ public:
 	DRBezierCurve();
 	//! \brief default copy constructor
 	DRBezierCurve(const DRBezierCurve& ref);
+
 	//! \brief free memory
 	~DRBezierCurve();
 
 	void setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory = false);
+	// Operators
+	// access
 	DRVector2& operator[](u32 index) { assert(index < mNodeCount); return mNodes[index]; }
+	DRVector2 const operator[](u32 index) const { assert(index < mNodeCount); return mNodes[index]; }
+	// compare
+	bool operator==(const DRBezierCurve& b);
+	// assignment
+	DRBezierCurve& operator=(const DRBezierCurve& b);
 
 	inline DRVector2* getNodes() { return mNodes; }
-	inline u32 getNodeCount() { return mNodeCount; }
+	inline u32 getNodeCount() const { return mNodeCount; }
 
 	//! \brief calculate one point on curve
 	DRVector2 calculatePointOnCurve(float t);

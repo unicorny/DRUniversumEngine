@@ -37,6 +37,7 @@ public:
 	DRBoundingBox(DRVector2 minValues = DRVector2(0.0f), DRVector2 maxValues = DRVector2(0.0f))
 		: mMin(minValues), mMax(maxValues) {}
 	~DRBoundingBox() {};
+	DRBoundingBox(DRVector2* vertices, u16 vertexCount);
 
 	inline DRReal getCenterX() const { return mMin.x + (mMax.x - mMin.x) / 2; }
 	inline DRReal getCenterY() const { return mMin.y + (mMax.y - mMin.y) / 2; }

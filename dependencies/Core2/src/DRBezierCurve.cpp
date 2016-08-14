@@ -36,6 +36,25 @@ DRBezierCurve::~DRBezierCurve()
 	}
 }
 
+bool DRBezierCurve::operator==(const DRBezierCurve& b)
+{
+	if (mNodeCount != b.mNodeCount) return false;
+	for (int i = 0; i < mNodeCount; i++) {
+		if (mNodes[i] != b.mNodes[i]) return false;
+	}
+	return true;
+}
+DRBezierCurve& DRBezierCurve::operator=(const DRBezierCurve& b)
+{
+	if (mNodeCount != b.mNodeCount) {
+		DR_SAVE_DELETE(mNodes);
+		mNodes = new DRVector2[b.mNodeCount];
+	}
+	mNodeCount = b.mNodeCount;
+	memcpy(mNodes, b.mNodes, mNodeCount * sizeof(DRVector2));
+	return *this;
+}
+
 void DRBezierCurve::setNodeMemory(DRVector2* nodeMemory, int nodeCount, bool releaseMemory/* = false*/)
 {
 	if (releaseMemory) DR_SAVE_DELETE_ARRAY(mNodes);
@@ -50,7 +69,7 @@ DRVector2 DRBezierCurve::calculatePointOnCurve(float t)
 	return result;
 }
 
-DRReturn DRBezierCurve::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2* resultArray)
+DRReturn DRBezierCurve::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2* resultArray) 
 {
 	if (!resultArray) return DR_ZERO_POINTER;
 	if (!ts) return DR_ZERO_POINTER;
