@@ -74,8 +74,20 @@ public:
 	//! \param hasMemory if set to false, new memory will be set to secondBezierCurve, without checking previous allocated memory!
 	DRReturn splitWithDeCasteljau(DRBezierCurve& secondBezierCurve, bool hasMemory);
 
+	//! \brief split this bezier curve recursive deep times
+	//! \param deep recursions deep
+	//! \param resultArray out pointer pointing to large enough array for results
+	//!        size must be at least (2^deep)
+	DRReturn splitRecursive(u8 deep, DRBezierCurve** resultArray);
+
+	//! \brief reduce grad with mixed algorithmus until nodeCount = targetNodeCount
+	//! \param targetNodeCount until which node Count reducing algorithmus will be called
+	DRReturn gradReduktionRecursive(u8 targetNodeCount);
+
 	//! \brief reduce bezier curve grade and split curve in two by more than 4 control points
 	DRBezierCurve* gradreduktionAndSplit();
+
+	
 
 	//! \brief for debugging
 	DRString getAsString();
@@ -96,6 +108,9 @@ protected:
 	//! \brief use an mixed algorithmus to get a pretty good approximation to original bezier curve with one control point less
 	//! work with any number of control points/grade
 	void gradreduktionDynamic();
+
+	//! \brief reduce grad from nodeCount = 4 to 3
+	DRReturn gradReduktionSimple();
 
 	DRVector2* mNodes;
 	u32		   mNodeCount;

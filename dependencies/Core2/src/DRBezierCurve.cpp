@@ -94,6 +94,7 @@ DRReturn DRBezierCurve::calculatePointsOnCurve(float* ts, u32 tCount, DRVector2*
 	return DR_OK;
 }
 
+
 DRReturn DRBezierCurve::splitWithDeCasteljau(DRBezierCurve& secondBezierCurve, bool hasMemory)
 {
 	// calculate center pointer and new endpoint of first bezier curve
@@ -111,17 +112,71 @@ DRReturn DRBezierCurve::splitWithDeCasteljau(DRBezierCurve& secondBezierCurve, b
 	}
 	return DR_OK;
 }
+/*
+ * step	stepDeep 	new split
+ * 0		0		1	0
+ * 
+ * 1		0		2   0
+ * 1		1		3   1
+ *
+ * 2		0		4   0
+ * 2 		1		5   1
+ * 2    	2		6	2
+ * 2		3		7	3
+ *
+ * 3		0		8   0
+ * 3		1		9	1
+ * 3		2		10	2
+ * 3		3		11  3
+ * 3		4		12	4
+ * 3		5		13	5
+ * 3		6		14	6
+ * 3		7		15	7
+ *
+ * step 0 order: 0 1
+ * step 1 order: 0 2 1 3
+ * step 2 order: 0 4 2 6 1 5 3 7
+ * step 3 order: 0 8 4 12 2 10 6 14 1 9 5 13 3 11 7 15
+ */
+DRReturn DRBezierCurve::splitRecursive(u8 deep, DRBezierCurve** resultArray)
+{
+	if (!resultArray) return DR_ZERO_POINTER;
+	if (!deep) return DR_OK;
+	//if (!deep > 7) LOG_ERROR("to deep for implementation", DR_ERROR);
+	resultArray[0] = this;
+	u32 newBezierIndex = 1;
+	for (int step = 0; step < deep; step++) {
+		u32 maxStepDeep = pow(2, step);
+		for (u32 stepDeep = 0; stepDeep < maxStepDeep; stepDeep++) {
+			u32 newBezier = newBezierIndex++;
+			u32 split = stepDeep;
+			assert(split < newBezier);
+			assert(newBezier < pow(2, deep));
+			resultArray[newBezier] = new DRBezierCurve(mNodeCount);
+			resultArray[split]->splitWithDeCasteljau(*resultArray[newBezier], true);
+		}
+	}
+	return DR_OK;
+}
+
+DRReturn DRBezierCurve::gradReduktionRecursive(u8 targetNodeCount)
+{
+	if (targetNodeCount >= mNodeCount) return DR_OK;
+	while (targetNodeCount < mNodeCount) {
+		if (mNodeCount == 4) {
+			gradReduktionSimple();
+		}
+		else {
+			gradreduktionDynamic();
+		}
+	}
+	return DR_OK;
+}
 
 DRBezierCurve* DRBezierCurve::gradreduktionAndSplit()
 {
 	if (mNodeCount == 4) {
-		DRVector2* newPoints = new DRVector2[mNodeCount - 1];
-		newPoints[0] = mNodes[0];
-		newPoints[2] = mNodes[3];
-		newPoints[1] = 0.5f * (mNodes[1] + mNodes[2]);
-		DR_SAVE_DELETE_ARRAY(mNodes);
-		mNodes = newPoints;
-		mNodeCount--;
+		gradReduktionSimple();
 	}
 	else if (mNodeCount > 4) {
 		DRBezierCurve* secondBezier = new DRBezierCurve(mNodeCount);
@@ -144,6 +199,20 @@ DRString DRBezierCurve::getAsString()
 	}
 	return str;
 }
+DRReturn DRBezierCurve::gradReduktionSimple()
+{
+	if (mNodeCount != 4) LOG_ERROR("not correct node count", DR_ERROR);
+	DRVector2* newPoints = new DRVector2[mNodeCount - 1];
+	newPoints[0] = mNodes[0];
+	newPoints[2] = mNodes[3];
+	newPoints[1] = 0.5f * (mNodes[1] + mNodes[2]);
+	DR_SAVE_DELETE_ARRAY(mNodes);
+	mNodes = newPoints;
+	mNodeCount--;
+
+	return DR_OK;
+}
+
 
 void DRBezierCurve::gradreduktionDynamic()
 {

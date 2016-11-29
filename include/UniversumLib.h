@@ -71,7 +71,7 @@ namespace UniLib {
 		class BindToRenderer;
 		class CPUSheduler;
 	}
-	extern controller::BindToRenderer* g_RenderBinder;
+	UNIVERSUM_LIB_API extern controller::BindToRenderer* g_RenderBinder;
 	UNIVERSUM_LIB_API extern controller::CPUSheduler* g_HarddiskScheduler;
 }
 

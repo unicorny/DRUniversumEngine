@@ -25,8 +25,10 @@ namespace UniLib {
 			}
 
 			DRFile file(complete.data(), "rb");
-			if (!file.isOpen())
+			if (!file.isOpen()) {
+				EngineLog.writeToLog("couldn't find shader file: %s", filename);
 				LOG_ERROR("cannot open file", NULL);
+			}
 
 			int bytesinfile = file.getSize();
 			unsigned char *buffer = (unsigned char*)malloc(bytesinfile + 1);

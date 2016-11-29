@@ -40,6 +40,7 @@ namespace UniLib {
 		class Material;
 		class FrameBuffer;
 		typedef DRResourcePtr<Texture> TexturePtr;
+		typedef DRResourcePtr<Material> MaterialPtr;
 		
 	}
 	namespace generator {
