@@ -41,30 +41,38 @@ namespace UniLib {
 			LOG_INFO("ShaderManager beendet");
 		}
 
-		DHASH ShaderManager::makeShaderHash(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader)
+		DHASH ShaderManager::makeShaderHash(const char* shaderProgramName)
 		{
-			DHASH hash = DRMakeFilenameHash(fragmentShader);
-			hash |= DRMakeFilenameHash(vertexShader) << 8;
-			hash |= DRMakeStringHash(shaderProgramName) << 16;
+			DHASH hash = DRMakeStringHash(shaderProgramName);
 #ifdef _UNI_LIB_DEBUG
-			std::map<DHASH, ShaderProgramParameter>::iterator it = mHashCollisionCheckMap.find(hash);
+			std::map<DHASH, DRString>::iterator it = mHashCollisionCheckMap.find(hash);
 			if(it != mHashCollisionCheckMap.end()) {
-				if(std::string(vertexShader) != it->second.vertexShaderName 
-				|| std::string(fragmentShader) != it->second.fragmentShaderName 
-			    || std::string(shaderProgramName) != it->second.shaderProgramName) {
-					printf("error comparisation\n");
+				if(std::string(shaderProgramName) != it->second) {
 					throw "Shader Hash collision";
 				}
 			} else {
-				mHashCollisionCheckMap.insert(HASH_SHADER_ENTRY(hash, ShaderProgramParameter(shaderProgramName, vertexShader, fragmentShader)));
+				mHashCollisionCheckMap.insert(HASH_SHADER_ENTRY(hash, DRString(shaderProgramName)));
 			}
 #endif
 			return hash;
 		}
 
-		ShaderProgramPtr ShaderManager::getShaderProgram(ShaderProgramParameter* shaderParameter)
+		model::ShaderProgramPtr ShaderManager::getShaderProgram(const char* shaderProgramName)
 		{
-			return getShaderProgram(shaderParameter->shaderProgramName.data(), shaderParameter->vertexShaderName.data(), shaderParameter->fragmentShaderName.data());
+			DHASH id = makeShaderHash(shaderProgramName);
+			return model::ShaderProgramPtr(getShaderProgram(id));
+		}
+
+		model::ShaderProgramPtr ShaderManager::getShaderProgram(DHASH id)
+		{
+			lock();
+			if (mShaderProgramEntrys.find(id) != mShaderProgramEntrys.end())
+			{
+				unlock();
+				return mShaderProgramEntrys[id];
+			}
+			unlock();
+			return NULL;
 		}
 
 		//! lädt oder return instance auf Textur
@@ -73,16 +81,11 @@ namespace UniLib {
 			if(!mInitalized) return NULL;
 			if(!g_RenderBinder) LOG_ERROR("render binder is not set", NULL);
 
-			DHASH id = makeShaderHash(shaderProgramName, vertexShader, fragmentShader);
-
 			//Schauen ob schon vorhanden
-			lock();
-			if(mShaderProgramEntrys.find(id) != mShaderProgramEntrys.end())
-			{
-				unlock();
-				return mShaderProgramEntrys[id];
-			}
-			unlock();
+			DHASH id = makeShaderHash(shaderProgramName);
+			ShaderProgramPtr exist = getShaderProgram(id);
+			if (exist.getResourcePtrHolder()) return exist;
+
 			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(shaderProgramName, id));
 			//shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT));
 			shaderProgram->addShader(vertexShader, SHADER_VERTEX);

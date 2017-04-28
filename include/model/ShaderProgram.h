@@ -42,21 +42,6 @@ namespace UniLib {
 	}
 	namespace model {
 
-		
-
-		struct UNIVERSUM_LIB_API ShaderProgramParameter
-		{
-			ShaderProgramParameter() {};
-			ShaderProgramParameter(const char* _shaderProgramName, const char* _vertexShaderName, const char* _fragmentShaderName)
-				: shaderProgramName(_shaderProgramName), vertexShaderName(_vertexShaderName), fragmentShaderName(_fragmentShaderName)
-			{
-
-			}
-			DRString shaderProgramName;
-			DRString vertexShaderName;
-			DRString fragmentShaderName;
-		};
-
 		enum UNIVERSUM_LIB_API ShaderType {
 			SHADER_NONE = 0,
 			SHADER_FRAGMENT = 1,
@@ -67,7 +52,6 @@ namespace UniLib {
 		};
 
 		
-
 		class UNIVERSUM_LIB_API Shader : public DRIResource
 		{
 		public:
