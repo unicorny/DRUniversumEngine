@@ -56,7 +56,7 @@ namespace UniLib {
 			void exit();
 
 			//! lädt oder return instance auf Textur
-			model::ShaderProgramPtr getShaderProgram(const char* vertexShader, const char* fragmentShader);
+			model::ShaderProgramPtr getShaderProgram(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader);
 			model::ShaderProgramPtr getShaderProgram(model::ShaderProgramParameter* shaderParameter);       
 
 			model::ShaderPtr getShader(const char* shaderName, model::ShaderType shaderType);
@@ -65,8 +65,7 @@ namespace UniLib {
 			ShaderManager(const ShaderManager&);
 			virtual ~ShaderManager() {if(mInitalized) exit();};
 
-			DHASH makeShaderHash(const char* vertexShader, const char* fragmentShader);    
-
+			DHASH makeShaderHash(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader);
 
 			//DRHashList mShaderEntrys;
 			std::map<DHASH, model::ShaderProgramPtr>               mShaderProgramEntrys;

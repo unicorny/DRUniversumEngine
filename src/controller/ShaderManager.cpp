@@ -41,18 +41,21 @@ namespace UniLib {
 			LOG_INFO("ShaderManager beendet");
 		}
 
-		DHASH ShaderManager::makeShaderHash(const char* vertexShader, const char* fragmentShader)
+		DHASH ShaderManager::makeShaderHash(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader)
 		{
 			DHASH hash = DRMakeFilenameHash(fragmentShader);
-			hash |= DRMakeFilenameHash(vertexShader)<<8;
+			hash |= DRMakeFilenameHash(vertexShader) << 8;
+			hash |= DRMakeStringHash(shaderProgramName) << 16;
 #ifdef _UNI_LIB_DEBUG
 			std::map<DHASH, ShaderProgramParameter>::iterator it = mHashCollisionCheckMap.find(hash);
 			if(it != mHashCollisionCheckMap.end()) {
-				if(std::string(vertexShader) != it->second.vertexShaderName || std::string(fragmentShader) != it->second.fragmentShaderName) {
+				if(std::string(vertexShader) != it->second.vertexShaderName 
+				|| std::string(fragmentShader) != it->second.fragmentShaderName 
+			    || std::string(shaderProgramName) != it->second.shaderProgramName) {
 					throw "Shader Hash collision";
 				}
 			} else {
-				mHashCollisionCheckMap.insert(HASH_SHADER_ENTRY(hash, ShaderProgramParameter(vertexShader, fragmentShader)));
+				mHashCollisionCheckMap.insert(HASH_SHADER_ENTRY(hash, ShaderProgramParameter(shaderProgramName, vertexShader, fragmentShader)));
 			}
 #endif
 			return hash;
@@ -60,16 +63,16 @@ namespace UniLib {
 
 		ShaderProgramPtr ShaderManager::getShaderProgram(ShaderProgramParameter* shaderParameter)
 		{
-			return getShaderProgram(shaderParameter->vertexShaderName.data(), shaderParameter->fragmentShaderName.data());
+			return getShaderProgram(shaderParameter->shaderProgramName.data(), shaderParameter->vertexShaderName.data(), shaderParameter->fragmentShaderName.data());
 		}
 
 		//! lädt oder return instance auf Textur
-		ShaderProgramPtr ShaderManager::getShaderProgram(const char* vertexShader, const char* fragmentShader)
+		ShaderProgramPtr ShaderManager::getShaderProgram(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader)
 		{
 			if(!mInitalized) return NULL;
 			if(!g_RenderBinder) LOG_ERROR("render binder is not set", NULL);
 
-			DHASH id = makeShaderHash(vertexShader, fragmentShader);
+			DHASH id = makeShaderHash(shaderProgramName, vertexShader, fragmentShader);
 
 			//Schauen ob schon vorhanden
 			lock();
