@@ -13,7 +13,7 @@ namespace UniLib {
 
 		}
 
-		void Rotation::rotateRel(const DRVector3& rotation)
+		void Rotation::rotateRel(DRVector3 rotation)
 		{
 			DRMatrix mRot;
 			// Rotation um die z-Achse des Objekts
@@ -32,7 +32,7 @@ namespace UniLib {
 			mZAxis = mXAxis.cross(mYAxis);
 
 		}
-		void Rotation::rotateAbs(const DRVector3& rotation)
+		void Rotation::rotateAbs(DRVector3 rotation)
 		{
 			// Rotation um die x-Achse
 			DRMatrix mRotation(DRMatrix::rotationX(rotation.x));
@@ -48,6 +48,13 @@ namespace UniLib {
 			mRotation = DRMatrix::rotationZ(rotation.z);
 			mXAxis = mXAxis.transformNormal(mRotation);
 			mYAxis = mYAxis.transformNormal(mRotation);
+		}
+
+		void Rotation::lookAt(DRVector3 currentPos, DRVector3 targetPosition, DRVector3 upVector/* = DRVector3(0.0f, 1.0f, 0.0f)*/)
+		{
+			mZAxis = DRVector3(currentPos - targetPosition).normalizeEx();
+			mXAxis = upVector.cross(mZAxis).normalizeEx();
+			mYAxis = mZAxis.cross(mXAxis).normalizeEx();
 		}
 
 		DRMatrix Rotation::calculateMatrix()

@@ -53,11 +53,16 @@ namespace UniLib {
 			//! in Verh&auml;ltniss zum Objekteigenem Koordinatensystem
 			//! \brief rotiert das DRObjekt relativ
 			//! \param rotate die Rotation in Grad um die 3 Achsen
-			void rotateRel(const DRVector3& rotate);
+			// using no reference because of caching
+			void rotateRel(DRVector3 rotate);
 			//! in Verh&auml;ltniss zum Zentralem Koordinatensystem
 			//! \brief rotiert das DRObjekt absolut
 			//! \param rotate die Rotation in Grad um die 3 Achsen
-			void rotateAbs(const DRVector3& rotate);
+			// using no reference because of caching
+			void rotateAbs(DRVector3 rotate);
+
+			// using no reference because of caching
+			void lookAt(DRVector3 currentPos, DRVector3 targetPosition, DRVector3 upVector = DRVector3(0.0f, 1.0f, 0.0f));
 
 			__inline__ const DRVector3& getYAxis() const {return mYAxis;}
 			__inline__ DRVector3 getYAxis() {return mYAxis;}
