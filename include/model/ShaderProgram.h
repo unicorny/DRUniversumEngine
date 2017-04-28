@@ -33,6 +33,7 @@
 #include "UniformSet.h"
 #include "lib/MultithreadResource.h"
 #include "controller/CPUTask.h"
+#include "controller/Command.h"
 #include "controller/GPUTask.h"
 
 namespace UniLib {
@@ -41,7 +42,7 @@ namespace UniLib {
 		class ShaderManager;
 	}
 	namespace model {
-
+		// shader types
 		enum UNIVERSUM_LIB_API ShaderType {
 			SHADER_NONE = 0,
 			SHADER_FRAGMENT = 1,
@@ -51,7 +52,7 @@ namespace UniLib {
 			SHADER_GEOMETRIE = 5
 		};
 
-		
+		// Shader Model for a single Shader
 		class UNIVERSUM_LIB_API Shader : public DRIResource
 		{
 		public:
@@ -69,7 +70,6 @@ namespace UniLib {
 				return mID <  dynamic_cast<Shader&>(shader).mID;
 			}
 
-
 			static unsigned char* readShaderFile(const char *filename);
 			
 		protected:
@@ -79,7 +79,7 @@ namespace UniLib {
 			HASH mID;
 			
 		};
-
+		// Task for loading shader from hard disk into memory
 		typedef DRResourcePtr<Shader> ShaderPtr;
 		class ShaderLoadingTask : public controller::CPUTask
 		{
@@ -95,11 +95,14 @@ namespace UniLib {
 			ShaderProgram* mShaderProgram;
 
 		};
+		// forward declaration for friend declaration in ShaderProgram
 		class ShaderCompileTask;
-
+		class LoadShaderCommand;
+		// Class for a ShaderProgram, containing vertex shader + pixel shader + ...
 		class UNIVERSUM_LIB_API ShaderProgram : public lib::MultithreadResource
 		{
 			friend ShaderLoadingTask;
+			friend LoadShaderCommand;
 			friend controller::ShaderManager;
 			friend ShaderCompileTask;
 		public:
@@ -125,8 +128,8 @@ namespace UniLib {
 
 		protected:
 			void loadShaderDataIntoMemory();
-			virtual void parseShaderData() = 0;
-			
+			virtual void parseShaderData(void* data = NULL) = 0;
+			virtual void checkIfBinaryExist(controller::Command* loadingShaderFromFile) = 0;
 
 			struct ShaderData {
 				ShaderData(const char* filename, ShaderType type) 
@@ -144,7 +147,7 @@ namespace UniLib {
 		};
 
 		typedef DRResourcePtr<ShaderProgram> ShaderProgramPtr;
-
+		// Task for compiling shader on GPU
 		class ShaderCompileTask : public controller::GPUTask
 		{
 		public:
@@ -155,6 +158,24 @@ namespace UniLib {
 		protected:
 			ShaderProgram* mShaderProgram;
 			ShaderProgram::ShaderData* mShaderData;
+		};
+		// Command called after falling loading ShaderProgram from binary
+		// call Shader Loading task
+		class LoadShaderCommand : public controller::Command {
+		public:
+#ifdef _UNI_LIB_DEBUG
+			LoadShaderCommand(model::ShaderProgram* shaderProgram, std::string name)
+				: mShaderProgram(shaderProgram), mName(name) {}
+#else
+			LoadShaderCommand(model::ShaderProgram* shaderProgram)
+				: mShaderProgram(shaderProgram) {}
+#endif
+			virtual DRReturn taskFinished(controller::Task* task);
+		protected:
+			model::ShaderProgram* mShaderProgram;
+#ifdef _UNI_LIB_DEBUG
+			std::string mName;
+#endif
 		};
 	}
 }

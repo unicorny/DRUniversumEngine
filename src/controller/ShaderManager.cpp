@@ -6,6 +6,7 @@ namespace UniLib {
 	namespace controller {
 	using namespace model;
 
+	
 
 		ShaderManager::ShaderManager()
 			: mInitalized(false)
@@ -75,7 +76,7 @@ namespace UniLib {
 			return NULL;
 		}
 
-		//! lädt oder return instance auf Textur
+		//!
 		ShaderProgramPtr ShaderManager::getShaderProgram(const char* shaderProgramName, const char* vertexShader, const char* fragmentShader)
 		{
 			if(!mInitalized) return NULL;
@@ -90,22 +91,11 @@ namespace UniLib {
 			//shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT));
 			shaderProgram->addShader(vertexShader, SHADER_VERTEX);
 			shaderProgram->addShader(fragmentShader, SHADER_FRAGMENT);
-
-			if (g_HarddiskScheduler) {
-				controller::TaskPtr task(new ShaderLoadingTask(shaderProgram, g_HarddiskScheduler));
 #ifdef _UNI_LIB_DEBUG
-				std::stringstream ss;
-				if (vertexShader) ss << vertexShader;
-				if (vertexShader && fragmentShader) ss << ", ";
-				if (fragmentShader) ss << fragmentShader;
-				task->setName(ss.str().data());
+			shaderProgram->checkIfBinaryExist(new LoadShaderCommand(shaderProgram, shaderProgramName));
+#else 
+			shaderProgram->checkIfBinaryExist(new LoadShaderCommand(shaderProgram));
 #endif
-				task->scheduleTask(task);
-
-			}
-			else {
-				shaderProgram->loadShaderDataIntoMemory();
-			}
 			//*/
 			lock();
 			if (!mShaderProgramEntrys.insert(SHADER_PROGRAM_ENTRY(id, shaderProgram)).second)

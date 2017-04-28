@@ -55,6 +55,22 @@ namespace UniLib {
 			mShaderProgram->parseShaderData();
 			return DR_OK;
 		}
+		// -------------------------------------------------------------------------------
+		DRReturn LoadShaderCommand::taskFinished(controller::Task* task)
+		{
+			if (g_HarddiskScheduler) {
+				controller::TaskPtr task(new ShaderLoadingTask(mShaderProgram, g_HarddiskScheduler));
+#ifdef _UNI_LIB_DEBUG
+				task->setName(mName.data());
+#endif
+				task->scheduleTask(task);
+
+			}
+			else {
+				mShaderProgram->loadShaderDataIntoMemory();
+			}
+			return DR_OK;
+		}
 		// ***********************************************************************
 
 		ShaderProgram::ShaderProgram(const char* name, HASH id/* = 0*/)
@@ -76,8 +92,6 @@ namespace UniLib {
 			unlock();
 			return DR_OK;
 		}
-
-		
 
 		void ShaderProgram::loadShaderDataIntoMemory()
 		{

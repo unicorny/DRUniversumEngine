@@ -36,6 +36,8 @@ namespace UniLib {
 		typedef DRResourcePtr<Shader> ShaderPtr;
 	}*/
 	namespace controller {
+
+
 		class UNIVERSUM_LIB_API ShaderManager : public lib::MultithreadContainer
 		{
 		public:
