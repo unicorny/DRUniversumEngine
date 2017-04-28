@@ -69,7 +69,7 @@ namespace UniLib {
 			virtual view::FrameBuffer* newFrameBuffer() = 0;
 			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;
 			virtual model::Shader* newShader(HASH id) = 0;
-			virtual model::ShaderProgram* newShaderProgram(HASH id)  = 0;
+			virtual model::ShaderProgram* newShaderProgram(const char* name, HASH id)  = 0;
 			virtual model::UniformSet* newUniformSet() = 0;
 			//virtual 
 

@@ -52,6 +52,7 @@ namespace UniLib {
 				if(std::string(vertexShader) != it->second.vertexShaderName 
 				|| std::string(fragmentShader) != it->second.fragmentShaderName 
 			    || std::string(shaderProgramName) != it->second.shaderProgramName) {
+					printf("error comparisation\n");
 					throw "Shader Hash collision";
 				}
 			} else {
@@ -82,7 +83,7 @@ namespace UniLib {
 				return mShaderProgramEntrys[id];
 			}
 			unlock();
-			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(id));
+			ShaderProgramPtr shaderProgram(g_RenderBinder->newShaderProgram(shaderProgramName, id));
 			//shaderProgram->init(getShader(vertexShader, SHADER_VERTEX), getShader(fragmentShader, SHADER_FRAGMENT));
 			shaderProgram->addShader(vertexShader, SHADER_VERTEX);
 			shaderProgram->addShader(fragmentShader, SHADER_FRAGMENT);

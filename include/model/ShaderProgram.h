@@ -47,16 +47,14 @@ namespace UniLib {
 		struct UNIVERSUM_LIB_API ShaderProgramParameter
 		{
 			ShaderProgramParameter() {};
-			ShaderProgramParameter(const char* _vertexShaderName, const char* _fragmentShaderName, const char* _shaderProgramName)
-				: vertexShaderName(_vertexShaderName), fragmentShaderName(_fragmentShaderName), shaderProgramName(_shaderProgramName)
+			ShaderProgramParameter(const char* _shaderProgramName, const char* _vertexShaderName, const char* _fragmentShaderName)
+				: shaderProgramName(_shaderProgramName), vertexShaderName(_vertexShaderName), fragmentShaderName(_fragmentShaderName)
 			{
 
 			}
-
+			DRString shaderProgramName;
 			DRString vertexShaderName;
 			DRString fragmentShaderName;
-			DRString shaderProgramName;
-
 		};
 
 		enum UNIVERSUM_LIB_API ShaderType {
