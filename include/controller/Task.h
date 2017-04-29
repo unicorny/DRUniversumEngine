@@ -95,7 +95,6 @@ namespace UniLib {
 			__inline__ bool isTaskSheduled() {return mTaskScheduled;}
 			__inline__ void taskScheduled() {mTaskScheduled = true;}
 			
-            
 			bool mTaskScheduled;
 			Command*	mFinishCommand;
         private:
