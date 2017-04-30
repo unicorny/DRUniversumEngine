@@ -56,9 +56,18 @@ namespace UniLib {
 			}
 			mPendingTasksMutex.unlock();
 			// push thread to worker queue
-			mFreeWorkerThreads.push(Me);
+			if (Me) {
+				mFreeWorkerThreads.push(Me);
+			}
 			
 			return TaskPtr();
+		}
+		void CPUSheduler::checkPendingTasks()
+		{
+			TaskPtr task = getNextUndoneTask(NULL);
+			if (task.getResourcePtrHolder()) {
+				sheduleTask(task);
+			}
 		}
 
 	}

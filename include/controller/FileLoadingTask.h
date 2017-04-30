@@ -55,6 +55,8 @@ namespace UniLib {
 			// if returns true, FileLoadingTask delete data buffer
 			virtual bool getFileFromMemory(FileInMemory* fileInMemory) { return true; }
 			virtual bool getFileFromMemory(FileInMemory** filesInMemory, size_t fileCount) { return true; }
+			// called after task was finished, to make it possible to update CPU scheduler
+			virtual void finishFileLoadingTask() = 0;
 		};
 
 		class CPUSheduler;

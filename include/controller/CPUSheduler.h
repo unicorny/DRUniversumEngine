@@ -51,6 +51,7 @@ namespace UniLib {
             virtual ~CPUSheduler();
 			
 			DRReturn sheduleTask(TaskPtr task); 
+			void checkPendingTasks();
 #ifdef _UNI_LIB_DEBUG
 			CPUShedulerThread** getThreads(u8& count) {count = mThreadCount; return mThreads;};
 #endif

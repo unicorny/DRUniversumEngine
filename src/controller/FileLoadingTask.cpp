@@ -41,6 +41,7 @@ namespace UniLib {
 				//mData[i] = (void*)malloc()
 			}
 			bool result = false;
+			
 			if (mFileNames.size() == 1) {
 				result = mFinishReciver->getFileFromMemory(*mFilesInMemory);
 			}
@@ -50,13 +51,13 @@ namespace UniLib {
 			if (result != true) {
 				for (u16 i = 0; i < mFileNames.size(); i++) {
 					if (!mFilesInMemory[i]) continue;
-					mFilesInMemory[i]->data = NULL;
-					mFilesInMemory[i]->size = 0;
+					mFilesInMemory[i] = NULL;
 				}
 			}
 			lock();
 			mFinished = true;
 			unlock();
+			mFinishReciver->finishFileLoadingTask();
 			
 			return DR_OK;
 		}

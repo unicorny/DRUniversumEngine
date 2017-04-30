@@ -58,6 +58,7 @@ namespace UniLib {
 
 			virtual void scheduleTask(TaskPtr own);
         protected:
+			void triggerSheduler() { mScheduler->checkPendingTasks(); }
 			
 		private: 
 			CPUSheduler* mScheduler;
