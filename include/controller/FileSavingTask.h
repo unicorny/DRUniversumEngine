@@ -24,43 +24,36 @@
 *
 * \author: Dario Rekowski
 *
-* \date: 27.09.15
+* \date: 30.04.17
 *
-* \desc: One Task for the CPU, only calculation
+* \desc: One generic Task for save one or more files to harddisk, using the harddisk scheduler
 */
 
-#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_CPU_TASK_H__
-#define __DR_UNIVERSUM_LIB_CONTROLLER_CPU_TASK_H__
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__
+#define __DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__
 
-#include "Task.h"
-#include "CPUSheduler.h"
+#include "CPUTask.h"
 
 namespace UniLib {
 	namespace controller {
 
-		class UNIVERSUM_LIB_API CPUTask;
-		typedef DRResourcePtr<CPUTask> CPUTaskPtr;
-
 		class CPUSheduler;
-
-		class UNIVERSUM_LIB_API CPUTask : public Task
+		class UNIVERSUM_LIB_API FileSavingTask : public CPUTask
 		{
 		public:
-			CPUTask(CPUSheduler* cpuSheduler, size_t taskDependenceCount);
-			CPUTask(CPUSheduler* cpuScheduler);
-			virtual ~CPUTask();
+			FileSavingTask(const char* fileName, DRVirtualFile* data, bool freeMemory = true);
+			virtual ~FileSavingTask();
 
-			virtual const char* getResourceType() const { return "CPUTask"; };
-			virtual bool const isCPUTask() const { return true; }
-			//! \brief return true if task has finished, else false
-			//! automatic scheduling of task if he isn't finished and sheduled yet
-			virtual bool isTaskFinished() { return true; }
+			virtual const char* getResourceType() const { return "FileSavingTask"; };
 
-			virtual void scheduleTask(TaskPtr own);
+			virtual DRReturn run();
 		protected:
-
-		private:
-			CPUSheduler* mScheduler;
+			// input data
+			std::string				 mFileName;
+			DRVirtualFile*			 mData;
+			bool					 mFreeMemory;
 		};
 	}
 }
+
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__

@@ -111,6 +111,10 @@ typedef char s8;
 typedef unsigned long long u64;
 #endif // u64
 
+#ifndef s64
+typedef long long s64;
+#endif // s64
+
 typedef unsigned int HASH;
 typedef unsigned long DHASH;
 
@@ -158,6 +162,7 @@ enum /*CORE_API*/ DRReturn
 #include "DRHashList.hpp"
 #include "DRUtils.h"
 #include "DRFile.h"
+#include "DRVirtualFile.h"
 #include "DRLogger.h"
 #include "DRIResource.h"
 #include "DRResourcePtrHolder.h"

@@ -37,24 +37,12 @@
 namespace UniLib {
 	namespace controller {
 
-		struct UNIVERSUM_LIB_API FileInMemory {
-			FileInMemory(size_t _size):data(NULL), size(_size) {
-				data = (void*)malloc(size);
-			}
-			~FileInMemory() {
-				free(data);
-			}
-
-			void* data;
-			size_t size;
-		};
-
 		class UNIVERSUM_LIB_API FileLoadingReciver
 		{
 		public:
 			// if returns true, FileLoadingTask delete data buffer
-			virtual bool getFileFromMemory(FileInMemory* fileInMemory) { return true; }
-			virtual bool getFileFromMemory(FileInMemory** filesInMemory, size_t fileCount) { return true; }
+			virtual bool getFileFromMemory(DRVirtualFile* fileInMemory) { return true; }
+			virtual bool getFileFromMemory(DRVirtualFile** filesInMemory, size_t fileCount) { return true; }
 			// called after task was finished, to make it possible to update CPU scheduler
 			virtual void finishFileLoadingTask() = 0;
 		};
@@ -79,7 +67,7 @@ namespace UniLib {
 			std::vector<std::string> mFileNames;
 
 			// output data
-			FileInMemory** mFilesInMemory;
+			DRVirtualFile** mFilesInMemory;
 			bool		mFinished;
 		};
 	}

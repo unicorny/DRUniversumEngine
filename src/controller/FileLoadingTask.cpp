@@ -7,15 +7,15 @@ namespace UniLib {
 		{
 			assert(reciver != NULL);
 			mFileNames.push_back(fileName);
-			mFilesInMemory = new FileInMemory*;
+			mFilesInMemory = new DRVirtualFile*;
 		}
 
 		FileLoadingTask::FileLoadingTask(FileLoadingReciver* reciver, std::vector<std::string> fileNames)
 			: CPUTask(g_HarddiskScheduler), mFinishReciver(reciver), mFileNames(fileNames), mFinished(false)
 		{
 			assert(reciver != NULL);
-			mFilesInMemory = new FileInMemory*[mFileNames.size()];
-			memset(mFilesInMemory, 0, sizeof(FileInMemory*)*mFileNames.size());
+			mFilesInMemory = new DRVirtualFile*[mFileNames.size()];
+			memset(mFilesInMemory, 0, sizeof(DRVirtualFile*)*mFileNames.size());
 		}
 		FileLoadingTask::~FileLoadingTask()
 		{
@@ -30,13 +30,22 @@ namespace UniLib {
 
 		DRReturn FileLoadingTask::run()
 		{
-			
 			for (u16 i = 0; i < mFileNames.size(); i++) {
 				DRFile file(mFileNames[i].data(), "rb");
 				if (file.isOpen()) {
-					mFilesInMemory[i] = new FileInMemory(file.getSize());
-					file.read(mFilesInMemory[i]->data, mFilesInMemory[i]->size, 1);
+					char start[10];
+					if (file.getSize() > 10) {
+						file.read(start, 1, 10);
+						file.close();
+						if (strcmp(start, VIRTUAL_FILE_HEAD) == 0) {
+							mFilesInMemory[i] = new DRVirtualCustomFile();
+							mFilesInMemory[i]->readFromFile(mFileNames[i].data());
+						}
+						continue;
+					}
+					mFilesInMemory[i] = new DRVirtualBinaryFile();
 					file.close();
+					mFilesInMemory[i]->readFromFile(mFileNames[i].data());
 				}
 				//mData[i] = (void*)malloc()
 			}

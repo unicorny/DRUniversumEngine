@@ -40,6 +40,8 @@ namespace UniLib {
         class UNIVERSUM_LIB_API Task;
         typedef DRResourcePtr<Task> TaskPtr;
 
+		
+
         class UNIVERSUM_LIB_API Task : public DRIResource
         {
         public:
