@@ -1,6 +1,7 @@
 #include "Core2Main.h"
 
 DRBoundingBox::DRBoundingBox(DRVector2* vertices, u16 vertexCount)
+	: mMin(0.0f), mMax(0.0f)
 {
 	mMin = DRVector2(1000.0f);
 	for (int iVertices = 0; iVertices < vertexCount; iVertices++) {

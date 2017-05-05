@@ -11,6 +11,9 @@ DRVirtualCustomFile::~DRVirtualCustomFile()
 		for (FilePartListIterator it = mFileParts.begin(); it != mFileParts.end(); it++) {
 			DR_SAVE_DELETE(*it);
 		}
+		for (FilePartListIterator it = mFilePartsForDeleting.begin(); it != mFilePartsForDeleting.end(); it++) {
+			DR_SAVE_DELETE(*it);
+		}
 	}
 	mFileParts.clear();
 }
@@ -22,7 +25,11 @@ void DRVirtualCustomFile::write(FilePart* part)
 
 FilePart* DRVirtualCustomFile::read()
 {
+	if (!mFileParts.size()) LOG_ERROR("not enough parts in list", NULL);
 	FilePart* result = mFileParts.front();
+	if (mFreeMemory) {
+		mFilePartsForDeleting.push_back(result);
+	}
 	mFileParts.pop_front();
 	return result;
 }
@@ -53,7 +60,7 @@ DRReturn DRVirtualCustomFile::readFromFile(const char* filename)
 {
 	DRFile file(filename, "rb");
 	if (file.isOpen()) {
-		char start[10];
+		char start[11]; memset(start, 0, 11);
 		s32 fileVersion = 0;
 		u32 fileSize = file.getSize();
 		if (fileSize < 14) LOG_ERROR("file to small", DR_ERROR);

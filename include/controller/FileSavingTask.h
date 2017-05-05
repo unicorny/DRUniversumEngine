@@ -29,8 +29,8 @@
 * \desc: One generic Task for save one or more files to harddisk, using the harddisk scheduler
 */
 
-#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__
-#define __DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__
+#ifndef __DR_UNIVERSUM_LIB_CONTROLLER_FILE_SAVING_TASK_H__
+#define __DR_UNIVERSUM_LIB_CONTROLLER_FILE_SAVING_TASK_H__
 
 #include "CPUTask.h"
 
@@ -56,4 +56,4 @@ namespace UniLib {
 	}
 }
 
-#endif //__DR_UNIVERSUM_LIB_CONTROLLER_FILE_LOADING_TASK_H__
+#endif //__DR_UNIVERSUM_LIB_CONTROLLER_FILE_SAVING_TASK_H__

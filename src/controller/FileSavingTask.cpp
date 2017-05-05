@@ -6,6 +6,9 @@ namespace UniLib {
 		FileSavingTask::FileSavingTask(const char* fileName, DRVirtualFile* data, bool freeMemory /* = true */)
 			: CPUTask(g_HarddiskScheduler), mFileName(fileName), mData(data), mFreeMemory(freeMemory)
 		{
+#ifdef _UNI_LIB_DEBUG
+			setName(fileName);
+#endif
 		}
 
 		FileSavingTask::~FileSavingTask() 

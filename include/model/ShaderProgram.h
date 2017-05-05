@@ -159,7 +159,7 @@ namespace UniLib {
 			ShaderProgram* mShaderProgram;
 			ShaderProgram::ShaderData* mShaderData;
 		};
-		// Command called after falling loading ShaderProgram from binary
+		// Command called after failing loading ShaderProgram from binary
 		// call Shader Loading task
 		class LoadShaderCommand : public controller::Command {
 		public:
