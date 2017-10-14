@@ -23,6 +23,7 @@
 #define __DR_CORE2_MATRIX__
 
 
+
 #include "stdio.h"
 #include "memory.h"
 #include "math.h"
@@ -104,6 +105,7 @@ public:
 		float		n[16];				// Eindimensionales Array der Elemente
 	};
 
+
     // Casting-Opeatoren
     //! \brief casting operator
     //! \return float Zeiger auf DRMatrix Elemente Array
@@ -154,15 +156,16 @@ public:
 
 	I don't t
 	*/
-	DRMatrix operator * (const DRMatrix& mm) const
-	{
+	DRMatrix operator * (const DRMatrix& mm) const;
+	/*{
+		// scalar
 	    DRMatrix e(0.0f);
 	    for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++) 
 				for(int k = 0; k < 4; k++) 
 					e.m[i][j] += mm.m[k][j] * m[i][k];
         return e;
-	}
+	}*/
 	//! \brief Multiplikations Operator
     //!     zum auf Auf-Multiplizieren einer DRMatrix auf diese DRMatrix
 	//! \param DRMatrix mit welcher Multipliziert werden soll

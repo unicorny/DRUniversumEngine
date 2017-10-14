@@ -1,3 +1,6 @@
 [submodule "dependencies/jsoncpp"]
 	path = dependencies/jsoncpp
 	url = https://github.com/codebudo/jsoncpp.git
+[submodule "dependencies/Core2/include/veclib"]
+	path = dependencies/Core2/include/veclib
+	url = https://github.com/nadult/veclib.git

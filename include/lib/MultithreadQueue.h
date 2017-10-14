@@ -41,8 +41,11 @@ namespace UniLib {
 		{
 		public:
 			virtual ~MultithreadQueue() {
+				clear();
+			}
+			void clear() {
 				lock();
-				while(!std::queue<ResourceType>::empty()) std::queue<ResourceType>::pop();
+				while (!std::queue<ResourceType>::empty()) std::queue<ResourceType>::pop();
 				unlock();
 			}
 			void push(ResourceType val) 

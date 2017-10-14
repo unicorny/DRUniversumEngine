@@ -1,4 +1,7 @@
 #include "Core2Main.h"
+#include "Eigen/Dense"
+
+using namespace Eigen;
 
 DRMatrix DRMatrix::translation(const DRVector3& v)
 {
@@ -110,10 +113,14 @@ DRMatrix DRMatrix::invert() const
 
 float DRMatrix::det() const
 {
+	Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
+	return mm1.determinant();
 // Determinante der linken oberen 3x3-Teilmatrix berechnen
-    return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+   /* return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
            m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
            m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+		   */
+		   
 }
 
 DRMatrix DRMatrix::axis(const DRVector3& x_axis, const DRVector3& y_axis, const DRVector3& z_axis)
@@ -142,4 +149,23 @@ DRMatrix DRMatrix::ortho_projection(const float left, const float right, const f
                     0.0f, 2.0f/(top-bottom), 0.0f, -((top+bottom)/(top-bottom)),
                     0.0f, 0.0f, -2.0f/(zFar-zNear),-((zFar+zNear)/(zFar-zNear)),
                     0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
+{
+	// scalar, 64 multiplications, 48 additions
+	Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
+	Map<const Matrix<float, 4, 4, RowMajor>> mm2(mm.n, 4, 4);
+
+	DRMatrix e(0.0f);
+	Map<Matrix<float, 4, 4, RowMajor>>res(e.n, 4, 4);
+	res = mm1 * mm2;
+	/*
+	DRMatrix e(0.0f);
+	for(int i = 0; i < 4; i++)
+		for(int j = 0; j < 4; j++)
+			for(int k = 0; k < 4; k++)
+				e.m[i][j] += mm.m[k][j] * m[i][k];
+				*/
+	return e;
 }
