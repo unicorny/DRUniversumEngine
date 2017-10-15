@@ -71,10 +71,15 @@ DRMatrix DRMatrix::scaling(const DRVector3& v)
 }
 DRMatrix DRMatrix::transpose() const
 {
-    return DRMatrix(m[0][0], m[0][1], m[0][2], m[0][3],
+	return DRMatrix(m[0][0], m[1][0], m[2][0], m[3][0],
+		m[0][1], m[1][1], m[2][1], m[3][1],
+		m[0][2], m[1][2], m[2][2], m[3][2],
+		m[0][3], m[1][3], m[2][3], m[3][3]);
+    /*return DRMatrix(m[0][0], m[0][1], m[0][2], m[0][3],
                     m[1][0], m[1][1], m[1][2], m[1][3],
                     m[2][0], m[2][1], m[2][2], m[2][3],
                     m[3][0], m[3][1], m[3][2], m[3][3]);
+					*/
 }
 
 DRMatrix DRMatrix::invert() const
@@ -161,9 +166,14 @@ DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
 	/**/
 
 	//SSE
-	DRMatrix e;
+	DRMatrix e = mm;
 
-	__m128 m2r[4] = { _mm_load_ps(&mm.n[0]), _mm_load_ps(&mm.n[4]), _mm_load_ps(&mm.n[8]), _mm_load_ps(&mm.n[12]) };
+	__m128 m2r[4] = { 
+		_mm_load_ps(&e.n[0]), 
+		_mm_load_ps(&e.n[4]),
+		_mm_load_ps(&e.n[8]),
+		_mm_load_ps(&e.n[12]) 
+	};
 
 	__m256 addR;
 	float* fadd = (float*)&addR;
@@ -222,4 +232,28 @@ DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
 				e.m[i][j] += mm.m[k][j] * m[i][k];
 				//*/
 	return e;
+	/*
+	// plain
+	return DRMatrix(
+		mm.m00 * m00 + mm.m01 * m04 + mm.m02 * m08 + mm.m03 * m12, // 00
+		mm.m00 * m01 + mm.m01 * m05 + mm.m02 * m09 + mm.m03 * m13, // 01
+		mm.m00 * m02 + mm.m01 * m06 + mm.m02 * m10 + mm.m03 * m14, // 02
+		mm.m00 * m03 + mm.m01 * m07 + mm.m02 * m11 + mm.m03 * m15, // 03
+
+		mm.m04 * m00 + mm.m05 * m04 + mm.m06 * m08 + mm.m07 * m12, // 04
+		mm.m04 * m01 + mm.m05 * m05 + mm.m06 * m09 + mm.m07 * m13, // 05
+		mm.m04 * m02 + mm.m05 * m06 + mm.m06 * m10 + mm.m07 * m14, // 06
+		mm.m04 * m03 + mm.m05 * m07 + mm.m06 * m11 + mm.m07 * m15, // 07
+
+		mm.m08 * m00 + mm.m09 * m04 + mm.m10 * m08 + mm.m11 * m12, // 08
+		mm.m08 * m01 + mm.m09 * m05 + mm.m10 * m09 + mm.m11 * m13, // 09
+		mm.m08 * m02 + mm.m09 * m06 + mm.m10 * m10 + mm.m11 * m14, // 10
+		mm.m08 * m03 + mm.m09 * m07 + mm.m10 * m11 + mm.m11 * m15, // 11
+
+		mm.m12 * m00 + mm.m13 * m04 + mm.m14 * m08 + mm.m15 * m12, // 12
+		mm.m12 * m01 + mm.m13 * m05 + mm.m14 * m09 + mm.m15 * m13, // 13
+		mm.m12 * m02 + mm.m13 * m06 + mm.m14 * m10 + mm.m15 * m14, // 14
+		mm.m12 * m03 + mm.m13 * m07 + mm.m14 * m11 + mm.m15 * m15  // 15 
+	);
+	//*/
 }
