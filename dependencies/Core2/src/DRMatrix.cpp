@@ -1,7 +1,5 @@
 #include "Core2Main.h"
-#include "Eigen/Dense"
-
-using namespace Eigen;
+#include <immintrin.h>
 
 DRMatrix DRMatrix::translation(const DRVector3& v)
 {
@@ -73,10 +71,10 @@ DRMatrix DRMatrix::scaling(const DRVector3& v)
 }
 DRMatrix DRMatrix::transpose() const
 {
-    return DRMatrix(m[0][0], m[1][0], m[2][0], m[3][0],
-                    m[0][1], m[1][1], m[2][1], m[3][1],
-                    m[0][2], m[1][2], m[2][2], m[3][2],
-                    m[0][3], m[1][3], m[2][3], m[3][3]);
+    return DRMatrix(m[0][0], m[0][1], m[0][2], m[0][3],
+                    m[1][0], m[1][1], m[1][2], m[1][3],
+                    m[2][0], m[2][1], m[2][2], m[2][3],
+                    m[3][0], m[3][1], m[3][2], m[3][3]);
 }
 
 DRMatrix DRMatrix::invert() const
@@ -113,13 +111,13 @@ DRMatrix DRMatrix::invert() const
 
 float DRMatrix::det() const
 {
-	Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
-	return mm1.determinant();
+	//Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
+	//return mm1.determinant();
 // Determinante der linken oberen 3x3-Teilmatrix berechnen
-   /* return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+   return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
            m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
            m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
-		   */
+		   
 		   
 }
 
@@ -154,18 +152,74 @@ DRMatrix DRMatrix::ortho_projection(const float left, const float right, const f
 DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
 {
 	// scalar, 64 multiplications, 48 additions
-	Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
+	/*Map<const Matrix<float, 4, 4, RowMajor>> mm1(n, 4, 4);
 	Map<const Matrix<float, 4, 4, RowMajor>> mm2(mm.n, 4, 4);
 
 	DRMatrix e(0.0f);
 	Map<Matrix<float, 4, 4, RowMajor>>res(e.n, 4, 4);
 	res = mm1 * mm2;
+	/**/
+
+	//SSE
+	DRMatrix e;
+
+	__m128 m2r[4] = { _mm_load_ps(&mm.n[0]), _mm_load_ps(&mm.n[4]), _mm_load_ps(&mm.n[8]), _mm_load_ps(&mm.n[12]) };
+
+	__m256 addR;
+	float* fadd = (float*)&addR;
+
+	addR = _mm256_add_ps(
+		_mm256_set_m128(
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[5]), m2r[1]),
+				_mm_mul_ps(_mm_set1_ps(n[7]), m2r[3])
+			),
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[1]), m2r[1]),
+				_mm_mul_ps(_mm_set1_ps(n[3]), m2r[3])
+			)
+		),
+		_mm256_set_m128(
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[4]), m2r[0]),
+				_mm_mul_ps(_mm_set1_ps(n[6]), m2r[2])
+			),
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[0]), m2r[0]),
+				_mm_mul_ps(_mm_set1_ps(n[2]), m2r[2])
+			)
+		)
+	);
+	memcpy(&e.n[0], fadd, sizeof(float) * 8);
+	addR = _mm256_add_ps(
+		_mm256_set_m128(
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[13]), m2r[1]),
+				_mm_mul_ps(_mm_set1_ps(n[15]), m2r[3])
+			),
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[9]), m2r[1]),
+				_mm_mul_ps(_mm_set1_ps(n[11]), m2r[3])
+			)
+		),
+		_mm256_set_m128(
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[12]), m2r[0]),
+				_mm_mul_ps(_mm_set1_ps(n[14]), m2r[2])
+			),
+			_mm_add_ps(
+				_mm_mul_ps(_mm_set1_ps(n[8]), m2r[0]),
+				_mm_mul_ps(_mm_set1_ps(n[10]), m2r[2])
+			)
+		)
+	);
+	memcpy(&e.n[8], fadd, sizeof(float) * 8);
 	/*
 	DRMatrix e(0.0f);
 	for(int i = 0; i < 4; i++)
 		for(int j = 0; j < 4; j++)
 			for(int k = 0; k < 4; k++)
 				e.m[i][j] += mm.m[k][j] * m[i][k];
-				*/
+				//*/
 	return e;
 }
