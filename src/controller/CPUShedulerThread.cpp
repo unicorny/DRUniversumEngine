@@ -3,6 +3,10 @@
 #include "controller/Task.h"
 #include "debug/CPUSchedulerTasksLog.h"
 
+#ifdef _UNI_LIB_DEBUG
+#include "lib/TimeCounter.h"
+#endif //_UNI_LIB_DEBUG
+
 
 namespace UniLib {
 	namespace controller {
@@ -26,7 +30,7 @@ namespace UniLib {
 			{
 				
 #ifdef _UNI_LIB_DEBUG
-				Uint32 startTicks = SDL_GetTicks();
+				lib::TimeCounter counter;
 				debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
 				const char* name = mWaitingTask->getName();
 				l->addTaskLogEntry((HASH)mWaitingTask.getResourcePtrHolder(), mWaitingTask->getResourceType(), mName.data(), name);
@@ -34,11 +38,9 @@ namespace UniLib {
 				mWaitingTask->run();
 #ifdef _UNI_LIB_DEBUG
 				l->removeTaskLogEntry((HASH)mWaitingTask.getResourcePtrHolder());
-				Uint32 diff = SDL_GetTicks() - startTicks;
-				SpeedLog.writeToLog("%3d ms used on thread: %s by Task: %s of: %s",
-					diff, mName.data(), mWaitingTask->getResourceType(), name);
+				SpeedLog.writeToLog("%s used on thread: %s by Task: %s of: %s",
+					counter.string().data(), mName.data(), mWaitingTask->getResourceType(), name);
 #endif
-				
 				mWaitingTask = mParent->getNextUndoneTask(this);
 			}
 			return 0;

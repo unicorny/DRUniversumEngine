@@ -3,13 +3,13 @@
 
 namespace UniLib {
 	namespace controller {
-		GPUTask::GPUTask(bool slowGPUTask/* = false*/)
-			:Task(0), mSlowTask(slowGPUTask)
+		GPUTask::GPUTask(GPUTaskSpeed taskSpeed/* = GPU_TASK_FAST*/)
+			:Task(0), mTaskSpeed(taskSpeed)
 		{
 
 		}
-		GPUTask::GPUTask(size_t childCount, bool slowGPUTask/* = false*/)
-			:Task(childCount), mSlowTask(slowGPUTask)
+		GPUTask::GPUTask(size_t childCount, GPUTaskSpeed taskSpeed /*= GPU_TASK_FAST*/)
+			:Task(childCount), mTaskSpeed(taskSpeed)
 		{
 
 		}
@@ -20,7 +20,7 @@ namespace UniLib {
 		}
 
 		void GPUTask::scheduleTask(TaskPtr own) {
-			GPUScheduler::getInstance()->addGPUTask(own, mSlowTask);
+			GPUScheduler::getInstance()->addGPUTask(own, mTaskSpeed);
 		}
 	}
 }

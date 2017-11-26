@@ -20,43 +20,44 @@
 *                                                                         *
 ***************************************************************************/
 
-/*!
- *
- * \author: Dario Rekowski
- *
- * \date: 18.10.2015
- *
- * \desc: GPUTask represent one GPU Task which will be running on the gpu
- */
+/**
+* @Author Dario Rekowski
+*
+* @Date 26.11.17
+*
+* @Desc Class for measure time for profiling
+*       Using QueryPerformanceCounter with windows
+*/
 
-#ifndef __UNIVERSUM_LIB_CONTROLLER_GPU_TASK_H
-#define __UNIVERSUM_LIB_CONTROLLER_GPU_TASK_H
-#include "Task.h"
+#ifndef __DR_UNIVERSUM_LIB_TIME_COUNTER__
+#define __DR_UNIVERSUM_LIB_TIME_COUNTER__
+
+#include "UniversumLib.h"
 
 namespace UniLib {
-	namespace controller {
-
-		class UNIVERSUM_LIB_API GPUTask : public Task 
+	namespace lib {
+		class UNIVERSUM_LIB_API TimeCounter
 		{
-		public: 
-			GPUTask(GPUTaskSpeed taskSpeed = GPU_TASK_FAST);
-			GPUTask(size_t childCount, GPUTaskSpeed taskSpeed = GPU_TASK_FAST);
-			virtual ~GPUTask();
-
-			virtual bool const isGPUTask() const {return true;}
-			virtual const char* getResourceType() const {return "GPUTask";};
-
-			virtual bool isSlowGPUTask() { return mTaskSpeed == GPU_TASK_SLOW; }
-			virtual bool isFastGPUTask() { return mTaskSpeed == GPU_TASK_FAST; }
-			virtual bool isLoadGPUTask() { return mTaskSpeed == GPU_TASK_LOAD; }
-			virtual void scheduleTask(TaskPtr own);
+		public:
+			TimeCounter() { restart(); }
+			__inline__ void restart() {
+#ifdef _WINDOWS_
+				QueryPerformanceCounter(&mCounter);
+#else
+				mCounter = SDL_GetTicks();
+#endif
+			}
+			double millis() const;
+			double micros() const;
+			std::string string() const;
 		protected:
-			
-
-			GPUTaskSpeed mTaskSpeed;
-			
+#ifdef _WINDOWS_
+			LARGE_INTEGER mCounter;
+#else 
+			Uint32 mCounter;
+#endif //_WINDOWS_
 		};
-
 	}
 }
-#endif
+
+#endif // __DR_UNIVERSUM_LIB_TIME_COUNTER__

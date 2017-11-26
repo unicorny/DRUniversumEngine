@@ -41,6 +41,8 @@ namespace UniLib {
 		typedef DRResourcePtr<Task> TaskPtr;
 		class CPUSheduler;
 
+
+
         class UNIVERSUM_LIB_API CPUShedulerThread : public lib::Thread
         {
         public: 

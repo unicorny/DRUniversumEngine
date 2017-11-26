@@ -26,7 +26,7 @@ namespace UniLib {
 		void BaseGeometrieLoadingGPUTask::ready()
 		{
 			TaskPtr task(this);
-			GPUScheduler::getInstance()->addGPUTask(task, false);
+			GPUScheduler::getInstance()->addGPUTask(task, GPU_TASK_LOAD);
 		}
 		DRReturn BaseGeometrieLoadingGPUTask::run()
 		{

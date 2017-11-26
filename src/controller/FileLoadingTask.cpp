@@ -16,12 +16,12 @@ namespace UniLib {
 		FileLoadingTask::FileLoadingTask(FileLoadingReciver* reciver, std::vector<std::string> fileNames)
 			: CPUTask(g_HarddiskScheduler), mFinishReciver(reciver), mFileNames(fileNames), mFinished(false)
 		{
-			assert(reciver != NULL);
-			mFilesInMemory = new DRVirtualFile*[mFileNames.size()];
-			memset(mFilesInMemory, 0, sizeof(DRVirtualFile*)*mFileNames.size());
 #ifdef _UNI_LIB_DEBUG
 			setName(fileNames[0].data());
 #endif
+			assert(reciver != NULL);
+			mFilesInMemory = new DRVirtualFile*[mFileNames.size()];
+			memset(mFilesInMemory, 0, sizeof(DRVirtualFile*)*mFileNames.size());
 		}
 		FileLoadingTask::~FileLoadingTask()
 		{
@@ -37,9 +37,6 @@ namespace UniLib {
 		DRReturn FileLoadingTask::run()
 		{
 			for (u16 i = 0; i < mFileNames.size(); i++) {
-#ifdef _UNI_LIB_DEBUG
-				setName(mFileNames[i].data());
-#endif
 				DRFile file(mFileNames[i].data(), "rb");
 				if (file.isOpen()) {
 					char start[11]; memset(start, 0, 11);

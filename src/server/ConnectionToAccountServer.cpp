@@ -77,6 +77,7 @@ namespace UniLib {
 					DR_SAVE_DELETE(mFinishCommand);
 				}
 			}
+			return DR_ERROR;
 		}
 
 		bool LoginNetworkTask::isTaskFinished()

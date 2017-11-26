@@ -63,7 +63,11 @@ namespace UniLib {
 		{
 		public:
 			LoadingJsonFilesIntoMemoryTask(std::string filename, CPUSheduler* schedulerForParser)
-				: CPUTask(g_HarddiskScheduler), mFileName(filename), mSchedulerForParser(schedulerForParser) {}
+				: CPUTask(g_HarddiskScheduler), mFileName(filename), mSchedulerForParser(schedulerForParser) {
+#ifdef _UNI_LIB_DEBUG
+				setName(filename.data());
+#endif //_UNI_LIB_DEBUG
+			}
 
 			virtual DRReturn run();
 			virtual bool isTaskFinished() { return false; };

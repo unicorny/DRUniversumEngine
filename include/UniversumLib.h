@@ -41,6 +41,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include "Winbase.h"
 #else
 #include <dlfcn.h>
 #endif //_WIN32
@@ -59,7 +60,7 @@
 #include "lib/MultithreadQueue.h"
 #include "lib/Logging.h"
 #include "json/json.h"
-
+#include "rapidjson/document.h"
 
 #include <cassert>
 #include <sstream>
@@ -73,6 +74,9 @@ namespace UniLib {
 	}
 	UNIVERSUM_LIB_API extern controller::BindToRenderer* g_RenderBinder;
 	UNIVERSUM_LIB_API extern controller::CPUSheduler* g_HarddiskScheduler;
+#ifdef _WINDOWS_
+	extern LARGE_INTEGER g_QueryPerformanceFreq;
+#endif // _WINDOWS_
 }
 
 #undef WRITETOLOG
@@ -141,6 +145,15 @@ namespace UniLib {
 		LOADING_STATE_FULLY_LOADED = 4
 	};
 
+	enum UNIVERSUM_LIB_API GPUTaskSpeed {
+		GPU_TASK_FAST = 0,
+		GPU_TASK_SLOW = 1,
+		GPU_TASK_LOAD = 2,
+		GPU_TASK_ENTRY_COUNT = 3
+	};
+
+	UNIVERSUM_LIB_API const char* getGpuTaskSpeedName(GPUTaskSpeed speed);
+
 	//! \brief 
 	//! \param numberParallelStorageOperations count of storage operations (read and write) at the same time
 	//!        1 recommended by mechanical hard disks, else more possible    
@@ -150,6 +163,7 @@ namespace UniLib {
     UNIVERSUM_LIB_API DRString getTimeSinceStart();
 	UNIVERSUM_LIB_API std::string readFileAsString(std::string filename);
 	UNIVERSUM_LIB_API Json::Value convertStringToJson(std::string jsonString);
+	UNIVERSUM_LIB_API rapidjson::Document convertStringToRapidJson(std::string jsonString);
     UNIVERSUM_LIB_API DRString getValueAsBinaryString(u8 zahl);
 	UNIVERSUM_LIB_API DRString getValueAsBinaryString(int zahl);
 

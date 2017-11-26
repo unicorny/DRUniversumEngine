@@ -1,11 +1,13 @@
 #include "controller/GPUScheduler.h"
 #include "controller/Task.h"
 #include "debug/CPUSchedulerTasksLog.h"
+#include "lib/TimeCounter.h"
 
 namespace UniLib {
 	namespace controller {
 
 		GPUScheduler* GPUScheduler::mpInstanz = NULL;
+		const int GPUScheduler::GPUTaskTargetTimes[] = {2, 10, 500};
 
 		GPUScheduler::GPUScheduler()
 			: mThreadRunning(false), mMutex(SDL_CreateMutex()), mFrameTimeMutex(SDL_CreateMutex()), mLastFrameDurationCursor(0)
@@ -56,17 +58,15 @@ namespace UniLib {
 			mGPURenderCommands[type].remove(renderCall);	
 			unlock();
 		}
-		void GPUScheduler::addGPUTask(TaskPtr task, bool slow/* = true*/)
+		void GPUScheduler::addGPUTask(TaskPtr task, GPUTaskSpeed speed /*= GPU_TASK_SLOW*/)
 		{
 			lock();
-			if(!task->isGPUTask()) LOG_ERROR_VOID("given task isn't a GPU Task");
-			if(slow == true) {
-				mSlowGPUTasks.push(task);
-			} else {
-				mFastGPUTasks.push(task);
-			}
+			assert(speed < GPU_TASK_ENTRY_COUNT);
+			if (!task->isGPUTask()) LOG_ERROR_VOID("given task isn't a GPU Task");
+			mGPUTasks[speed].push(task);
 			unlock();
 		}
+	
 		int GPUScheduler::run(void* data)
 		{
 			GPUScheduler* s = (GPUScheduler*)data;
@@ -84,92 +84,57 @@ namespace UniLib {
 			}
 			return 0;
 		}
-		void GPUScheduler::runSlowGPUTask()
-		{
-#ifdef _UNI_LIB_DEBUG
-			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
-			std::string runningTasksTable;
-#endif
-			Uint32 ticks = SDL_GetTicks();
-			if (mSlowGPUTasks.size()) {
-				TaskPtr task = mSlowGPUTasks.front();
-				if (task.getResourcePtrHolder() && task->isReady()) {
-					mSlowGPUTasks.pop();
 
-#ifdef _UNI_LIB_DEBUG
-					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU slow", task->getName());
-					runningTasksTable = l->getCurrentlRunningTasksTableString();
-#endif
-					unlock();
-					task->run();
-					lock();
-#ifdef _UNI_LIB_DEBUG
-					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
-					Uint32 diff = SDL_GetTicks() - ticks;
-					SpeedLog.writeToLog("%3d ms used on GPU (slow) by Task: %s of: %s",
-						diff, task->getResourceType(), task->getName());
-#endif
-				}
-
-				if (SDL_GetTicks() - ticks > 10) {
-#ifdef _UNI_LIB_DEBUG
-					EngineLog.writeToLogDirect(runningTasksTable);
-					runningTasksTable = "";
-#endif
-					EngineLog.writeToLog("<font color='red'>used %d ms</font>", SDL_GetTicks() - ticks);
-					LOG_WARNING("slow GPU Task used more then 10 ms");
-				}
-			}
-		}
-		void GPUScheduler::runFastGPUTasks()
+		void GPUScheduler::runGPUTasks(GPUTaskSpeed taskSpeed)
 		{
+			assert(taskSpeed < GPU_TASK_ENTRY_COUNT);
 			Uint32 reQueueCount = 0;
-			Uint32 startTicks = SDL_GetTicks();
 #ifdef _UNI_LIB_DEBUG
 			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
 			std::string runningTasksTable;
 #endif
-
-			while (mFastGPUTasks.size() - reQueueCount) {
-				TaskPtr task = mFastGPUTasks.front();
-				mFastGPUTasks.pop();
+			lib::TimeCounter timer;
+			while (mGPUTasks[taskSpeed].size() - reQueueCount) {
+				TaskPtr task = mGPUTasks[taskSpeed].front();
 				if (!task.getResourcePtrHolder()) continue;
+				mGPUTasks[taskSpeed].pop();
 				if (task->isReady()) {
+
 #ifdef _UNI_LIB_DEBUG
-					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), "GPU fast", task->getName());
+					l->addTaskLogEntry((HASH)task.getResourcePtrHolder(), task->getResourceType(), getGpuTaskSpeedName(taskSpeed), task->getName());
 					runningTasksTable = l->getCurrentlRunningTasksTableString();
-					Uint32 ticks = SDL_GetTicks();
 #endif
 					unlock();
 					task->run();
 					lock();
 #ifdef _UNI_LIB_DEBUG
-					Uint32 diff = SDL_GetTicks() - ticks;
-					SpeedLog.writeToLog("%3d ms used on GPU (fast) by Task: %s of: %s",
-						diff, task->getResourceType(), task->getName());
 					l->removeTaskLogEntry((HASH)task.getResourcePtrHolder());
-					
+					SpeedLog.writeToLog("%s used on %s by Task: %s of: %s",
+						timer.string().data(), getGpuTaskSpeedName(taskSpeed), task->getResourceType(), task->getName());
 #endif
 				}
 				else {
-					mFastGPUTasks.push(task);
+					mGPUTasks[taskSpeed].push(task);
 					reQueueCount++;
 				}
-				if (SDL_GetTicks() - startTicks > 2) {
+				if (timer.millis() > GPUTaskTargetTimes[taskSpeed]) {
 #ifdef _UNI_LIB_DEBUG
-					//l->printCurrentlyRunningTasks();
 					EngineLog.writeToLogDirect(runningTasksTable);
 					runningTasksTable = "";
 #endif
-					EngineLog.writeToLog("<font color='red'>used %d ms</font>", SDL_GetTicks() - startTicks);
-					LOG_WARNING("break fast GPU Tasks loop, has more than 2 ms used");
+					EngineLog.writeToLog("<font color='red'>used %s from %s</font>", timer.string().data(), getGpuTaskSpeedName(taskSpeed));
+					LOG_WARNING("GPU Task used more then allowed");
+					break;
+				}
+				// only fast Tasks allowed multiple times per frame
+				if (taskSpeed != GPU_TASK_FAST) {
 					break;
 				}
 			}
 		}
+	
 		DRReturn GPUScheduler::updateEveryRendering()
 		{
-			
 			float secondsSinceLastFrame = 0.0f;
 			Uint32 sumFrames = 0;
 			for(int i = 0; i < GPU_RENDER_LOOP_SAVED_FRAME_DURATION_COUNT; i++)
@@ -183,10 +148,15 @@ namespace UniLib {
 
 			lock();
 			// update fast GPU Tasks
-			runFastGPUTasks();
+			//runFastGPUTasks();
+			runGPUTasks(GPU_TASK_FAST);
 
 			// update one slow GPU Task
-			runSlowGPUTask();
+			//runSlowGPUTask();
+			runGPUTasks(GPU_TASK_SLOW);
+
+			// update one loading GPU Task
+			runGPUTasks(GPU_TASK_LOAD);
 	
 #ifdef _UNI_LIB_DEBUG
 			debug::CPUShedulerTasksLog* l = debug::CPUShedulerTasksLog::getInstance();
@@ -217,13 +187,14 @@ namespace UniLib {
 			}
 
 			// if we have time left, let's run some more slow gpu tasks
-			while(SDL_GetTicks() - startTicks < 15 && mSlowGPUTasks.size()) {
-				runSlowGPUTask();
+			while(SDL_GetTicks() - startTicks < 15 && mGPUTasks[GPU_TASK_SLOW].size()) {
+				//runSlowGPUTask();
+				runGPUTasks(GPU_TASK_SLOW);
 			}
 			unlock();
 			// if we have still time left, we wait
 			if(SDL_GetTicks() - startTicks < 16) {
-				SDL_Delay(16 -  SDL_GetTicks() + startTicks);
+				SDL_Delay(15 -  SDL_GetTicks() + startTicks);
 			}
 
 			mLastFrameDurations[mLastFrameDurationCursor++] = SDL_GetTicks()- mLastUpdateTicks;
@@ -248,6 +219,7 @@ namespace UniLib {
 			case GPU_SCHEDULER_COMMAND_PREPARE_RENDERING: return "prepare rendering";
 			case GPU_SCHEDULER_COMMAND_RENDERING: return "rendering";
 			case GPU_SCHEDULER_COMMAND_MAX: return "max";
+			default: return "unknown";
 			}
 		}
 	}

@@ -3,9 +3,12 @@
 #include "controller/BindToRenderer.h"
 #include "controller/CPUSheduler.h"
 
+#include "rapidjson/error/en.h"
+
 // some dll stuff for windows
 int         g_iProzess = 0;
 int			g_iProzessFunk = 0;
+
 UniLib::controller::BindToRenderer* UniLib::g_RenderBinder = NULL;
 UniLib::controller::CPUSheduler* UniLib::g_HarddiskScheduler = NULL;
 
@@ -49,6 +52,7 @@ namespace UniLib {
     using namespace lib;
     EngineLogger EngineLog;
 	EngineLogger SpeedLog;
+	LARGE_INTEGER g_QueryPerformanceFreq;
 
     DRReturn init(int numberParallelStorageOperations/* = 1*/)
     {
@@ -57,6 +61,11 @@ namespace UniLib {
         EngineLog.init("EngineLogger.html", true);     
 		SpeedLog.init("SpeedLogger.html", false);
 		g_HarddiskScheduler = new controller::CPUSheduler(numberParallelStorageOperations, "ioThrd");
+#ifdef _WINDOWS_
+		if (!QueryPerformanceFrequency(&g_QueryPerformanceFreq)) {
+			LOG_WARNING("Error obtaining query performance frequency");
+		}
+#endif // _WINDOWS_
         return DR_OK;
     }
 
@@ -119,6 +128,16 @@ namespace UniLib {
 		return result;
 	}
 
+	rapidjson::Document convertStringToRapidJson(std::string jsonString)
+	{
+		rapidjson::Document d;
+		d.Parse(jsonString.data());
+		if (d.HasParseError()) {
+			LOG_ERROR(rapidjson::GetParseError_En(d.GetParseError()), rapidjson::Document());
+		}
+		return d;
+	}
+
     DRString getValueAsBinaryString(u8 zahl)
     {
         char buffer[9];memset(buffer, 0, 9);
@@ -146,5 +165,16 @@ namespace UniLib {
 	void setBindToRenderer(controller::BindToRenderer* bindToRender)
 	{
 		g_RenderBinder = bindToRender;
+	}
+
+	const char* getGpuTaskSpeedName(GPUTaskSpeed speed)
+	{
+		switch (speed) {
+		case GPU_TASK_SLOW: return "GPU Slow";
+		case GPU_TASK_FAST: return "GPU Fast";
+		case GPU_TASK_LOAD: return "GPU Load";
+		default: return "unknown";
+		}
+		return "";
 	}
 }

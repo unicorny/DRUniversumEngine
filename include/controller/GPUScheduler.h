@@ -70,11 +70,12 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API GPUScheduler: public lib::Singleton {
 		public:
 			static GPUScheduler* const getInstance();
+			static const int GPUTaskTargetTimes[];
 
 			void registerGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type);
 			void unregisterGPURenderCommand(GPURenderCall* renderCall, GPUSchedulerCommandType type);
 			
-			void addGPUTask(TaskPtr task, bool slow = true);
+			void addGPUTask(TaskPtr task, GPUTaskSpeed speed = GPU_TASK_SLOW);
 
 			void startThread(const char* name = "UniGPUSch");
 			void stopThread();
@@ -87,12 +88,14 @@ namespace UniLib {
 			// main render function, called from thread or from game
 			DRReturn updateEveryRendering();
 
+			// update GPU task from one task Speed Type
+			void runGPUTasks(GPUTaskSpeed taskSpeed);
+
 			__inline__ float getSecondsSinceLastFrame() {float seconds = 0.0f; SDL_LockMutex(mFrameTimeMutex); seconds = mSecondsSinceLastFrame; SDL_UnlockMutex(mFrameTimeMutex); return seconds;}
 
 			// debugging/profiling
 #ifdef _UNI_LIB_DEBUG
-			__inline__ size_t getFastGPUTaskCount() {return mFastGPUTasks.size();}
-			__inline__ size_t getSlowGPUTaskCount() {return mSlowGPUTasks.size();}
+			__inline__ size_t getGPUTaskCount(GPUTaskSpeed taskSpeed) { return mGPUTasks[taskSpeed].size(); }
 			__inline__ size_t getGPURenderCommandCount(GPUSchedulerCommandType type) {return mGPURenderCommands[(int)type].size();}
 #endif 
 		protected:
@@ -101,8 +104,7 @@ namespace UniLib {
 			virtual ~GPUScheduler();
 
 			std::list<GPURenderCall*> mGPURenderCommands[GPU_SCHEDULER_COMMAND_MAX];
-			std::queue<TaskPtr>     mFastGPUTasks;
-			std::queue<TaskPtr>     mSlowGPUTasks;
+			std::queue<TaskPtr>	    mGPUTasks[GPU_TASK_ENTRY_COUNT];
 			//std::queue<>
 			bool	mThreadRunning;
 			SDL_mutex* mMutex;
@@ -115,9 +117,7 @@ namespace UniLib {
 			float mSecondsSinceLastFrame;
 
 			static const char* getGPUCommandTypeString(GPUSchedulerCommandType type);
-			void runSlowGPUTask();
-			void runFastGPUTasks();
-
+			
 
 		private:
 			static GPUScheduler* mpInstanz;

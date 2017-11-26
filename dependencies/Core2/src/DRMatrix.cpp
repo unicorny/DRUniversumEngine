@@ -1,5 +1,5 @@
 #include "Core2Main.h"
-#include <immintrin.h>
+//#include <immintrin.h>
 
 DRMatrix DRMatrix::translation(const DRVector3& v)
 {
@@ -169,10 +169,10 @@ DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
 	DRMatrix e = mm;
 
 	__m128 m2r[4] = { 
-		_mm_load_ps(&e.n[0]), 
-		_mm_load_ps(&e.n[4]),
-		_mm_load_ps(&e.n[8]),
-		_mm_load_ps(&e.n[12]) 
+		_mm_loadu_ps(&e.n[0]),
+		_mm_loadu_ps(&e.n[4]),
+		_mm_loadu_ps(&e.n[8]),
+		_mm_loadu_ps(&e.n[12])
 	};
 
 	__m256 addR;
@@ -232,9 +232,9 @@ DRMatrix DRMatrix::operator * (const DRMatrix& mm) const
 				e.m[i][j] += mm.m[k][j] * m[i][k];
 				//*/
 	return e;
-	/*
+	
 	// plain
-	return DRMatrix(
+	/*return DRMatrix(
 		mm.m00 * m00 + mm.m01 * m04 + mm.m02 * m08 + mm.m03 * m12, // 00
 		mm.m00 * m01 + mm.m01 * m05 + mm.m02 * m09 + mm.m03 * m13, // 01
 		mm.m00 * m02 + mm.m01 * m06 + mm.m02 * m10 + mm.m03 * m14, // 02

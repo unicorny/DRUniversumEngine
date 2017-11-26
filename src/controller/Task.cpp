@@ -31,6 +31,10 @@ namespace UniLib {
 			lock();
             for(size_t i = 0; i < mParentTaskPtrArraySize; i++) {
                 TaskPtr task = mParentTaskPtrArray[i];
+				if (!task.getResourcePtrHolder()) {
+					allFinished = false;
+					continue;
+				}
                 if(!task->isTaskFinished()) {
                     allFinished = false;
                     if(!task->isTaskSheduled()) 
