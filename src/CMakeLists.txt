@@ -63,9 +63,10 @@ endif(MSVC)
 #DEFINE_SYMBOL(BUILD_DLL)
 
 find_library(SDL2_LIB SDL2 PATHS ../import/lib REQUIRED)
+find_library(JSON_LIB json PATHS ../import/lib REQUIRED)
 
 if(WIN32)
-SET(DRUniversumLibLibs json DRCore2 ${SDL2_LIB})
+SET(DRUniversumLibLibs ${JSON_LIB} DRCore2 ${SDL2_LIB})
 else(UNIX)
 SET(DRUniversumLibLibs json DRCore2 SDL2)
 endif(WIN32)
