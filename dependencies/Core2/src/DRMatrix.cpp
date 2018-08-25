@@ -1,5 +1,10 @@
 #include "Core2Main.h"
-//#include <immintrin.h>
+#include <immintrin.h>
+
+#ifndef _mm256_set_m128
+#define _mm256_set_m128(/* __m128 */ hi, /* __m128 */ lo) \
+    _mm256_insertf128_ps(_mm256_castps128_ps256(lo), (hi), 0x1)
+#endif
 
 DRMatrix DRMatrix::translation(const DRVector3& v)
 {

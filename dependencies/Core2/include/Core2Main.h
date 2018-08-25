@@ -116,6 +116,18 @@ typedef unsigned long long u64;
 typedef long long s64;
 #endif // s64
 
+#ifndef NOMINMAX
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+#endif  /* NOMINMAX */
+
 typedef unsigned int HASH;
 typedef unsigned long DHASH;
 
