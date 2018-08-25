@@ -5,6 +5,13 @@
 
 using namespace DRFilePart;
 
+String::String(const char* charBuffer, size_t count)
+{
+	for (size_t i = 0; i < count; i++) {
+		mString += charBuffer[i];
+	}
+}
+
 DRVirtualCustomFile::~DRVirtualCustomFile()
 {
 	if (mFreeMemory) {
@@ -87,6 +94,7 @@ DRReturn DRVirtualCustomFile::readFromFile(const char* filename)
 			case FILE_PART_BIN: fp = new Binary(bin, size); break;
 			case FILE_PART_ARRAY_FLOAT: fp = new FloatArray((float*)bin, count, true, true); free(bin); break;
 			case FILE_PART_ARRAY_INT: fp = new IntegerArray((s32*)bin, count, true, true); free(bin); break;
+			//case FILE_PART_STRING: fp = new String()
 			default: free(bin);
 			}
 			if (fp) mFileParts.push_back(fp);

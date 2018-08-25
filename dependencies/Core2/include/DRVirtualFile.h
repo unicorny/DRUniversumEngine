@@ -172,6 +172,7 @@ namespace DRFilePart {
 	public:
 		String(std::string& zeichenkette) : mString(zeichenkette) {}
 		String(const char* zeichen) : mString(zeichen) {}
+		String(const char* charBuffer, size_t count);
 		virtual size_t size() const { return sizeof(char); }
 		virtual size_t count() const { return mString.size(); }
 		virtual const void* data() const { return mString.data(); }

@@ -38,7 +38,7 @@ public:
 		: mMin(minValues), mMax(maxValues) {}
 	
 	DRBoundingBox(DRVector2* vertices, u16 vertexCount);
-	DRBoundingBox(const DRBoundingBox& bb) { memcpy(v, bb.v, sizeof(DRReal) * 4); }
+	DRBoundingBox(const DRBoundingBox& bb) { memcpy(this, &bb, sizeof(DRBoundingBox)); }
 
 	~DRBoundingBox() {};
 
@@ -58,18 +58,12 @@ public:
 	inline void operator+ (const DRVector2& diff) { moveBy(diff); }
 	inline void operator+= (const DRBoundingBox& otherBoundingBox) { expandBy(otherBoundingBox); }
 	inline DRBoundingBox& operator *= (const DRVector2& scale) { mMin *= scale; mMax *= scale; return *this; }	
-	inline DRBoundingBox& operator = (const DRBoundingBox& bb) { memcpy(v, bb.v, sizeof(DRReal) * 4); return *this; }
+	inline DRBoundingBox& operator = (const DRBoundingBox& bb) { memcpy(this, &bb, sizeof(DRBoundingBox) * 4); return *this; }
 	inline DRVector2 getMin() { return mMin; }
 	inline DRVector2 getMax() { return mMax; }
 protected:
-	union {
-		struct {
-			DRVector2 mMin;
-			DRVector2 mMax;
-		};
-		DRReal v[4];
-	};
-
+	DRVector2 mMin;
+	DRVector2 mMax;
 };
 
 #endif //__DR_CORE2_BOUNDING_BOX_H

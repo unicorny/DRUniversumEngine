@@ -47,7 +47,6 @@ public:
     virtual void exit();
 
 
-	
 	// \brief connect to server
 	// \param config contains server config in json format
 	// \return connection number
