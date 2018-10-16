@@ -152,7 +152,7 @@ namespace UniLib {
 		{
 		public:
 			ShaderCompileTask(ShaderProgram* shader)
-				: GPUTask(true), mShaderProgram(shader) {}
+				: GPUTask(GPU_TASK_LOAD), mShaderProgram(shader) {}
 			virtual DRReturn run();
 			virtual const char* getResourceType() const { return "ShaderCompileTask"; };
 		protected:

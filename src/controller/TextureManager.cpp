@@ -81,16 +81,26 @@ namespace UniLib {
 			mUpdateThread->threadLock();
 			TextureMultiMap::iterator it = mEmptyTextures.find(id);
 			if (it != mEmptyTextures.end()) {
+				view::TexturePtr tex = it->second;
+				mEmptyTextures.erase(it);
 				mUpdateThread->threadUnlock();
-				return it->second;
+				return tex;
 			}
 			mUpdateThread->threadUnlock();
 			view::TexturePtr tex = view::TexturePtr(g_RenderBinder->newTexture(size, format));
 			tex->uploadToGPU();
+			//mUpdateThread->threadLock();
+			//mEmptyTextures.insert(TextureEntry(id, tex));
+			//mUpdateThread->threadUnlock();
+			return tex;
+		}
+
+		void TextureManager::giveBackEmptyTexture(view::TexturePtr tex)
+		{
+			DHASH id = tex->getId();
 			mUpdateThread->threadLock();
 			mEmptyTextures.insert(TextureEntry(id, tex));
 			mUpdateThread->threadUnlock();
-			return tex;
 		}
 
 		// Timer

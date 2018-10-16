@@ -53,6 +53,7 @@ public:
 	void		*findByHash( DHASH hashValue ) const;
 	void		*findByIndex( u32 index ) const;
 	DHASH		findHashByIndex( u32 index ) const;
+	void		setDataByIndex(u32 index, void* data);
 	bool		itemExists( DHASH hashValue, u32 *outIndex=0 ) const;
 
 protected:

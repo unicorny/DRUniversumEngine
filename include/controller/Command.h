@@ -43,6 +43,28 @@ namespace UniLib {
             virtual DRReturn taskFinished(Task* task) = 0;
                 
         };
+
+		class UNIVERSUM_LIB_API MultiCommands : public Command
+		{
+		public:
+			MultiCommands(u16 commandsCount = 4) :
+				mCommandsCount(commandsCount), mCursor(0) {
+				mCommands = new Command*[commandsCount];
+			}
+			~MultiCommands() { DR_SAVE_DELETE_ARRAY(mCommands);}
+			inline void addCommand(Command* command) { assert(mCursor < mCommandsCount && command); mCommands[mCursor++] = command; }
+			virtual DRReturn taskFinished(Task* task) {
+				for (u16 i = 0; i < mCursor; i++) {
+					mCommands[i]->taskFinished(task);
+				}
+				delete this;
+				return DR_OK;
+			}
+		protected:
+			Command**   mCommands;
+			u16			mCommandsCount;
+			u16			mCursor;
+		};
     }
 }
 

@@ -63,6 +63,7 @@ namespace UniLib {
 
 			view::TexturePtr getTexture(const char* filename);
 			view::TexturePtr getEmptyTexture(DRVector2i size, GLenum format);
+			void giveBackEmptyTexture(view::TexturePtr tex);
 
 			// access
 			__inline__ void setTimeoutForNotLongerUsedTextures(Uint32 timeout) { mTimeToLetEmptyTexturesInStorage = timeout; }

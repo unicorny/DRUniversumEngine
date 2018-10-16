@@ -57,6 +57,7 @@
 #include "lib/Thread.h"
 #include "lib/MultithreadContainer.h"
 #include <queue>
+#include <type_traits>
 #include "lib/MultithreadQueue.h"
 #include "lib/Logging.h"
 #include "json/json.h"

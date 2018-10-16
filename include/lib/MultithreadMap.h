@@ -36,6 +36,7 @@
 
 namespace UniLib {
 	namespace lib {
+
 		template <class KeyType, class ResourceType>
 		class MultithreadMap : public std::map<KeyType, ResourceType>, public MultithreadContainer
 		{

@@ -110,6 +110,13 @@ DHASH DRStaticHashList::findHashByIndex( u32 index ) const
 	return m_pItems[index].hashValue;
 }
 
+void DRStaticHashList::setDataByIndex(u32 index, void* data)
+{
+	if (index >= m_nItems)
+		return;
+	m_pItems[index].data = data;
+}
+
 //------------------------------------------------------------------
 //	DRStaticHashList
 //	find the index where a given hash value should go
