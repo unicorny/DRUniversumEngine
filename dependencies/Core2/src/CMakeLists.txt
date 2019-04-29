@@ -1,7 +1,7 @@
 
 SET(CoreSrc 
 	Core2Main.cpp DRCubicSpline.cpp DRFile.cpp DRFileManager.cpp DRHashList.cpp
-	DRLogger.cpp DRUtils.cpp DRMatrix.cpp DRVector2.cpp DRVector2i DRDampingSpring.cpp DRIni.cpp
+	DRLogger.cpp DRPack2D DRUtils.cpp DRMatrix.cpp DRVector2.cpp DRVector2i DRDampingSpring.cpp DRIni.cpp
     DRVector3.cpp DRVector3i DRObjekt.cpp DRFrustumCulling DRPlane DRIndexReferenzHolder DRRandom
 	DRResourcePtr DRResourcePtrHolder DRGameStateManager DRBoundingBox DRBoundingBoxi DRBezierCurve DRVirtualFile)
 
@@ -9,7 +9,7 @@ SET(CoreSrc
 	
 #IF(WIN32)
 SET(CoreSrc ${CoreSrc} ../include/Core2Main.h ../include/DRFile.h ../include/DRFileManager.h ../include/DRHash.hpp ../include/DRHashList.hpp
-                       ../include/DRLogger.h ../include/DRUtils.h 
+                       ../include/DRLogger.h ../include/DRPack2D.h ../include/DRUtils.h 
 					   ../include/DRVector2.h ../include/DRVector2i.h ../include/DRVector3.h ../include/DRVector3i.h ../include/DRMatrix.h
 					   ../include/DRColor.h ../include/DRPlane.h ../include/DRDampingSpring.h ../include/DRIni.h
                        ../include/DRObjekt.h ../include/DRFrustumCulling.h ../include/DRIndexReferenzHolder.h

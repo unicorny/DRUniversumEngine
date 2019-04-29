@@ -64,16 +64,19 @@ public:
 
 	//in die Log-Datei schreiben
 	virtual DRReturn writeToLog(const char* pcText, ...);
-        virtual DRReturn writeToLog(DRString text);
+    virtual DRReturn writeToLog(DRString text);
 	virtual DRReturn writeToLogDirect(const char* pcText, ...);
-        virtual DRReturn writeToLogDirect(DRString text);
+    virtual DRReturn writeToLogDirect(DRString text);
 
 	DRReturn writeVector2ToLog(const DRVector2& v, const char* name = NULL);			// 2D-Vektor ins Logbuch schreiben
-        DRReturn writeVector3ToLog(const DRVector3& v, const char* pcName = NULL);			// 3D-Vektor ins Logbuch schreiben
-        DRReturn writeMatrixToLog(const DRMatrix& m, const char* name = NULL);			// Matrix ins Logbuch schreiben
+    DRReturn writeVector3ToLog(const DRVector3& v, const char* pcName = NULL);			// 3D-Vektor ins Logbuch schreiben
+    DRReturn writeMatrixToLog(const DRMatrix& m, const char* name = NULL);			// Matrix ins Logbuch schreiben
 	//DRReturn WritePlaneToLog(DRPlane& p);				// Ebene ins Logbuch schreiben
 	DRReturn writeColorToLog(const DRColor& c);				// Farbe ins Logbuch schreiben
 
+	//! schreibe Table ins Log mit 1px * 1px großen Blöcken, und farbe
+	//! \param colors[dim.x*dim.y]
+	DRReturn writePixelGridToLog(DRColor* colors, DRVector2i dim);
 
 	//inline um Variablen abzufragen
 	inline DRFile* getFile() {return &m_File;};

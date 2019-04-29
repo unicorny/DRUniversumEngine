@@ -40,7 +40,7 @@ DRReturn DRLogger::init(const char* pcFilename, bool printToConsole)
 //	fprintf(m_pFile, "Init des Loggers erfolgreich!\n");
 
 	m_File.setFilePointer(0, SEEK_SET);
-	char acTemp[] = "<HTML>\n<head>\n<title>Log Datei</title></head><body>\n<font face=\"Arial\" size=\"2\">\n<table>";
+	char acTemp[] = "<HTML>\n<head><style type='text/css'>table.pixelGrid td {width:4px; height:4px;padding:0;}</style>\n<title>Log Datei</title></head><body>\n<font face=\"Arial\" size=\"2\">\n<table>";
 	m_File.write(acTemp, sizeof(char), strlen(acTemp));
 	writeToLog("Init des Loggers erfolgreich!");
 //	char acTemp2[] = "<tr><a href= http://www.mathe-programme.de.tt> Homepage </a><br>Ein Programm von Dario Rekowski.</tr>";
@@ -146,6 +146,33 @@ DRReturn DRLogger::writeColorToLog(const DRColor& c)
 	// Farbe in die Logbuchdatei schreiben
 	return writeToLogDirect("<tr><td><font size=\"2\"><b><font color=\"#000080\">Farbe:</font></b> a = <i>%.3f</i>, r = <i>%.3f</i>, g = <i>%.3f</i>, b = <i>%.3f</i>, Hexadezimal: <i>0x%x</i>, <font color=\"#%s\"><i>Probetext</i></font></td></tr>",
                               c.a, c.r, c.g, c.b, (int)(c), acHexColor);
+}
+
+// *************************************************************************
+// schreibe Table ins Log mit 1px * 1px großen Blöcken, und farbe
+
+DRReturn DRLogger::writePixelGridToLog(DRColor* colors, DRVector2i dim)
+{
+	std::stringstream ss;
+	ss << "<tr><td><table class='pixelGrid'>";
+	for (int y = 0; y < dim.y; y++) {
+		ss << "<tr>";
+		for (int x = 0; x < dim.x; x++) {
+			char acHexColor[9];
+			auto c = colors[y*dim.x + x];
+			sprintf(acHexColor, "%08x", (int)(c) << 8);
+			//acHexColor[6] = 0;
+			acHexColor[6] = 'f';
+			acHexColor[7] = 'f';
+			
+			ss << "<td style='background-color:#";
+			ss << acHexColor;
+			ss << ";'></td>";
+		}
+		ss << "</tr>";
+	}
+	ss << "</table></td></tr>";
+	return writeToLogDirect(ss.str());
 }
 
 //**************************************************************************************************************************
