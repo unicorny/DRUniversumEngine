@@ -4,6 +4,11 @@
 namespace UniLib {
 	namespace view {
 
+		DRReturn GeometrieUploadToGpuTask::run() 
+		{
+			return mGeo->uploadToGPU();
+		}
+
 		Geometrie::Geometrie(model::geometrie::BaseGeometrie* baseGeometrie)
 			: mGeometrieModel(baseGeometrie)
 		{

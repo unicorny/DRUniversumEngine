@@ -19,60 +19,46 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 *                                                                         *
 ***************************************************************************/
+
 /*!
 *
 * \author: Dario Rekowski
 *
-* \date: 17.03.16
+* \date: 26.07.2019
 *
-* \desc: Prototype for render to texture tasks
+* \desc Base class for geometrie models
+*
 */
 
-#ifndef __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
-#define __DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
+#ifndef __UNIVERSUM_LIB_MODEL_GEOMETRIE_RECT2D_COLLECTION__H
+#define __UNIVERSUM_LIB_MODEL_GEOMETRIE_RECT2D_COLLECTION__H
 
-#include "controller/GPUTask.h"
-
+#include "BaseGeometrie.h" 
+#include "Core2/DRPack2D.h"
 
 namespace UniLib {
-	namespace view {
-		class Texture;
-		class Material;
-		class Geometrie;
-		class FrameBuffer;
-		typedef DRResourcePtr<Texture> TexturePtr;
-		typedef DRResourcePtr<Material> MaterialPtr;
-		typedef DRResourcePtr<Geometrie> GeometriePtr;
-		
-	}
-	namespace generator {
-		/*!
-		 * \brief: rendering a simple plane into texture, the real magic happens inside shader
-		*/
-		class UNIVERSUM_LIB_API RenderToTexture : public controller::GPUTask
-		{
-		public:
-			RenderToTexture(view::TexturePtr texture);
-			RenderToTexture();
-			virtual ~RenderToTexture();
-			virtual DRReturn render();
-			virtual bool    isReady();
-			virtual DRReturn run();
 
-			void setMaterial(view::MaterialPtr mat);
-			inline view::MaterialPtr getMaterial() { return mMaterial; }
+	namespace model {
+		namespace geometrie {
 
-			inline void setGeometrie(view::GeometriePtr geometrie) { mGeometrie = geometrie; }
-			inline view::GeometriePtr getGeometrie() { return mGeometrie;  }
+			class UNIVERSUM_LIB_API Rect2DCollection : public BaseGeometrie
+			{
+			public:
+				Rect2DCollection();
+				virtual ~Rect2DCollection();
 
-			virtual const char* getResourceType() const { return "RenderToTexture"; }
-		protected:
-			view::TexturePtr mTexture;
-			view::MaterialPtr mMaterial;
-			view::FrameBuffer* mFrameBuffer;
-			view::GeometriePtr mGeometrie;
-		};
+				DRReturn Rect2DCollection::generateVertices(std::vector<DRPack2D_Size_WithKey>* inputRects);
+				__inline__ DRVector2i getCollectionDimension() { return mCollectionDimension; }
+
+				virtual const char* getResourceType() const { return "model::geometrie::Rect2DCollection"; }
+
+			protected:
+				DRVector2i mCollectionDimension;
+
+			};
+		}
 	}
 }
 
-#endif //__DR_UNIVERSUM_LIB_GENERATOR_RENDER_TO_TEXTURE_H
+
+#endif //__UNIVERSUM_LIB_MODEL_GEOMETRIE_RECT2D_COLLECTION__H

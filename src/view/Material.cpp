@@ -16,7 +16,15 @@ namespace UniLib {
 
 		LoadingState Material::checkLoadingState()
 		{
-			return mShaderProgram->checkLoadingState();
+			if (mShaderProgram.getResourcePtrHolder() && mShaderProgram->checkLoadingState() == LOADING_STATE_FULLY_LOADED && mUniformsSet) {
+				return LOADING_STATE_FULLY_LOADED;
+			}
+			if ( (!mShaderProgram.getResourcePtrHolder() && mUniformsSet) ||
+				  (!mUniformsSet && mShaderProgram.getResourcePtrHolder()) ) {
+				return LOADING_STATE_PARTLY_LOADED;
+			}
+
+			return LOADING_STATE_EMPTY;
 		}
 		
 	}

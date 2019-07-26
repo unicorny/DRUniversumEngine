@@ -61,6 +61,7 @@ DRReturn DRPack2D::findBestPack(std::vector<DRPack2D_Size_WithKey>* inputSize, D
 		// minimal square power-of-2 sizes rect to possible containing all input Rects
 		int iside = 1;
 		while (iside * iside <= areaSum) { iside <<= 1; }
+		iside >>= 1;
 		for (int i = 0; i < sideMultiplikator; i++) { iside <<= 1; }
 
 		if (iside > mMaxSide) {
@@ -126,6 +127,7 @@ DRPACK2D_Size_compareI DRPack2D::getCompareObj(DRPack2D_OrderType type)
 DRReturn DRPack2D::tryOutDifferentOrders(const DRVector2i& iDimension)
 {
 	// try out different ordered input, return with OK if all input could be stored
+	// didn't work, maybe operator in struct must be virtual, but than we cannot inline it
 /*	int orderType = 1;
 	while (orderType != DRPACK2D_ORDER_MAX) {
 		if ((mOrderTypes & orderType) == orderType) {
@@ -137,6 +139,7 @@ DRReturn DRPack2D::tryOutDifferentOrders(const DRVector2i& iDimension)
 		}
 		orderType <<= 1;
 	}
+	
 	*/
 	if ((mOrderTypes & DRPACK2D_ORDER_WIDTH) == DRPACK2D_ORDER_WIDTH) {
 		std::sort(mInputSizes->begin(), mInputSizes->end(), DRPack2D_Size_compareWidth());
@@ -169,7 +172,6 @@ DRReturn DRPack2D::tryOutDifferentOrders(const DRVector2i& iDimension)
 			return DR_OK;
 		}
 	}
-
 	return DR_ERROR;
 
 }

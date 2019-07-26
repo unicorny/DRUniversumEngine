@@ -12,7 +12,9 @@ namespace UniLib {
 		{
 			model::geometrie::BaseGeometrie* geo = NULL;
 			switch (mParent->mType) {
-			case BASE_GEOMETRIE_PLANE: geo = new model::geometrie::Plane(model::geometrie::GEOMETRIE_VERTICES);
+			case BASE_GEOMETRIE_PLANE: 
+				geo = new model::geometrie::Plane(model::geometrie::GEOMETRIE_VERTICES);
+				break;
 			}
 			if (!geo) {
 				EngineLog.writeToLog("type: %d", mParent->mType);

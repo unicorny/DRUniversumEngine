@@ -62,6 +62,9 @@ namespace UniLib {
 			void exit();
 
 			view::TexturePtr getTexture(const char* filename);
+	
+			//!	\param size 
+			//!	\param format allowed values: GL_RED, GL_RG, GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_RED_INTEGER, GL_RG_INTEGER, GL_RGB_INTEGER, GL_BGR_INTEGER, GL_RGBA_INTEGER, GL_BGRA_INTEGER, GL_STENCIL_INDEX, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL
 			view::TexturePtr getEmptyTexture(DRVector2i size, GLenum format);
 			void giveBackEmptyTexture(view::TexturePtr tex);
 

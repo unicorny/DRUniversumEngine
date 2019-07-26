@@ -31,6 +31,7 @@
 //#define _DEBUG
 
 #ifdef _WIN32
+//#define _WINSOCKAPI_
 #include <windows.h>
 #include <direct.h>
 #else
@@ -41,6 +42,7 @@
 // standard includes
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <malloc.h>
 #include <memory.h>
 #include <stdlib.h>
@@ -157,6 +159,7 @@ enum /*CORE_API*/ DRReturn
 #include "DRDampingSpring.h"
 #include "DRCubicSpline.h"
 #include "DRBezierCurve.h"
+#include "DRPack2D.h"
 //#include "DRGeometrieGenerator.h"
 #include "DRHash.hpp"
 #include "DRHashList.hpp"

@@ -55,6 +55,17 @@ namespace UniLib {
 				GEOMETRIE_MAX = 128
 			};
 
+			enum GeometrieRenderMode {
+				GEOMETRIE_RENDER_POINTS,
+				GEOMETRIE_RENDER_LINES,
+				GEOMETRIE_RENDER_LINE_STRIP,
+				GEOMETRIE_RENDER_LINE_LOOP,
+				GEOMETRIE_RENDER_TRIANGLES,
+				GEOMETRIE_RENDER_TRIANGLE_STRIP,
+				GEOMETRIE_RENDER_TRIANGLE_FAN,
+				GEOMETRIE_RENDER_MAX
+			};
+
 			class UNIVERSUM_LIB_API BaseGeometrie : public DRIResource
 			{
 			public:
@@ -67,8 +78,11 @@ namespace UniLib {
 				// simple compare pointer adresses
 				virtual bool less_than(DRIResource& b) const {return this < &b;}
 
+				//! \brief type allowed: GEOMETRIE_VERTICES, GEOMETRIE_NORMALS
 				__inline__ void addVector(DRVector3 v3, GeometrieDataType type);
+				//! \brief type allowed: GEOMETRIE_TEX2D_1, GEOMETRIE_TEX2D_2, GEOMETRIE_TEX2D_3 or GEOMETRIE_TEX2D_4
 				__inline__ void addVector(DRVector2 v2, GeometrieDataType type);
+				//! \brief type allowed: GEOMETRIE_COLORS
 				__inline__ void addVector(DRColor c, GeometrieDataType type);
 				__inline__ void addIndice(int index);
 
@@ -92,6 +106,9 @@ namespace UniLib {
 				__inline__ int getIndexCountFromVector() { return mIndices.size(); }
 				__inline__ int* getIndices() {return mIndicesArray;}
 				__inline__ int getIndex(int i) {assert(i >= 0 && i < mIndiceCount); return mIndices[i];}
+
+				__inline__ void setRenderMode(GeometrieRenderMode renderMode) { mRenderMode = renderMode; }
+				__inline__ GeometrieRenderMode getRenderMode() { return mRenderMode; }
 
 			protected:
 
@@ -131,6 +148,7 @@ namespace UniLib {
 				int			mVertexCount;
 				GeometrieDataType mVertexFormatFlags;
 				int			mVertexSize;
+				GeometrieRenderMode mRenderMode;
 
 				GeometriePartVector* getGeometriePartVector(GeometrieDataType type);
 			};

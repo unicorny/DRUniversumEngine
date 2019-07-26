@@ -6,7 +6,7 @@ namespace UniLib {
 
 			BaseGeometrie::BaseGeometrie()
 			: mIndicesArray(NULL), mIndiceCount(0), mVertices(NULL), mVertexCount(0),
-			  mVertexFormatFlags(GEOMETRIE_NONE), mVertexSize(0)
+			  mVertexFormatFlags(GEOMETRIE_NONE), mVertexSize(0), mRenderMode(GEOMETRIE_RENDER_TRIANGLES)
 			{
 			}
 

@@ -32,6 +32,8 @@
 #define __UNIVERSUM_LIB_VIEW_GEOMETRIE_H
 
 #include "UniversumLib.h"
+#include "controller/GPUTask.h"
+#include "lib/Loadable.h"
 
 namespace UniLib {
 	namespace model {
@@ -41,7 +43,9 @@ namespace UniLib {
 	}
 	namespace view {
 
-		class UNIVERSUM_LIB_API Geometrie : public DRIResource
+		
+
+		class UNIVERSUM_LIB_API Geometrie : public DRIResource, public lib::Loadable
 		{
 		public:
 			Geometrie(model::geometrie::BaseGeometrie* baseGeometrie);
@@ -61,6 +65,20 @@ namespace UniLib {
 		};
 
 		typedef DRResourcePtr<Geometrie> GeometriePtr;
+
+
+		class UNIVERSUM_LIB_API GeometrieUploadToGpuTask : public controller::GPUTask
+		{
+		public:
+			GeometrieUploadToGpuTask(Geometrie* geo) : GPUTask(GPU_TASK_LOAD), mGeo(geo) {}
+			virtual ~GeometrieUploadToGpuTask() {};
+
+			virtual DRReturn run();
+			virtual const char* getResourceType() const { return "view::GeometrieUploadToGpuTask"; }
+
+		protected:
+			Geometrie* mGeo;
+		};
 		
 	}
 }

@@ -27,7 +27,13 @@ namespace UniLib {
 
 		bool RenderToTexture::isReady()
 		{
-			view::Geometrie* geo = controller::BaseGeometrieManager::getInstance()->getGeometrie(controller::BASE_GEOMETRIE_PLANE);
+			view::Geometrie* geo = nullptr;
+			if (mGeometrie.getResourcePtrHolder()) {
+				geo = mGeometrie;
+			}
+			if (!geo) {
+				geo = controller::BaseGeometrieManager::getInstance()->getGeometrie(controller::BASE_GEOMETRIE_PLANE);
+			}
 #ifdef _UNI_LIB_DEBUG
 			bool geoReady = geo->isReady();
 			bool textureReady = mTexture->checkLoadingState() == LOADING_STATE_FULLY_LOADED;
@@ -36,7 +42,7 @@ namespace UniLib {
 			return geo->isReady() && mTexture->checkLoadingState() == LOADING_STATE_FULLY_LOADED && mMaterial->checkLoadingState() == LOADING_STATE_FULLY_LOADED;
 		}
 
-		void RenderToTexture::setMaterial(view::Material* mat)
+		void RenderToTexture::setMaterial(view::MaterialPtr mat)
 		{
 			mMaterial = mat;
 			model::UniformSet* uniforms = mMaterial->getUniformSet();
@@ -51,6 +57,7 @@ namespace UniLib {
 			uniforms->addLocationToUniform("proj", shader);
 			
 		}
+
 		DRReturn RenderToTexture::run()
 		{
 			// bind shader and texture
@@ -63,9 +70,14 @@ namespace UniLib {
 		}
 		DRReturn RenderToTexture::render()
 		{
-			controller::BaseGeometrieManager::getInstance()->getGeometrie(controller::BASE_GEOMETRIE_PLANE)->render();
-
-			return DR_OK;
+			view::Geometrie* geo = nullptr;
+			if (mGeometrie.getResourcePtrHolder()) {
+				geo = mGeometrie;
+			}
+			if (!geo) {
+				geo = controller::BaseGeometrieManager::getInstance()->getGeometrie(controller::BASE_GEOMETRIE_PLANE);
+			}
+			return geo->render();
 		}
 	}
 }

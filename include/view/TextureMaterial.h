@@ -33,13 +33,14 @@
 #define __UNIVERSUM_LIB_VIEW_TEXTURE_MATERIAL_H
 
 #include "Material.h"
+#include "Texture.h"
 
 namespace UniLib {
 	
 	namespace view {
 
-		class Texture;
-		typedef DRResourcePtr<Texture> TexturePtr;
+		//class Texture;
+		//typedef DRResourcePtr<Texture> TexturePtr;
 
 		class UNIVERSUM_LIB_API TextureMaterial : public Material
 		{
@@ -54,6 +55,8 @@ namespace UniLib {
 			__inline__ void setTexture(TexturePtr texture) { mTexture = texture; }
 			void usingTexture(const char* filename);
 			__inline__ TexturePtr getTexture() { return mTexture; }
+
+			virtual LoadingState checkLoadingState();
 		protected:
 			TexturePtr mTexture;
 		};

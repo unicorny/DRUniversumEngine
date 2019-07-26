@@ -29,6 +29,7 @@ namespace UniLib {
 					}
 					addIndice(i);
 				}
+				setRenderMode(GEOMETRIE_RENDER_TRIANGLE_STRIP);
 				copyToFastAccess();
 			}
 		}
