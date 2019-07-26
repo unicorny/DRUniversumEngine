@@ -39,6 +39,7 @@ namespace UniLib {
 	namespace model {
 		namespace geometrie {
 			class BaseGeometrie;
+			typedef DRResourcePtr<BaseGeometrie> BaseGeometriePtr;
 		}
 	}
 	namespace view {
@@ -48,19 +49,26 @@ namespace UniLib {
 		class UNIVERSUM_LIB_API Geometrie : public DRIResource, public lib::Loadable
 		{
 		public:
-			Geometrie(model::geometrie::BaseGeometrie* baseGeometrie);
+			Geometrie(model::geometrie::BaseGeometriePtr baseGeometrie);
 			virtual ~Geometrie();
 
 			virtual DRReturn uploadToGPU() = 0;
 			virtual DRReturn render() = 0;
 			virtual bool isReady() = 0;
-			__inline__ void setBaseGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) { mGeometrieModel = baseGeometrie; }
+			__inline__ void setBaseGeometrie(model::geometrie::BaseGeometriePtr baseGeometrie) { 
+				mGeometrieModel = baseGeometrie; 
+				if (checkLoadingState() == LOADING_STATE_EMPTY) {
+					setLoadingState(LOADING_STATE_HAS_INFORMATIONS);
+				}
+			}
+
+			__inline__ model::geometrie::BaseGeometriePtr getBaseGeometrie() { return mGeometrieModel; }
 
 			virtual const char* getResourceType() const {return "view::Geometrie";}
 			// simple compare pointer adresses
 			virtual bool less_than(DRIResource& b) const {return this < &b;}
 		protected:
-			model::geometrie::BaseGeometrie* mGeometrieModel;
+			model::geometrie::BaseGeometriePtr mGeometrieModel;
 
 		};
 

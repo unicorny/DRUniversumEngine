@@ -9,7 +9,7 @@ namespace UniLib {
 			return mGeo->uploadToGPU();
 		}
 
-		Geometrie::Geometrie(model::geometrie::BaseGeometrie* baseGeometrie)
+		Geometrie::Geometrie(model::geometrie::BaseGeometriePtr baseGeometrie)
 			: mGeometrieModel(baseGeometrie)
 		{
 
@@ -17,7 +17,7 @@ namespace UniLib {
 
 		Geometrie::~Geometrie()
 		{
-			DR_SAVE_DELETE(mGeometrieModel);
+			//DR_SAVE_DELETE(mGeometrieModel);
 		}
 	}
 }

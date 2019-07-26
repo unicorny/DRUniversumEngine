@@ -51,6 +51,7 @@ namespace UniLib {
 		class UniformSet;
 		namespace geometrie {
 			class BaseGeometrie;
+			typedef DRResourcePtr<BaseGeometrie> BaseGeometriePtr;
 		}
 	}
 
@@ -64,7 +65,7 @@ namespace UniLib {
 			virtual view::BlockSektor* newBlockSektor() = 0;
 			virtual view::Texture* newTexture(DRVector2i size, GLuint format) = 0;
 			virtual view::Texture* newTexture(DHASH id, const char* fileName) = 0;
-			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometrie* baseGeometrie) = 0;
+			virtual view::Geometrie* newGeometrie(model::geometrie::BaseGeometriePtr baseGeometrie) = 0;
 			virtual view::FrameBuffer* newFrameBuffer(view::TexturePtr texture) = 0;
 			virtual view::FrameBuffer* newFrameBuffer() = 0;
 			//virtual model::geometrie::BaseGeometrieContainer* newGeometrieContainer() = 0;

@@ -10,13 +10,13 @@ namespace UniLib {
 		// TASKS 
 		DRReturn BaseGeometrieLoadingCPUTask::run()
 		{
-			model::geometrie::BaseGeometrie* geo = NULL;
+			model::geometrie::BaseGeometriePtr geo;
 			switch (mParent->mType) {
 			case BASE_GEOMETRIE_PLANE: 
-				geo = new model::geometrie::Plane(model::geometrie::GEOMETRIE_VERTICES);
+				geo = model::geometrie::BaseGeometriePtr(new model::geometrie::Plane(model::geometrie::GEOMETRIE_VERTICES));
 				break;
 			}
-			if (!geo) {
+			if (!geo.getResourcePtrHolder()) {
 				EngineLog.writeToLog("type: %d", mParent->mType);
 				LOG_ERROR("hasn't found geo base type implementation", DR_ERROR);
 			}
@@ -32,7 +32,10 @@ namespace UniLib {
 		}
 		DRReturn BaseGeometrieLoadingGPUTask::run()
 		{
-			return BaseGeometrieManager::getInstance()->getGeometriePointer(mType)->uploadToGPU();
+			auto geo = BaseGeometrieManager::getInstance()->getGeometriePointer(mType);
+			DRReturn ret = geo->uploadToGPU();
+			geo->setBaseGeometrie(nullptr);
+			return ret;
 		}
 
 		void BaseGeometrieLoadingGPUTask::scheduleTask(TaskPtr own)

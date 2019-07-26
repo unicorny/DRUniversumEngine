@@ -37,8 +37,8 @@ namespace UniLib {
 
 				for (size_t i = 0; i < rectCount; i++) 
 				{
-					DRVector2 pos = outputs[i] / mCollectionDimension;
-					DRVector2 size = (*inputRects)[i].size / mCollectionDimension;
+					DRVector2 pos = DRVector2(outputs[i]) / DRVector2(mCollectionDimension);
+					DRVector2 size = DRVector2((*inputRects)[i].size) / DRVector2(mCollectionDimension);
 
 					mVertices[i * 4 * mVertexSize]      = pos.x;
 					mVertices[i * 4 * mVertexSize + 1]  = (*inputRects)[i].key;
@@ -64,7 +64,7 @@ namespace UniLib {
 					mIndicesArray[i * 6 + 5] = 3;
 				}
 
-
+				mVertexFormatFlags = GEOMETRIE_VERTICES;
 				DR_SAVE_DELETE_ARRAY(outputs);
 
 				return DR_OK;
