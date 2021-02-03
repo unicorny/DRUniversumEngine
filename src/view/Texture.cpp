@@ -84,6 +84,7 @@ namespace UniLib {
 
 		void Texture::saveIntoFile(const char* filename)
 		{
+			// TODO: check if pixel exist (in system memory) if not first copy pixel
 			controller::TaskPtr task(new TextureSavingTask(this, controller::TextureManager::getInstance()->getTextureCPUScheduler(), filename));
 			task->scheduleTask(task);
 		}

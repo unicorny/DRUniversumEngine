@@ -44,6 +44,13 @@ namespace UniLib {
                 
         };
 
+		class UNIVERSUM_LIB_API DirtyCommand
+		{
+		public:
+			virtual void goingDirty() = 0;
+		};
+
+
 		class UNIVERSUM_LIB_API MultiCommands : public Command
 		{
 		public:
